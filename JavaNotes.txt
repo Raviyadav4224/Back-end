@@ -56,3 +56,131 @@
     JIT - part of JVM to optimize performance
     JRE - JVM + Libraries
     JDK - JRE + Development tools ( Compiler , Debugger)
+
+4. Data Types - 
+
+    Primitive data types - 
+        Number - byte(1) , short(2), int(4), long(8)
+        Float - float(4) , double(8)
+        boolean - true or false (not 1 or 0)
+        char - 2bytes (single quotation , UNICODES and not ASCII values)
+
+    Non - Primitive data types - 
+        Arrays
+        String
+        class
+        Object
+        Interface
+
+5. Type Casting - 
+
+    Implicit type casting - 
+
+        Occurs automatically when converting a smaller value to a larger value 
+        int a=10;
+        double b=a;
+
+    Explicit type casting - 
+        Occurs when converting LARGER values to SMALLER values
+        double b=100.0;
+        int a=int(b);
+    
+    Upcasting - 
+        Occurs between objects when casting a subclass object to superclass reference
+        class Animal { (SuperClass)
+            void sound() {
+                System.out.println("Animal makes a sound");
+            }
+        }
+
+        class Dog extends Animal { (SubClass)
+            void sound() {
+                System.out.println("Dog barks");
+            }
+
+            void specialAbility() {
+                System.out.println("Dog can guard");
+            }
+        }
+        public static vodi main(){
+            Animal animal=new Dog()
+            animal.sound() // Upcasting
+
+        }
+    Downcasting - 
+        Occurs when casting a superclass reference back to subclass 
+            Dog dog=(Dog) animal;
+
+6. Method Overloading - 
+
+    When we create methods having same name but
+        - different number of parameters
+        - different type of parameters
+        is termed as method overloading
+    * It implements compile time polymorphism
+    *return type doesnot matter
+
+7. Strings - 
+
+    Strings are immutable in Java
+    Each time an operation is performed on string a new object is created
+
+    String str1="Hello"
+    String str2="World"
+    str1.concat(str2);
+    sysout(str1) ---> Hello
+    String str=new String("This is a string")
+
+    * Use equals() for string value comparison and == for reference comparison
+
+8. String Pool - 
+    String pool is a place in Heap Memory where all the strings defined are stored.
+    Whenever we create a string variable , JVM checks the string pool and if string object is 
+    present then same is returned else new object is created.
+
+    * Strings created using the new keyword are created inside the HEAP memory and are UNIQUE 
+      even if their contents mathces
+
+        String str3=new String("Hello");
+        String str4=new String("Hello");
+        System.out.println(str4 == str3); // FALSE
+    
+9. Static Keyword -
+
+    Static variables - 
+        static String code;
+
+        Static variable is a variable that is shared across all the instances of a class.
+        It belongs to the class rather than any reference meaning only onecopy of variable
+        exists in the memory
+        * Static variables can be accessed directly using the ClassName, we dont need to create objects for
+        them to access
+        * JVM has special area to handle static variables
+
+    Static methods - 
+
+        Non static variables cannot be used inside static methods, because to use non static variables we need
+        to create object of it.
+        Indirect access is possible by sending a function parameters
+        In Non Static methods static variable can be used.
+    Static block - 
+
+        static{
+            name="Ravi"
+        }
+
+        Static block is used to initialize the static variables 
+        If we initialize them in Constructor , Whenever object is created it static variable will be 
+        re-initialized
+        Whenever the Class loads static block is executed first and then Constructor method is called.
+        Class loads only once
+        * Class.forName("Person")  Loads the class
+
+10. Final keyword - 
+11. super() vs this()
+12. Inheritance
+13. Object class
+14. Wrapper class
+15. Abstract class
+16. Inner class vs Anonymous inner class
+17. Interface
