@@ -103,10 +103,11 @@
             }
         }
         public static vodi main(){
-            Animal animal=new Dog()
-            animal.sound() // Upcasting
+            Animal animal=new Dog();
+            animal.sound(); // Upcasting
 
         }
+        
     Downcasting - 
         Occurs when casting a superclass reference back to subclass 
             Dog dog=(Dog) animal;
@@ -176,11 +177,131 @@
         Class loads only once
         * Class.forName("Person")  Loads the class
 
+    *   Person p1=new Person()
+        Here p1 is the reference variable of type Person
+        new Person() creates an Object of type Person
+        Person p1=new Person()
+        The reference variable stores the reference of object created in Heap memory
+
 10. Final keyword - 
-11. super() vs this()
-12. Inheritance
-13. Object class
-14. Wrapper class
-15. Abstract class
-16. Inner class vs Anonymous inner class
-17. Interface
+
+    * Final keyword means CONSTANT
+    * Value once declared final cannot be re-initialized
+    * To stop method over-riding - declare method as final
+    * To stop Inheritance - declare class as final
+    * A Final object reference cannot be re-initialized but its internal state can still be modified
+    
+11. super() vs this() - 
+
+    Every Constructor in Java has a method called super() which is used to call the parent's Constructor
+    * First Parent's contructor gets called and then Child's contructor
+
+    this() - Executes the Constructor of the same class
+
+12. Inheritance -
+
+        In Java MultiLevel Inheritance is supported but not Multiple Inheritance
+
+        Inheritance is done using the keyword extends
+
+        * For Multiple Inheritance - Multiple class can have same methods which creates an ambiguity i.e 
+          JVM cannot decide which method to call, so Multiple inheritance is not supported
+
+        * For Inheritance you only need .class file 
+
+13. Object class -
+
+        By default every class in Java extends the Object Class directly or indirectly
+        It means every class in Java has access to the Object class methods
+        * Primitive values doesn't extends the Object class
+
+14. Wrapper class - 
+
+        Primitive values doesn't extends the Object Class
+        Wrapper class is a way to use Primitive data types as Objects
+        Each data type has a corresponding Wrapper class
+
+        For example -
+
+            byte    -->	Byte	
+            short   -->	Short	
+            int     -->	Integer	
+            long	--> Long	
+            float	--> Float	
+            double	--> Double	
+            char	--> Character	
+            boolean	--> Boolean
+
+    * Advantage - Collections like ArrayList , HashMap etc requires Object class
+    * Dis-Advantage - Once created, wrapper objects cannot be modified. Any change creates 
+      a new object.
+
+15. Anonymous inner class -
+        abstract class Car {
+            public abstract void Drive() ;
+        }
+
+        class Tata extends Car{
+
+            public void Drive() {
+                System.out.println("Tata is driving the Car");
+            }
+        }
+
+        void main(){
+            Car car=new Tata()
+            car.Drive()
+        }
+        * Here the sole purpose of class Tata is to implement the abstract method
+        * Same can be done using Lambda expression for Functional interface
+            Car car=()-> System.out.println("Tata is driving the Car");
+            This is known as Anonymous inner class i.e class without name
+
+16. Abstract class -
+        
+        Abstract means just the idea and not its implementation
+        * Abstract methods can only belong to Abstract class
+        * When a class extends the Abstract class it must implement the abstract  methods
+        * You cannot create an object of Abstract class on ly reference of that class can be created
+        * Abstract class may or may not have abstract methods
+
+17. Interface -
+
+    * Instead of using abstract class we can use interface
+    * Interface is not a Class
+    * By default every method in an interface is PUBLIC and Abstract
+    * Interface will have only the methods and not their implementations
+    * To implement an interface we use IMPLEMENTS keyword
+    * All variables inside interface are FINAL and STATIC
+    * Class can implement multiple interfaces but abstract class can extend only one class
+
+        Class  -> Class (extends)
+        Class  -> Interface  (implements)
+        Interface -> Interface (extends)
+
+    Functional Interface -
+    
+    Interface having only one method
+    @FunctionalInteface annotation can be used
+    Here Lambda expressions can be used
+
+    Types of Interface - 
+        Normal Interface -> Interface having MULTIPLE METHODS
+        Functional Interface -> Interface having ONE METHOD
+        Marker Interface -> Interface having NO METHODS (used in serialization)
+
+19. Lambda expression
+19. Exception Handling
+    Checked vs Unchecked exception
+    Types of Exception
+    try-catch
+    try with multiple catch
+    try catch finally
+    condition where finally is not executed
+    Custom Exception Handling
+    Throw vs throws vs Throwable
+
+20. Enum -
+21. Threads
+22. Collections vs Collection
+23. Stream API
