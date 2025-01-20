@@ -262,14 +262,14 @@
         Abstract means just the idea and not its implementation
         * Abstract methods can only belong to Abstract class
         * When a class extends the Abstract class it must implement the abstract  methods
-        * You cannot create an object of Abstract class on ly reference of that class can be created
+        * You cannot create an object of Abstract class only reference of that class can be created
         * Abstract class may or may not have abstract methods
 
 17. Interface -
 
     * Instead of using abstract class we can use interface
     * Interface is not a Class
-    * By default every method in an interface is PUBLIC and Abstract
+    * By default every method in an interface is PUBLIC and ABSTRACT
     * Interface will have only the methods and not their implementations
     * To implement an interface we use IMPLEMENTS keyword
     * All variables inside interface are FINAL and STATIC
@@ -291,17 +291,112 @@
         Marker Interface -> Interface having NO METHODS (used in serialization)
 
 19. Lambda expression
-19. Exception Handling
-    Checked vs Unchecked exception
-    Types of Exception
-    try-catch
-    try with multiple catch
-    try catch finally
-    condition where finally is not executed
-    Custom Exception Handling
-    Throw vs throws vs Throwable
+19. Exception Handling -
+    
+    Exceptions are events that can disrupt the normal execution of a program when some 
+    unexpected situation occurs
 
-20. Enum -
+    *Types of Exception -
+
+        Checked exception - (COMPILE-TIME)
+
+            These are exceptions that are checked at COMPILE TIME for example - SQLException, IOException etc
+
+        Unchecked exception - (RUNTIME)
+
+            These are exceptions that occur during the RUNTIME of a program, for example -Arithmetic Exception,
+            NullPointerException etc 
+    
+    *finally block always gets executed but there are situations where it may not get executed -
+        * If JVM crashes (due to OutOfMemoryError error)
+        * try block has some infinite loop
+        * If the thread executing the try block is killed
+
+    *Custom Exception Handling -
+        We can have custom exception handling by extending the Exception class
+        for example - 
+            Class CustomException extends Exception{
+                CustomException(String message){
+                    super(message)
+                }
+            }
+
+            try {
+                throw new CustomException("This is a custom exception");
+            } catch (CustomException e) {
+                System.out.println(e.getMessage());
+            }
+    *Throw - 
+        It is used to explicitly throw an exception, for example - new CustomException("This is a custom exception");
+    
+    *Throws - 
+        It is used to declare the exceptions that a METHOD can throw, it doesn't handles the exception itself
+        for example -  void calculate(int x) throws ArithmeticException
+
+    *Throwable -
+
+        It is the root class in Java from which both Errors and Exceptions are derived
+
+        Errors are mainly serious issues that the program should not try to handle (usually related to JVM)
+        such as OutOfMemoryError error
+
+        Error - OutOfMemoryError, StackOverflowError etc
+
+        Exception - ArithmeticException, IOException etc
+
+
+20. enum -
+    enum are special data type that represents a group of constants
+    It is used to define a set of named values
+    *Enums are FINAL and STATIC implicitly
+    *Enums are more than constants; they can include fields, constructors, and methods.
+        for example -
+            enum Day{
+                MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY;
+            }
+            enum Season{
+                    WINTER("Cold"),
+                    SPRING("Warm"),
+                    SUMMER("Hot"),
+                    FALL("Cool");
+                public String getDescription() {
+                    return description;
+                }
+
+                private String description;
+                // Constructor
+                Day(String description) {
+                    this.description = description;
+                }
+            }
+            public static void main(String[] args) {
+                Day today = Day.MONDAY;
+                System.out.println("Today is: " + today);
+                 for (Day d : Day.values()) {
+                    System.out.println(d.getDescription());
+                    }
+            }
+
 21. Threads
-22. Collections vs Collection
+22. Collections class vs Collection interface -
+
+    Collections -
+        It is an utility class in Java that provides various static methods to work with Collection types
+        (eg List, Set, Queue)
+        for example - 
+            Collections.sort()
+            Collections.swap()
+            Collections.reverse()
+        * It doesn't implements the Collection interface
+    
+    Collection -
+        It is an interface in Java Collections Framework
+        It is implemented by List, Queue, Set interfaces
+        List ->
+        Set ->
+        Queue ->
+    
+    *Map is not the part of Collection, Although it is part of the Java Collections Framework
+    
 23. Stream API
+24. String Builder vs BufferedReader
