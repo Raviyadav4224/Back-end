@@ -290,6 +290,10 @@
         Functional Interface -> Interface having ONE METHOD
         Marker Interface -> Interface having NO METHODS (used in serialization)
 
+    * We can create reference of an interface and object of a class
+        example -
+            Runnable obj=new A();
+
 19. Lambda expression
 19. Exception Handling -
     
@@ -436,6 +440,60 @@
                     return this.marks - other.marks; // Natural order: ascending marks
                 }
             }
+24. Threads ->
+        Multiple tasks running at same time
+        Smallest unit with which we can work is called a Thread
+        * In  every Thread we need to have run method
+        * Using start() method we start the Thread
+            class A extends Thread{
+                public void run() {
+                    for (int i = 0; i < 10; i++) {
+                        System.out.println("Hi");
+                    }
+                }
+            }
+            public static void main(String args[]) {
+                A obj1 = new A();
+                obj1.start();
+            }
+        * obj.getPriority() gives the priority of Thread , we can also set the priority of the Thread using
+            obj.setPriority(10)
+            
+            0 --> Least priority
+            0 --> Normal priority
+            10 --> Highes priority
+
+        * Thread is a class which implements Runnable interface
+        * Ways to create a Thread - we can use Thread class or implement Runnable
+
+25. Runnable ->
+
+        We can create Thread by implementing the Runnable interface
+        But here we have to create a Thread object to have start() method
+            Runnable obj1 = new A();
+            Thread t1=new Thread(obj1);
+            using Lambda expression -> 
+                Runnable obj1 = ()->{
+                    for (int i = 0; i < 10; i++) {
+                        System.out.println("Hi");
+                        try {
+                            Thread.sleep(10);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                };  
+        * Thread safe means only one method can work with Thread at one time
+        * join() method is used to wait for the Thread to finish
+        * using SYNCHRONIZED both threads does not goes to the same variable at the same time, and prevents
+            Race Condition
+            public synchronized void increment() {
+                this.count++;
+            }
+
 24. Stream API
 25. String Builder vs BufferedReader
-
+26. Generics
+27. Date and Time
+28. File Handling
+29. Serialization and De-serialization
