@@ -294,7 +294,10 @@
         example -
             Runnable obj=new A();
 
-19. Lambda expression
+19. Lambda expression -
+
+        It is applicable only for Functional interfaces i.e interface having only one method\
+
 19. Exception Handling -
     
     Exceptions are events that can disrupt the normal execution of a program when some 
@@ -381,8 +384,7 @@
                     }
             }
 
-21. Threads
-22. Collections class vs Collection interface -
+21. Collections class vs Collection interface -
 
     Collections -
         It is an utility class in Java that provides various static methods to work with Collection types
@@ -402,15 +404,19 @@
             Queue -> PriorityQueue, LinkedList, ArrayDeque
     
     Map - 
+
         **Map is not the part of Collection interface, Although it is part of the Java Collections Framework 
         that represents a key-value pair where each key is UNIQUE
-        * Map is an interface which is being implemented by classes such as HashMap, TreeMap, LinkedHashMap etc
-        * HashMap stores is unordered format and allows 1 null key and multiple null values and for basic 
-        operations such as get, put, it takes O(1) time
-        * TreeMap stores in ordered format(ascending) and doesn't allows for null key values b ut allows multiple
-        null values, for basic operations such as get, put it takes O(logN)
 
-23. Comparator vs Comparable ->
+        * Map is an interface which is being implemented by classes such as HashMap, TreeMap, LinkedHashMap etc
+
+        * HashMap stores is unordered format and allows 1 null key and multiple null values and for basic 
+          operations such as get, put, it takes O(1) time
+
+        * TreeMap stores in ordered format(ascending) and doesn't allows for null key values but allows multiple
+          null values, for basic operations such as get, put it takes O(logN)
+
+22. Comparator vs Comparable ->
 
     Comparator -
         It is an functional interface used to define CUSTOM SORTING order of objects without modifying the class
@@ -440,7 +446,8 @@
                     return this.marks - other.marks; // Natural order: ascending marks
                 }
             }
-24. Threads ->
+
+23. Threads ->
         Multiple tasks running at same time
         Smallest unit with which we can work is called a Thread
         * In  every Thread we need to have run method
@@ -461,16 +468,15 @@
             
             0 --> Least priority
             0 --> Normal priority
-            10 --> Highes priority
+            10 --> Highest priority
 
         * Thread is a class which implements Runnable interface
         * Ways to create a Thread - we can use Thread class or implement Runnable
 
-25. Runnable ->
+24. Runnable ->
 
-        We can create Thread by implementing the Runnable interface
+        We can create a Thread by implementing the Runnable interface
         But here we have to create a Thread object to have start() method
-            Runnable obj1 = new A();
             Thread t1=new Thread(obj1);
             using Lambda expression -> 
                 Runnable obj1 = ()->{
@@ -491,9 +497,30 @@
                 this.count++;
             }
 
-24. Stream API
-25. String Builder vs BufferedReader
-26. Generics
-27. Date and Time
-28. File Handling
-29. Serialization and De-serialization
+25. Stream API ->
+
+        Introduced in Java 8, it provides ways to process pipeline(series) of operations to the elements
+        of a collection or other data source in a functional and declarative programming style
+        It processes series of elements one at a time
+
+        * stream() is used to create a stream and it provides various methods to be applied on the stream 
+        such as map, filter, reduce
+        for example -
+            List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5);
+            int product = numbers.stream().map(n->n*2);
+
+        * collect() is used to terminate the stream and convert the stream back into specific data types
+
+        * To handle infinite streams of data we can use any of the terminations operations like findfirst(),
+            findAny(), anyMatch(), limit() etc
+                for example - 
+                    numbers.stream().limit(10).forEach(System.out::println);
+                    Random random=new Random();
+                    Stream.generate(random::nextInt).limit(5).forEach(System.out::println);
+                    
+26. String Builder vs BufferedReader
+27. Generics
+28. Date and Time
+29. File Handling
+30. Serialization and De-serialization
+Autoboxing
