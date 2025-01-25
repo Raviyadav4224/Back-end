@@ -496,7 +496,8 @@
             public synchronized void increment() {
                 this.count++;
             }
-
+        *wait(), notify() methods -
+    
 25. Stream API ->
 
         Introduced in Java 8, it provides ways to process pipeline(series) of operations to the elements
@@ -518,9 +519,50 @@
                     Random random=new Random();
                     Stream.generate(random::nextInt).limit(5).forEach(System.out::println);
                     
-26. String Builder vs BufferedReader
-27. Generics
-28. Date and Time
-29. File Handling
+26. String Builder vs StringBuffer -
+
+        StringBuilder and StringBuffer are MUTABLE classes in java used for manipulating strings
+        They provide methods to modify strings without creating new strings
+
+        StringBuilder - 
+
+            It is not synchronized so it is not safe in a multi-threaded environment
+            It performs faster operations comapared to StringBuffer in single threaded environments
+
+        StringBuffer -
+            It is synchronized and Thread safe
+            Slower due to synchronization
+        
+        example -
+                StringBuilder sb = new StringBuilder(""); // Not Thread Safe since StringBuilder,use StringBuffer for thread safe
+                Runnable task = () -> {
+                    for (int i = 1; i < 50; i++) {
+                        sb.append(i+" ");
+                    }
+                    System.out.println(sb);
+                };
+
+                Thread t1 = new Thread(task);
+                Thread t2 = new Thread(task);
+
+                t1.start();
+                t2.start();
+
+27. Generics - 
+
+28. Date,Time & DateTime API - 
+
+        Introduced in Java 8 in the java.time package.
+        * All classes inside java.time are immutable and thread safe
+        * It has TimeZones support
+
+        classes - LocalDate, LocalTime, LocalDateTime, ZonedDateTime, DateTimeFormatter
+        * LocalDate date = LocalDate.now();
+        * DateTimeFormatter formatter= DateTimeFormatter.ofPattern("MM/dd/yyyy");
+        * String currentDate=LocalDateTime.now().format(formatter);
+        * LocalDate date=LocalDate.parse(birthday,formatter);
+
+29. File Handling -
+
 30. Serialization and De-serialization
-Autoboxing
+31. Autoboxing
