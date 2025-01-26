@@ -550,6 +550,55 @@
 
 27. Generics - 
 
+        Generics in Java provides a way to create Classes, Interfaces and methods with Type parameters.
+        It allows you to write code with type safety
+        It enhances code reusability since single classes, interfaces and methods can be used with different types
+        ensuring compile time type safety
+
+        * Basic syntax -
+            class Box<T> {
+                private T value;
+                public T getValue() { return value;}
+                public void setValue(T value) { this.value = value;}
+            }
+        * Generics can be used with Classes , Methods and interfaces
+        * Method - 
+                public static <T> void printArray(T[] array) {
+                    for (T element : array) {
+                        System.out.println(element);
+                    }
+                }
+        * Bounding (Extending) a Class -
+            Lower Bound -
+                We can restrict the type that can be used with Generics
+                class Box<T extends Number> - means Type T can be Number or its sub-classes
+
+            Upper Bound -
+                class Box<T super Number> - means any Type T can be super class of Number
+
+        * WildCards (?)-
+
+            WildCards are used for unknown types
+                public static void printList(List<?> list) {
+                    for (Object obj : list) {
+                        System.out.println(obj);
+                    }
+                }
+                (? extends T): Represents any type that is a subtype of T
+                (? super T): Represents any type that is a supertype of T
+
+        * Generic Interfaces -
+            interface Pair<K, V> {
+                K getKey();
+                V getValue();
+            }
+        * Generics with Collection -
+            List<Integers> num=new ArrayList<>();
+
+    * Generics use TYPE ERASURE which means type information is removed during compile time.
+      At runtime all Box<T> objects are treated as Box<Object>, Therefore we cannot instantiate Generics
+      with primitive types
+
 28. Date,Time & DateTime API - 
 
         Introduced in Java 8 in the java.time package.
