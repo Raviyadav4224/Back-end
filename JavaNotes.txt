@@ -351,7 +351,6 @@
 
         Exception - ArithmeticException, IOException etc
 
-
 20. enum -
     enum are special data type that represents a group of constants
     It is used to define a set of named values
@@ -613,5 +612,53 @@
 
 29. File Handling -
 
-30. Serialization and De-serialization
+        It is a process that allows you to Read, Write, Update & Delete a file in Java
+
+        Create -
+        
+            File file=new File("path with file name");
+            if(file.createFile()) -- Creates file if not present 
+
+        Read -  
+
+            FileReader reader=new FileReader(above created file or filePath)
+
+            reader.read() -- gives one charecter at a time and if no charecter are present then -1
+            int text;
+            while ((text = reader.read()) != -1) {
+                System.out.print((char) text);
+            }
+
+        Write -
+
+            FileWriter writer=new FileWriter(file);
+            writer.write("This content is being written into the file");
+
+        Update -
+        
+            FileWriter writer=new FileWriter(file,true(append true or false));
+            writer.write("This content is appended");
+
+        Delete -
+
+            File file=new File("path with file name");
+            if(file.delete()){
+                file deleted successfully
+            }
+
+    * BufferedReader & BufferedWriter -
+
+        BufferedWriter writer=new BufferedWriter(new FileWriter(file,true));
+        BufferedReader reader = new BufferedReader(new FileReader(file));
+
+    ** Every Read and Write operation directly interacts with HardDisk whereas,BufferedReader & BufferedWriter
+       classes creates a buffer of chunk of data and reduces the number of interactions with HardDisk, Thus optimizing
+       file handling process
+
+30. Serialization and De-serialization -
+
+        Serialization is the process of converting object's state into byte stream such that it can be 
+        stored in a database or a file
+        De-serialization is the reverse process where object is converted back into original state
+
 31. Autoboxing
