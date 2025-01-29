@@ -655,10 +655,46 @@
        classes creates a buffer of chunk of data and reduces the number of interactions with HardDisk, Thus optimizing
        file handling process
 
-30. Serialization and De-serialization -
+30. Serialization, De-serialization ,transient & serialVersionUID-
 
         Serialization is the process of converting object's state into byte stream such that it can be 
         stored in a database or a file
+
         De-serialization is the reverse process where object is converted back into original state
+
+        For Serialization (Writing into a File) -
+
+            1. Opens file for writing into -
+        
+                FileOutputStream fos=new FileOutputStream("file path");
+
+            2. Creates Buffer - 
+
+                BufferedOutputStream bos=new BufferedOutputStream(fos);
+
+            3. Converts Java objects into byte stream -
+                ObjectOutputStream oos=new ObjectOutputStream(bos);
+
+            4. Writes the object -
+                oos.writeObject(Person)
+
+        For De-Serialization -
+
+            FileInputStream fis=new FileInputStream("path of file");
+            BufferedInputStream bis=new BufferedInputStream(fis);
+            ObjectInputStream ois=new ObjectInputStream(bis);
+            ois.readObject();
+
+        * Transient keyword is used to indicate that the field should not be serialized
+
+        * SerialVersionUID - It is a unique identifier used during de-serialization process to verify 
+            that the sender and receiver of serialized object have compatible classes
+            It must be STATIC FINAL LONG
+            private static final long serialVersionUID=1234L;
+
+        * static and transient data members are not stored during serialization
+
+        * Constructor of Object is not called during de-serialization of the object
+
 
 31. Autoboxing
