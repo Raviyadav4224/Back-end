@@ -673,6 +673,7 @@
                 BufferedOutputStream bos=new BufferedOutputStream(fos);
 
             3. Converts Java objects into byte stream -
+
                 ObjectOutputStream oos=new ObjectOutputStream(bos);
 
             4. Writes the object -
@@ -697,4 +698,30 @@
         * Constructor of Object is not called during de-serialization of the object
 
 
-31. Autoboxing
+31. Autoboxing -
+
+    Autoboxing in Java is conversion of primitive data types into the corresponding Wrapper class Objects
+    example -
+        Integer a=new Integer();
+        int num=10;
+        a=num; // Here num is primitive which is being converted to Integer class object
+
+        *Behind the scene Java uses Integer.valueOf(num) to convert into corresponding Wrapper class object
+    
+    * Caching in Wrapper classes - 
+
+        By default Wrapper classes implements Cache in Java
+
+        So when wrapper class creates caches it doesn't create new object for same values rather it refers 
+        to the same value , but when the created object is out of range of cache it creates a new object    
+
+        for example - 
+            Integer a=100;
+            Integer b=100;
+             if(a==b)  // TRUE since in same range
+            Integer a=200;
+            Integer b=200;
+             if(a==b)  // FALSE since out of range  
+        
+        * For Double and Float (No Caching is implemented) wrapper clasess always use .equals()
+
