@@ -1,0 +1,138 @@
+1. SQL ->
+
+    Structured Query Language (SQL) is a programming language used to manage and manipulate 
+    relational databases
+
+2. MYSQL ->
+
+    It is an RDBMS which uses SQL for database operations
+
+3. DBMS ->
+
+    It is a software to manage databases
+
+4. RDBMS ->
+
+    It is a type of DBMS which stores data in the form of Tables (rows and columns) and maintains 
+    relationship between them
+
+5. SQL Commands ->
+
+    SQL commands are categorized into 5 categories -
+
+        DDL (Data Definition Language) -
+
+            CREATE, DROP, ALTER, TRUNCATE
+
+        DQL (Data Query Language) -
+
+            SELECT
+
+        DML (Data Manipulation Language) -
+
+            INSERT, DELETE , UPDATE
+
+        DCL (Data Control Language) -
+
+            GRANT, REVOKE
+
+        TCL (Transaction Control Language) -
+
+            BEGIN TRANSACTION, COMMIT, ROLLBACK
+
+6. Data Types in SQL ->
+
+    Numeric -
+
+        INT / INTEGER	Stores whole numbers (e.g., 10, 500)
+        TINYINT	1-byte integer (0 to 255 or -128 to 127)
+        SMALLINT	2-byte integer (-32,768 to 32,767)
+        MEDIUMINT	3-byte integer (-8M to 8M)
+        BIGINT	8-byte integer (Very large numbers)
+        DECIMAL(p, s) / NUMERIC(p, s)	Fixed-point precision numbers
+        FLOAT	4-byte floating-point number
+        DOUBLE / REAL	8-byte floating-point number
+
+    String -
+
+        CHAR(n)	Fixed-length string (e.g., CHAR(10) stores exactly 10 characters)
+        VARCHAR(n)	Variable-length string (e.g., VARCHAR(50) stores up to 50 characters)
+        TEXT	Large text (up to 64KB in MySQL)
+        TINYTEXT	Small text (up to 255 characters)
+        MEDIUMTEXT	Medium-sized text (up to 16MB)
+        LONGTEXT	Large text (up to 4GB)
+
+    Date and Time -
+
+        DATE	Stores date in YYYY-MM-DD format
+        TIME	Stores time in HH:MM:SS format
+        DATETIME	Stores both date and time (YYYY-MM-DD HH:MM:SS)
+        TIMESTAMP	Stores Unix timestamp (auto-updated)
+        YEAR	Stores year values (YYYY)
+
+    Boolean -
+
+        BOOLEAN / BOOL	Stores TRUE or FALSE (internally stored as TINYINT(1), where 0 = FALSE 
+        and 1 = TRUE)
+
+    JSON and Other types -
+
+        JSON	Stores JSON formatted data
+        BLOB	Binary Large Object (used for images, files, etc.)
+        ENUM	Stores predefined string values (e.g., ENUM('Small', 'Medium', 'Large'))
+        SET	Stores multiple predefined values
+    
+7. Using SQL Commands ->
+
+    Data Definition Language (DDL) -
+        CREATE -
+
+        * CREATE table Employees (
+            id INT PRIMARY KEY auto_increment,
+            name VARCHAR(50) not null,
+            salary DECIMAL(10,2) default 0.0,
+            age INT Check(age>18)
+            );
+            
+        ALTER -
+
+            * ALTER TABLE TABLE_NAME ADD COLUMN (
+                    COLUMN_NAME COLUMN_DATA_TYPE
+                )
+                example -
+                        ALTER table employees add column(
+                        dob Date,
+                        createdAt TIMESTAMP
+                        );
+            
+
+            * ALTER TABLE TABLE_NAME MODIFY COLUMN OLD_COLUMN_NAME TO NEW_COLUMN_NAME
+                example - ALTER table employees modify column createdAt TIMESTAMP default current_timestamp;
+
+            * ALTER TABLE TABLE_NAME RENAME COLUMN OLD_COLUMN_NAME TO NEW_COLUMN_NAME
+                example - ALTER table employees rename column name to emp_name;
+
+        DROP -
+
+            DROP TABLE TABLE_NAME;
+            DROP DATABASE DATABASE_NAME;
+        
+        TRUNCATE -
+
+            TRUNCATE TABLE TABLE_NAME;
+
+        DROP vs TRUNCATE -
+
+            Drop is used to delete a table or database whereas Truncate only deletes the data keeping the structure or
+            schema as it is;    
+            Using Truncate , rollaback is possible
+
+    Data Manipulation Language (DML) -
+        
+        INSERT -
+        
+            INSERT INTO TABLE_NAME (COLUMN_NAMES) VALUES (VALUE1,VALUE2)
+
+            example -
+                insert into employees (emp_name,salary,age,dob) 
+                values("Minu",95000.99,27,'1998-10-02');
