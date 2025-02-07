@@ -123,9 +123,15 @@
 
         DROP vs TRUNCATE -
 
-            Drop is used to delete a table or database whereas Truncate only deletes the data keeping the structure or
-            schema as it is;    
-            Using Truncate , rollaback is possible
+            Drop is used to delete a table or database whereas Truncate only deletes the data keeping 
+            the structure or schema as it is ;    
+            Using Truncate , rollback is possible if used inside a TRANSACTION (is supported by DBMS, MYSql
+            doesn't supports this)
+
+            example -
+                START TRANSACTION 
+                Truncate table Employees
+                ROLLBACK
 
     Data Manipulation Language (DML) -
         
@@ -136,3 +142,109 @@
             example -
                 insert into employees (emp_name,salary,age,dob) 
                 values("Minu",95000.99,27,'1998-10-02');
+        
+        UPDATE -
+        
+            UPDATE TABLE_NAME SET VALUES_TO_CHANGE WHERE CONDITION
+
+            example -
+                update employees set emp_name='Minakshi Kumari' where id=4; 
+
+        DELETE -
+
+            DELETE FROM TABLE_NAME WHERE CONDITION
+
+            example -
+                Delete from Employees where id=1;
+
+    Data Query Language (DQL) -
+
+        SELECT -
+
+            SELECT COLUMN_NAMES FROM TABLE_NAME
+
+            example - 
+                select * from Employees ;
+                select emp_id,name from Employees;
+
+    Data Control Language (DCL) -
+
+        Used to manage permission and access control
+
+        CREATE USER -
+
+            CREATE USER 'USER_NAME@HOST' IDENTIFIED BY 'PASSWORD'
+
+                example -
+                    create 'ravi'@'localhost' identified by '1234';
+                    create 'ravi@%' identified by '1234'; --> % means user can connect the DB from any host
+
+        GRANT -
+
+            GRANT PREVILEGE_NAME ON DATABASE_TABLES TO 'USER_NAME@HOST'
+
+                example -
+                    GRANT ALL PRIVILEGES ON sqlLearning.* TO 'user'@'localhost';
+                    GRANT SELECT ON sqlLearning.* TO 'username'@'localhost';
+
+        REVOKE -
+
+            REVOKE ALL PRIVILEGES,GRANT OPTION FROM 'USER_NAME@HOST';
+            REVOKE PREVILEGE_NAME ON DATABASE_TABLES TO 'USER_NAME@HOST'
+
+                example -
+                    REVOKE ALL PRIVILEGES,GRANT OPTION FROM 'user'@'localhost';
+                    REVOKE SELECT ON sqlLearning.* FROM 'username'@'localhost';
+
+        * User related details are stored inside mysql.user table
+            Select * from  mysql.user;
+
+        * Show grants USER_NAME@HOST - lists all the previleges to the specified user
+        
+    Transactional Control Language (TCL) -
+
+        Used to manage transactions in a database
+
+        COMMIT - 
+
+            Saves the transaction permanently
+
+        ROLLBACK -
+
+            Undoes the changes since the last commit
+
+        SAVEPOINT - 
+
+            Creates a checkpoint within transaction
+
+            example -
+                START TRANSACTION;
+                UPDATE employees set salary=100 where emp_name='Ravi';
+                SAVEPOINT salaryUdpated;
+                DELETE FROM employees where salary=100;
+                SAVEPOINT deleteSalaryEmp;
+                ROLLBACK TO salaryUdpated;
+                COMMIT;
+    
+8. SQL Clauses -
+
+    Basic clauses includes WHERE, HAVING, ORDER BY, GROUP BY, LIMIT
+
+        Order By - Used for sorting data in ASC or DESC format 
+            Select * from Employees order by age DESC
+        
+        Group By - groups same valeus in a specified column
+            select age,AVG(salary) from employees group by age;
+
+        Having - Used to filter the data after grouping
+             select age,AVG(salary) from employees group by age having age>10;
+        
+        * WHERE is used before grouping (filters rows).
+          HAVING is used after grouping (filters groups).
+        
+        Limit - Used to limit the results
+            Select * from Employees order by age DESC LIMIT 5
+
+9. Aggregate Functions -
+
+    COUNT, SUM, AVG, MAX, MIN
