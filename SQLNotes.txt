@@ -233,7 +233,7 @@
         Order By - Used for sorting data in ASC or DESC format 
             Select * from Employees order by age DESC
         
-        Group By - groups same valeus in a specified column
+        Group By - groups same values in a specified column
             select age,AVG(salary) from employees group by age;
 
         Having - Used to filter the data after grouping
@@ -247,4 +247,61 @@
 
 9. Aggregate Functions -
 
-    COUNT, SUM, AVG, MAX, MIN
+    COUNT(expression) - 
+        Used to calculate No. of rows or Non-NULL values in a table
+        
+    SUM(expression) -
+        Used to calculate SUM of a Column 
+        It ignores Null values
+
+    AVG(expression) -
+        Used to calculate SUM of a Column 
+        It ignores Null values
+    
+    MAX & MIN -
+        MAX() returns the highest value in a column.
+        MIN() returns the lowest value in a column.
+    
+    COALESCE(value1,value2,...) -
+        It is used to return first NON-NULL value from a list of expressions, if all values are NULL 
+        it returns NULL
+        It is used to handle Null values by replacing with default value
+
+        examples -
+            select count(coalesce(salary,0)) from employees;
+            select count(*) from employees;
+            select sum(salary) from employees;
+            select avg(coalesce(salary,0)) from employees;
+            
+10. Data Constraints -
+
+    NOT NULL -
+        Values in a column cannot be Null
+        example -
+            Add Constraint -
+                ALTER table employees modify column emp_name varchar(30) not null;
+
+            To Remove Constraint -
+                 ALTER table employees modify column emp_name varchar(30) null;
+
+    UNIQUE -
+        Values in a column or a group of columns must be unique i.e distinct from one other
+        example -
+            Add Constraint -
+                ALTER table employees modify column emp_name varchar(30) not null unique;
+
+            To Remove Constraint -
+                ALTER TABLE TABLE_NAME DROP INDEX INDEX_NAME
+        * MySQL allows multiple NULL values in a UNIQUE column 
+        * Mysql automatically creates index when unique constraint is used on that column
+
+, PRIMARY KEY, FOREIGN KEY, DEFAULT KEY, COMPOSITE KEY
+11. Joins -
+
+12. Functions -
+
+13. Views -
+
+14. Indexes -
+
+15. Security & Security Attacks -
