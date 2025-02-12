@@ -141,7 +141,9 @@
 
             example -
                 insert into employees (emp_name,salary,age,dob) 
-                values("Minu",95000.99,27,'1998-10-02');
+                values
+                    ("Minu",95000.99,27,'1998-10-02'),
+                        ("Minu Kumari",95000.99,27,'1998-10-02');
         
         UPDATE -
         
@@ -292,10 +294,55 @@
 
             To Remove Constraint -
                 ALTER TABLE TABLE_NAME DROP INDEX INDEX_NAME
+
         * MySQL allows multiple NULL values in a UNIQUE column 
         * Mysql automatically creates index when unique constraint is used on that column
+        * SHOW COLUMNS from employees;
+        * SHOW INDEXES from employees;
 
-, PRIMARY KEY, FOREIGN KEY, DEFAULT KEY, COMPOSITE KEY
+    PRIMARY KEY -
+        Primary key is used to identify each record in a table uniquely
+        It cannot have NULL or Duplicate values
+        One table can have only ONE PRIMARY KEY but it can be composed of multiple columns known as COMPOSITE KEY
+        By Default MYSQL creates PRIMARY INDEX whenever a Primary key is created
+
+        example -
+            Add Constraint -
+                CREATE TABLE Employees (
+                    emp_name varchar(30) NOT NULL,
+                    emp_id int auto_increment
+                    PRIMARY KEY (emp_id)
+                    PRIMARY KEY (emp_id,emp_name)  // COMPOSITE PRIMARY KEY
+                )
+            To Remove -
+                ALTER TABLE Employees Drop Index emp_id;
+
+    FOREIGN KEY -
+        Foreign  key is a field or column in a table which refers to primary key of another table
+        It is used to create relation between one or more than one table
+        
+        example -
+            Add Constraint -
+                CREATE TABLE Employees (
+                        emp_name varchar(30) NOT NULL,
+                        emp_id int auto_increment,
+                        dept_id int,
+                        PRIMARY KEY (emp_id)
+                        FOREIGN KEY (dept_id) refences departments(dept_id)
+                    )
+
+                ALTER TABLE child_table
+                ADD FOREIGN KEY (child_column)
+                REFERENCES parent_table (parent_column);
+            To Remove -
+                ALTER TABLE employees drop foreign key CONSTRAINT_NAME;
+
+        * To check all the Foreign keys use -   
+                SHOW CREATE TABLE TABLE_NAME;
+
+    DEFAULT KEY -
+    COMPOSITE KEY -
+    
 11. Joins -
 
 12. Functions -
