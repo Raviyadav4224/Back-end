@@ -340,12 +340,76 @@
         * To check all the Foreign keys use -   
                 SHOW CREATE TABLE TABLE_NAME;
 
-    DEFAULT KEY -
     COMPOSITE KEY -
-    
+        One table can have only ONE PRIMARY KEY but it can be composed of multiple columns known as COMPOSITE KEY
+        It is used to uniquely identify a table when single column is not unique
+
+        example -
+            CREATE TABLE Employees (
+                    emp_name varchar(30) NOT NULL,
+                    emp_id int auto_increment
+                    PRIMARY KEY (emp_id,emp_name)  // COMPOSITE PRIMARY KEY
+                )
+
+    DEFAULT KEY -
+        Default key is used to specify the default value of the column when no value is explicitly provided
+
+        example -
+            Add Constraint -
+                Create Table Employees (
+                    emp_name varchar(50) DEFAULT "ABC",
+                    emp_id int DEFAULT 100
+                )
+
+            To Remove -
+                Alter table employees add column salary int default 1000;
+
 11. Joins -
+        Joins are used to combine data from multiple tables based on related columns using PRIMARY & FOREIGN key
+
+        There are 5 types of joins -
+
+            Inner join - Returns matching records from both tables
+
+            Left join - Returns all records from LEFT TABLE and matching records from RIGHT TABLE
+
+            Right join - Returns all records from RIGHT TABLE and matching records from LEFT TABLE
+
+            Full outer join - Returns all records from both table
+
+            Cross join - Returns the Cartesian product of both tables (every row from Table A joins with
+             every row from Table B).
+
+            example -
+
+                SELECT E.emp_id,E.emp_name, D.department_name from employees as E
+                LEFT JOIN departments as D ON D.dept_id=E.dept_id;
 
 12. Functions -
+
+    DATE(" ") - extracts Date from a given DATETIME or TIMESTAMP NOT A String
+
+    RAND() - Generates random number between 0 and 1
+
+    FLOOR() & CEIL() - Rounds a number down and up to nearest integer
+
+    ROUND() - Rounds of to given decimal places , by default rounds of to nearest integer
+        ROUND(4.567,2) -- 4.57
+        ROUND(4.567) -- 5
+
+    UPPER() & LOWER() - Converts given string to upper and lower case respectively
+
+    LTRIM() & RTRIM() - Removes leading and trailing spaces from a given string respectively
+
+    ISNULL() - Checks if a value is NULL, returning 1 if NULL and 0 otherwise.
+        SELECT ISNULL(NULL); -- 1
+        SELECT ISNULL(10); -- 0
+
+
+    IFNULL() - Returns a default value if the given value is NULL.
+        SELECT IFNULL(NULL, 'Default Value'); -- Output: 'Default Value'
+        SELECT IFNULL(10, 20); -- Output: 10 (since 10 is not NULL)
+
 
 13. Views -
 
