@@ -169,7 +169,7 @@
                 select * from Employees ;
                 select emp_id,name from Employees;
 
-    Data Control Language (DCL) -
+    *Data Control Language (DCL) -
 
         Used to manage permission and access control
 
@@ -203,7 +203,7 @@
 
         * Show grants USER_NAME@HOST - lists all the previleges to the specified user
         
-    Transactional Control Language (TCL) -
+    *Transactional Control Language (TCL) -
 
         Used to manage transactions in a database
 
@@ -304,7 +304,7 @@
         Primary key is used to identify each record in a table uniquely
         It cannot have NULL or Duplicate values
         One table can have only ONE PRIMARY KEY but it can be composed of multiple columns known as COMPOSITE KEY
-        By Default MYSQL creates PRIMARY INDEX whenever a Primary key is created
+        *By Default MYSQL creates PRIMARY INDEX whenever a Primary key is created
 
         example -
             Add Constraint -
@@ -410,9 +410,43 @@
         SELECT IFNULL(NULL, 'Default Value'); -- Output: 'Default Value'
         SELECT IFNULL(10, 20); -- Output: 10 (since 10 is not NULL)
 
-
 13. Views -
+
+        Views are virtual table created based on the result of a SELECT query.
+
+        It can be used to restrict user from accessing specific columns
+
+        Complex queries can be stored as views and can be reused
+        
+        *Some Views allow INSERT, UPDATE & DELETE if 
+            created using single table
+            It does not contains DISTINCT, GROUP BY, JOINS, AGGREGATE Functions 
+
+        examples -
+
+            select * from employees;
+            select * from employees where emp_salary is not null and dept_id in (1,2);
+            
+            CREATE VIEW ValidSalaryUsers AS select * from employees where emp_salary is not null and dept_id in (1,2);
+
+            select * from validsalaryusers;
+            update validsalaryusers set emp_salary=1999 ;
 
 14. Indexes -
 
 15. Security & Security Attacks -
+
+16. All Information -
+    
+    INFORMATION_SCHEMA
+
+    * View All Tables details in Database-
+
+        SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'sqllearning'; // Database Name
+    
+    * View All Indexes details from a Table -
+
+        SELECT * FROM INFORMATION_SCHEMA.STATISTICS WHERE TABLE_SCHEMA = 'DataBase_Name'
+        AND TABLE_NAME ='employees'; // Table Name
+
+        
