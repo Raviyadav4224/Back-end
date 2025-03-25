@@ -434,7 +434,39 @@
 
 14. Indexes -
 
-15. Security & Security Attacks -
+    Indexes are created for Query optimization
+    Using indexes MySQL locate the relevant data without fully scanning the whole table
+
+    CREATE INDEX INDEX_NAME ON TABLE TABLE_NAME (COLUMN_NAME)
+
+    SHOW INDEXES FROM TABLE_NAME
+
+    DROP INDEX INDEX_NAME
+
+    Clustered Vs Non-Clustered Indexes ->
+
+        A Clustered index determines the Physical order of data rows in a table i.e
+        It sorts the data in a table as per clustered index and MODIFIES the original table (Asc order)
+        * Only one index is allowed per table , generally Primary key is used as Clustered index
+
+        Non-Clustered index -
+        It doesnot determines the Physical order of data rows in a table i.e
+        It sorts the data in ASC order but does not modifies the original table
+        * It can have multiple non clustered indexes
+
+15. Security Vulnerabilities -
+
+    SQL Injection - 
+        Happens when user input is not properly sanitized and allows malicious queries 
+        to be poerformed
+            SELECT * FROM users WHERE username = 'admin' AND password = '' OR '1'='1';
+        Above condition always evaluates to TRUE
+
+    Weak Authentication
+    Exposed Port 3306
+    Do not grant All previleges to a user 
+    Use updated MySQL versions
+    Hide details error messages in Production
 
 16. All Information -
     
