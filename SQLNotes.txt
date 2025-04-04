@@ -234,6 +234,9 @@
 
         Order By - Used for sorting data in ASC or DESC format 
             Select * from Employees order by age DESC
+            * Select * from Employees order by id,name -> sorts by id first and if same id then by name alphabetically
+            * Select * from Employees order by id desc,name desc-> sorts by id in desc first and if same id then by name desc order
+
         
         Group By - groups same values in a specified column
             select age,AVG(salary) from employees group by age;
@@ -246,11 +249,18 @@
         
         Limit - Used to limit the results
             Select * from Employees order by age DESC LIMIT 5
+        
+        OFFSET - Used to skip number of records
+            select * from Emp order by salary desc limit 1 offset 2 -- selects 3rd highest salary since offset 2 skips 1st 2 records 
 
 9. Aggregate Functions -
 
     COUNT(expression) - 
         Used to calculate No. of rows or Non-NULL values in a table
+        ** COUNT() only counts non-null values
+        ** To Count conditionally we can use -
+            count( case when rating >3 then 1 else NULL)
+            count( case when rating >3 then 1 else 0) - this will count all values since 0 is not null
         
     SUM(expression) -
         Used to calculate SUM of a Column 
@@ -274,7 +284,39 @@
             select count(*) from employees;
             select sum(salary) from employees;
             select avg(coalesce(salary,0)) from employees;
-            
+    
+    REPLACE(string, from_string, new_string) -
+        Replaces a given string from main string
+        example -
+            SELECT REPLACE("XYZ FGH XYZ", "X", "M");
+
+    Like -
+
+        Used for pattern matching
+
+        examples -
+                %	Matches zero or more characters	'Jo%' matches 'John', 'Joseph', 'Jordan'
+                _	Matches exactly one character	'J_n' matches 'Jon', 'Jen', but not 'John'
+                [charlist]	Matches any single character from the set (only in some MySQL versions)	'J[oa]n' matches 'Jon' or 'Jan'
+
+        SELECT * FROM employees WHERE name Like '%A';
+
+    RegExp -
+
+        Used for pattern matching in SQL
+        examples -
+            .	Matches any single character	'J.n' matches 'Jan', 'Jon'
+            ^	Matches the beginning of a string	'^A' matches 'Alice', 'Andrew'
+            $	Matches the end of a string	'son$' matches 'Johnson', 'Jackson'
+            *	Matches zero or more occurrences of the previous character	'A*' matches 'A', 'AA', 'AAA'
+            +	Matches one or more occurrences of the previous character	'o+' matches 'oo', 'ooo', but not 'o'
+            `	`	OR (alternation)
+            [abc]	Matches any single character in brackets	'[JH]ohn' matches 'John', 'Hohn'
+            [a-z]	Matches any character in a range	'[A-F]%' matches names starting with A–F
+            [^abc]	Negates a character class (matches anything except listed characters)	'[^A-C]%' excludes names starting with A–C
+
+            SELECT * FROM employees WHERE name REGEXP '^J';
+
 10. Data Constraints -
 
     NOT NULL -
@@ -481,4 +523,179 @@
         SELECT * FROM INFORMATION_SCHEMA.STATISTICS WHERE TABLE_SCHEMA = 'DataBase_Name'
         AND TABLE_NAME ='employees'; // Table Name
 
-        
+17. KeyPoints -
+
+    * Extract Month,Year,Day -
+
+        MONTH(2018-01-31) -> 01
+        YEAR(2018-01-31) -> 2018
+        DAY(2018-01-31) -> 31
+    
+    * Date Format -
+
+        Date_Format(date," %Y-%m")
+
+    * Date Subtract -
+
+        The DATE_SUB() function in MySQL is used to subtract a specific time interval from a given date.
+
+        DATE_SUB(date, INTERVAL value unit)
+        date → The starting date.
+        INTERVAL value unit → The amount of time to subtract.
+        value → The numeric value to subtract.
+        unit → The time unit (e.g., DAY, MONTH, YEAR, etc.)
+
+        example - SELECT DATE_SUB('2024-03-28', INTERVAL 10 DAY) AS new_date;
+
+    * DATEDIFF(Date1,Date2) -  
+
+        Used to calculate difference between two dates , It returns no. days between two dates
+
+    * Cannot use COUNT(*) inside WHERE -
+
+        select * from Emp where count(*)>2 -- Invalid query
+
+        select * from Emp where (select count(*) from Emp)>2 -- Correct
+    
+    * LEAD() & LAG() -
+
+        Used to get next and prev values
+        example -   
+            select LEAD(num) OVER(order by id) from Employees
+            select LAG(num) OVER(order by id) from Employees
+    
+    * CTE (Common Table Expression) -
+
+        With TableName as (select * from EmployeesTable) -- creates a table which can be used to filter data 
+
+    * **OVER - 
+
+        It is an window function 
+        It is used to perform operations on a set of Rows which are related to the current row without
+        collapsing them into a single row like Group by
+
+        SELECT column1, column2, 
+            AGGREGATE_FUNCTION() OVER ([PARTITION BY col] [ORDER BY col])
+            FROM table_name;
+        example -
+
+            SELECT employee, amount,
+            SUM(amount) OVER (ORDER BY id) AS running_total
+            FROM sales;
+
+            SELECT employee, department, amount,
+            SUM(amount) OVER (PARTITION BY department) AS dept_total
+            FROM sales;
+
+    * GROUP_CONCAT( COLUMN_NAME order by COLUMN_NAME SEPARATOR ',') as newName -
+
+        GROUP_CONCAT is used to concat two columns based on a separator when grouping columns
+        example - 
+        select sell_date,
+        count(distinct product ) as num_sold,
+        GROUP_CONCAT(distinct product order by product SEPARATOR ',') as products
+        from Activities
+        group by sell_date
+        order by sell_date
+
+
+
+********************************************************************************************************
+* PRACTICE QUESTIONS -
+
+
+    ✅ 1. Find the 2nd highest salary
+    SELECT MAX(salary) 
+    FROM employees 
+    WHERE salary < (SELECT MAX(salary) FROM employees);
+
+    ✅ 2. Find the Nth highest salary
+    SELECT salary 
+    FROM employees 
+    ORDER BY salary DESC 
+    LIMIT 1 OFFSET (n - 1);
+
+    ✅ 3. Find duplicate records by name
+    SELECT name 
+    FROM employees 
+    GROUP BY name 
+    HAVING COUNT(name) > 1;
+
+    ✅ 4. Find employees who earn more than their manager
+    SELECT e2.emp_name 
+    FROM emp e1
+    INNER JOIN emp e2 ON e1.id = e2.manager_id
+    WHERE e2.salary > e1.salary;
+
+    ✅ 5. Find departments with more than 5 employees
+    SELECT department_id, COUNT(*) 
+    FROM emp 
+    GROUP BY department_id 
+    HAVING COUNT(*) > 5;
+
+    ✅ 6. Find employees who joined in the last 6 months
+    SELECT name 
+    FROM emp 
+    WHERE join_date > '2024-10-04';
+
+    ✅ 7. Get the highest salary from each department
+    SELECT MAX(salary), department_id 
+    FROM emp 
+    GROUP BY department_id;
+
+    ✅ 8. Find employees who don’t have any manager
+    SELECT name 
+    FROM emp 
+    WHERE manager_id IS NULL;
+
+    ✅ 9. Find department name and number of employees
+    SELECT d.department_name, COUNT(*) 
+    FROM emp e1
+    INNER JOIN departments d ON e1.department_id = d.department_id
+    GROUP BY d.department_id;
+
+    ✅ 10. Find 3rd highest salary using CTE
+    WITH thirdhighest AS (
+    SELECT salary 
+    FROM emp 
+    ORDER BY salary DESC 
+    LIMIT 1 OFFSET 2
+    )
+    SELECT salary 
+    FROM thirdhighest;
+
+    ✅ 11. Find employees with highest salary in each department using CTE
+    WITH ranked_emp AS (
+    SELECT name, salary, department_id,
+            RANK() OVER (PARTITION BY department_id ORDER BY salary DESC) AS rnk
+    FROM emp
+    )
+    SELECT name, salary, department_id 
+    FROM ranked_emp 
+    WHERE rnk = 1;
+
+    ✅ 12. Find all employees and their department names
+    SELECT name, department_id, salary, d.department_name 
+    FROM emp e1 
+    INNER JOIN department d ON e1.department_id = d.department_id;
+
+    ✅ 13. Retrieve employees whose salary is above average
+    SELECT name, salary 
+    FROM emp 
+    WHERE salary > (SELECT AVG(salary) FROM emp);
+
+    ✅ 14. Find employees with same salary using self-join
+    SELECT e1.name, e2.name, e1.salary 
+    FROM emp e1 
+    INNER JOIN emp e2 
+    ON e1.salary = e2.salary AND e1.id != e2.id;
+
+    Optional Deduplicated Version:
+    SELECT e1.name, e2.name, e1.salary
+    FROM emp e1
+    INNER JOIN emp e2 ON e1.salary = e2.salary AND e1.id < e2.id;
+
+    ✅ 15. Get cumulative salary per department using window functions
+    SELECT name, department_id, salary,
+        SUM(salary) OVER (PARTITION BY department_id ORDER BY salary) AS totalSalary
+    FROM emp;
