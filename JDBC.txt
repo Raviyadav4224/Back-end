@@ -1,0 +1,112 @@
+1.JDBC (Java Database Connectivity) -
+
+    JDBC is an API in Java that is used to connect Java applications to Relational Databases
+    to execute SQL queries
+
+    Java.sql package provides classes and interfaces to 
+        Connect to Database
+        Perform CRUD Operations
+
+    *JDBC acts as a Bridge between Java Application and Database
+
+2. Setting JDBC in Java Application -
+
+    Steps -
+
+        1. Load the Driver (using Maven or Manually downloading Jar)
+        2. Create Connection
+        3. Create Statements/Prepared Statements
+        4. Perform Operations and process the Result
+        5. Close Connection
+
+3. Statements vs Prepared Statements -
+
+    Statements -
+
+        It is used for static i.e Hard coded SQL query
+        It is compiled every time
+        It is prone to SQL Injection
+
+        example -
+            Connection con= DriverManager.getConnection(URL,Username,Password)
+            Statement stmt1= conn.createStatement()
+            ResultSet res= stmt1.executeQuery('Select * from Products')
+    
+    Prepared Statements -
+
+        It is used for dynamic processing of queries using with placeholders ? (parameters)
+        It is pre-compiled i.e compiled only once
+        Parameters are added on Runtime
+        It is safe from SQL Injection
+
+        example -
+            Connection con= DriverManager.getConnection(URL,Username,Password)
+            PreparedStatement pStmt= conn.preparedStatement('Select * from Product where id=?')
+            pStmt.setInt(1,2189530) - means First ? gets value 2189530
+            ResultSet rs = ps.executeQuery();
+
+    * For SELECT -> we use ps.executeQuery() or stmt.executeQuery()
+      For CREATE, UPDATE, DELETE -> We use ps.executeUpdate() or stmt.executeUpdate()
+
+4. ResultSet -
+
+    ResultSet is used to store the result of an SQL SELECT query
+    It works like a cursor that moves row by row
+
+5. Limitations of JDBC -
+
+    Lot of boiler plate coded
+    No caching - Every query hits the DB
+    Tight Coupling - Code and SQL query are tightly coupled
+    No ORM Support
+
+6. Batch Processing -
+
+    JDBC allows you to run multiple SQL queries in one go 
+    Reduces network calls to DB
+
+    example -
+        PreparedStatement stmt = conn.prepareStatement("INSERT INTO users (name, email) VALUES (?, ?)");
+            for (int i = 0; i < 1000; i++) {
+                stmt.setString(1, "User" + i);
+                stmt.setString(2, "user" + i + "@example.com");
+                stmt.addBatch();
+            }
+            stmt.executeBatch(); // Executes all added statements
+ 
+7. Transactions in JDBC -
+    
+    Transactions are group of SQL queries that run as a single unit
+    Here either all operations succeeds or none does
+    * By default JDBC runs in auto commit mode i.e each SQL query is commited after execution
+
+        example -
+
+            Connection conn = DriverManager.getConnection(...);
+
+            try {
+                conn.setAutoCommit(false); // Begin transaction
+
+                PreparedStatement ps1 = conn.prepareStatement("UPDATE accounts SET balance = balance - 1000 WHERE id = 1");
+                ps1.executeUpdate();
+
+                PreparedStatement ps2 = conn.prepareStatement("UPDATE accounts SET balance = balance + 1000 WHERE id = 2");
+                ps2.executeUpdate();
+
+                conn.commit(); // ✅ Commit if both succeed
+            } catch (Exception e) {
+                conn.rollback(); // ❌ Rollback on error
+                e.printStackTrace();
+            } finally {
+                conn.close(); // Always close
+            }
+
+8. Connection Pooling -
+
+    Connection Pooling is a technique of reusing database connections so that new connections aren't 
+    created for every single request.
+    * By default, JDBC does not provide connection pooling.
+    * To enable pooling, we need to use external libraries like:
+        HikariCP (default in Spring Boot)
+        Apache DBCP
+        C3P0
