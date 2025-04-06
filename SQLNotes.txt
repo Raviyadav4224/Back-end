@@ -201,7 +201,12 @@
         * User related details are stored inside mysql.user table
             Select * from  mysql.user;
 
-        * Show grants USER_NAME@HOST - lists all the previleges to the specified user
+        * Show grants for 'USER_NAME@HOST' - lists all the previleges to the specified user
+            
+            By default 
+            GRANT USAGE ON *.* TO 'ravi'@'localhost';
+            This means:
+            Give no real privileges, just allow the user ravi@localhost to exist and connect to the MySQL server.
         
     *Transactional Control Language (TCL) -
 
@@ -525,6 +530,7 @@
 
 17. KeyPoints -
 
+    * In Linux MYSQL is CASE SENSITIVE
     * Extract Month,Year,Day -
 
         MONTH(2018-01-31) -> 01
