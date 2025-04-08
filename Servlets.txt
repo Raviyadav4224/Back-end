@@ -1,0 +1,44 @@
+1. Servlets -
+
+    These are plain Java classes that are used to handle Http Request and Http Response.
+    It runs on a server like Tomcat and helps to build dynamic web contents
+
+    * For a Java class to be servlet it must extend the HttpServlet class
+
+    example -
+
+        public class HelloServlet extends HttpServlet {
+        protected void doGet(HttpServletRequest request, HttpServletResponse response) {
+            try {
+                PrintWriter writer = response.getWriter();
+                writer.print("Hello From HelloServlet Java Class");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            }
+            }
+
+    *To map URL's we can use 
+        web.xml configuration 
+        WebServlet annotation
+
+2. Tomcat -
+
+    It a web server and a SERVLET container
+    It is a place where we deploy our web applications
+    It takes care of running Servlets and serves JSP 
+
+3. Servlet Web Application -
+
+    Servlets (Java Classes) are used to handle Backend logic
+    JSP - Used to deliver HTML dynamically
+    Tomcat - Servlet container used to run the web application where this app is deployed
+
+4. JSP ( Java Server Pages ) -
+
+    JSP helps to embed Java class into HTML i.e writing Java inside HTML is done using JSP
+
+    * Behind the scene JSP's are compiled into Servlet class by the server
+    * JSP: HTML with bits of Java using <% %>, <%= %> 
+        example -
+         <h2>Hello, <%= request.getAttribute("name") %> from JSP!</h2>
