@@ -3,7 +3,7 @@
     These are plain Java classes that are used to handle Http Request and Http Response.
     It runs on a server like Tomcat and helps to build dynamic web contents
 
-    * For a Java class to be servlet it must extend the HttpServlet class
+    ** For a Java class to be servlet it must extend the HttpServlet class
 
     example -
 
@@ -20,7 +20,7 @@
 
     *To map URL's we can use 
         web.xml configuration 
-        WebServlet annotation
+        @WebServlet('/path') annotation
 
 2. Tomcat -
 
@@ -31,7 +31,7 @@
 3. Servlet Web Application -
 
     Servlets (Java Classes) are used to handle Backend logic
-    JSP - Used to deliver HTML dynamically
+    JSP - Used to deliver HTML dynamically ( HTML + Java )
     Tomcat - Servlet container used to run the web application where this app is deployed
 
 4. JSP ( Java Server Pages ) -
@@ -42,3 +42,36 @@
     * JSP: HTML with bits of Java using <% %>, <%= %> 
         example -
          <h2>Hello, <%= request.getAttribute("name") %> from JSP!</h2>
+
+5. Servlet Life Cycle Methods -
+
+    It works in 3 stages -
+
+        init() - Called once when the Servlet is first loaded
+
+        service() - Called each time when a request is received, service method internally handles 
+        doGet, doPost methods
+
+        destroy() - Called once when Servlet is taken out of service
+
+6. HttpSession -
+
+    It is a way top store user specific data on server side between multiple requests
+
+    * Server stores the session data in RAM 
+    * Client gets a session id via a cookie JSESSIONID
+    * Server validates the using JSESSIONID and gives user specific data
+
+7. Request Dispatching -
+
+    It is a mechanism used by Servlets to transfer control from one Servlet to another without Client
+    being aware
+    * It is used to forward a reuest from one servlet to another
+    * To include response from one servlet to another
+    * It is also used to implement MVC pattern i.e forwarding to JSP from a server 
+
+    example - 
+        request.getRequestDispatcher("Servlet2").forwar(request,response) - Forwards request,
+        response to another servlet
+
+        request.getRequestDispatcher("header.jsp").include(request, response) - includes resources
