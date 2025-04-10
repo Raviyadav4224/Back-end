@@ -60,18 +60,55 @@
 
     * Server stores the session data in RAM 
     * Client gets a session id via a cookie JSESSIONID
-    * Server validates the using JSESSIONID and gives user specific data
+    * Server validates using JSESSIONID and gives user specific data
 
 7. Request Dispatching -
 
     It is a mechanism used by Servlets to transfer control from one Servlet to another without Client
     being aware
     * It is used to forward a reuest from one servlet to another
-    * To include response from one servlet to another
+    * It is used to include response from one servlet to another
     * It is also used to implement MVC pattern i.e forwarding to JSP from a server 
 
     example - 
-        request.getRequestDispatcher("Servlet2").forwar(request,response) - Forwards request,
+        request.getRequestDispatcher("Servlet2").forward(request,response) - Forwards request,
         response to another servlet
 
         request.getRequestDispatcher("header.jsp").include(request, response) - includes resources
+
+8. Maven -
+
+    It is a build tool for Java applications
+    
+    It is used to manage dependencies, Building and Packaging your application, Running Tests, Deploying Artifacts
+
+    * It is similar to VITE, PARCEL, WEBPACK in Front end 
+
+    * Some common commands used in Maven -
+
+        mvn clean - Deletes the target/ directory where compiled classes and jars go
+
+        mvn compile - Compiles source code in src/main/java
+
+        mvn test - Runs unit tests located in src/test/java
+
+        mvn install - Installs the dependencies
+
+        mvn package - Compiles the code, Run Tests and creates .jar or .war file in the /target folder
+                      For spring-boot it creates executable.jar file with embedded Tomcat
+
+        mvn spring-boot:run - Runs the spring-boot application
+
+        mvn package -DskipTests - Builds the application without running unit tests
+
+9. POM ( Project Object Model ) -
+
+    It contains project configuration detials like project info, dependencies, pluggins, build settings etc
+    * It is similar to package.json
+    * Effective POM - POM + pluggins
+
+10. GAV -
+
+    G - Group Id - Who owns the project - example com.ravi or com.google
+    A - Artifact Id - Name of the project example my-app
+    V - Version example 1.0.0
