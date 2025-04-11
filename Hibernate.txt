@@ -1,0 +1,118 @@
+1. Hibernate -
+
+    It is an Object Relational Mapping ( ORM ) Framework which simplifies the interaction of Java
+    applications with Relational Databases using Java classes and objects
+
+    It supports -
+
+        Mapping of Java classes/objects to relational database tables
+        Provides caching support (First Level and Second Level)
+        Supports declarative Transaction management
+        Hibernate Query Language ( HQL ) which is database independent
+
+2. Limitations of JDBC -
+
+    Manual mapping of SQL queries to objects
+    Hardcoded SQL queries 
+    No built in support for caching
+    Boiler plate code for Transaction management
+    Connection pooling manually leads to data leaks
+
+3. JPA vs Hibernate -
+
+    Java Persistence API ( JPA ) -
+
+        It is an specification for accessing ,managing and persisting data between Java classes and 
+        databases
+        It contains a standard set of interfaces and annotations that defines how ORM should be implemented
+        * Hibernate is an implementation of JPA i.e it is made on top of JPA
+        * Some popular JPA implementations include EclipseLink, OpenJPA, Hibernate etc
+
+4. Hibernate Architecture -
+
+5. Ways to connect Hibernate -
+
+    1. Using hibernate.cfg.xml file -
+
+        <?xml version="1.0" encoding="UTF-8"?>
+            <!DOCTYPE hibernate-configuration PUBLIC
+                "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+                "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+            <hibernate-configuration>
+                <session-factory>
+                    <!-- JDBC Database connection settings -->
+                    <property name="connection.driver_class">com.mysql.cj.jdbc.Driver</property>
+                    <property name="connection.url">jdbc:mysql://localhost:3306/mydatabase</property>
+                    <property name="connection.username">root</property>
+                    <property name="connection.password">password</property>
+
+                    <!-- SQL Dialect -->
+                    <property name="dialect">org.hibernate.dialect.MySQLDialect</property>
+
+                    <!-- Other settings -->
+                    <property name="show_sql">true</property>
+                    <property name="hbm2ddl.auto">update</property>
+
+                    <!-- Mapping entity -->
+                    <mapping class="com.example.User"/>
+                </session-factory>
+            </hibernate-configuration>
+    
+        * Hibernate.cfg.xml is automatically loaded from the classpath when you create a Configuration
+        * Explicitly we can mention the file path as well
+            Configuration configuration = new Configuration().configure("myhibernate.cfg.xml");
+
+    2. Using hibernate.properties file -
+
+        # JDBC database connection settings
+        hibernate.connection.driver_class=com.mysql.cj.jdbc.Driver
+        hibernate.connection.url=jdbc:mysql://localhost:3306/mydatabase
+        hibernate.connection.username=root
+        hibernate.connection.password=password
+
+        # SQL dialect for the underlying database
+        hibernate.dialect=org.hibernate.dialect.MySQLDialect
+
+        # Display executed SQL to the console (for debugging purposes)
+        hibernate.show_sql=true
+
+        # Automatically update the schema (options: none, validate, update, create, create-drop)
+        hibernate.hbm2ddl.auto=update
+
+        # Caching settings (if caching is enabled)
+        hibernate.cache.use_second_level_cache=true
+        hibernate.cache.region.factory_class=org.hibernate.cache.ehcache.EhCacheRegionFactory
+
+        * Configuration object automatically loads the hibernate.properties file placed in classpath
+            example - 
+                Create a Configuration instance. This automatically loads the hibernate.properties file if it's in the classpath.
+                Configuration configuration = new Configuration();
+
+    3. Using Configuration class -
+
+        Configuration configuration = new Configuration();
+
+        configuration.setProperty("hibernate.connection.driver_class", "com.mysql.cj.jdbc.Driver");
+        configuration.setProperty("hibernate.connection.url", "jdbc:mysql://localhost:3306/mydatabase");
+        configuration.setProperty("hibernate.connection.username", "root");
+        configuration.setProperty("hibernate.connection.password", "password");
+        configuration.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQLDialect");
+        configuration.addAnnotatedClass(User.class);
+
+        SessionFactory sessionFactory = configuration.buildSessionFactory();
+
+    * In spring/springboot application.properties file is used to do the configuration
+
+6. CRUD Operation -
+
+7. Selective and Transient -
+
+8. Lazy vs Eager loading -
+
+9. Level 1 & Level 2 caching -
+
+10. Association Mapping -
+
+11. HQL -
+
+12. CRUD using HQL -
