@@ -30,7 +30,7 @@
 
 4. Hibernate Architecture -
 
-5. Ways to connect Hibernate -
+5. Ways to configure Hibernate properties -
 
     1. Using hibernate.cfg.xml file -
 
@@ -103,16 +103,89 @@
 
     * In spring/springboot application.properties file is used to do the configuration
 
-6. CRUD Operation -
+6. Steps to connect to Hibernate -
 
-7. Selective and Transient -
+        1. Load Configuration -
 
-8. Lazy vs Eager loading -
+            Configuration config = new Configuration().configure();
+            * For adding path manually - .configure("path/to/hibernate.cfg.xml")
+            * For loading hibernate.properties manually -
+                Properties props = new Properties();
+                props.load(new FileInputStream("src/main/resources/config/hibernate.properties"));
+			    sessionFactory = new Configuration().addProperties(props).addAnnotatedClass(User.class)
+					.buildSessionFactory();
 
-9. Level 1 & Level 2 caching -
+        2. Build SessionFactory -
 
-10. Association Mapping -
+            SessionFactory sessionFactory = config.buildSessionFactory();
 
-11. HQL -
+        3. Open Session -
+        
+            Session session = sessionFactory.openSession();
 
-12. CRUD using HQL -
+        4. Begin Transaction -
+
+            Transaction tx = session.beginTransaction();
+
+        5. Perform DB Operation -
+
+            User user = new User("ravi", "ravi@gmail.com");
+            session.save(user);
+
+        6. Commit Transaction -
+
+            tx.commit();
+
+        7. Rollback if Exception Occurs -
+
+            if (tx != null) tx.rollback();
+
+        8. Close Session & SessionFactory-
+
+            session.close();
+            sessionFactory.close();
+
+7. CRUD Operation -
+
+    // CREATE
+        User user = new User("Ravi", "ravi@example.com");
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Transaction tx = session.beginTransaction();
+        session.save(user);
+        tx.commit();
+        session.close();
+
+    // READ
+        session = HibernateUtil.getSessionFactory().openSession();
+        User retrieved = session.get(User.class, 1);
+        System.out.println("User: " + retrieved.getName());
+        session.close();
+
+    // UPDATE
+        session = HibernateUtil.getSessionFactory().openSession();
+        tx = session.beginTransaction();
+        User updateUser = session.get(User.class, 1);
+        updateUser.setEmail("ravi_new@example.com");
+        session.update(updateUser);
+        tx.commit();
+        session.close();
+
+    // DELETE
+        session = HibernateUtil.getSessionFactory().openSession();
+        tx = session.beginTransaction();
+        User deleteUser = session.get(User.class, 1);
+        session.delete(deleteUser);
+        tx.commit();
+        session.close();
+
+8. Selective and Transient -
+
+9. Lazy vs Eager loading -
+
+10. Level 1 & Level 2 caching -
+
+11. Association Mapping -
+
+12. HQL -
+
+13. CRUD using HQL -
