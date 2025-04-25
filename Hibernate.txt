@@ -102,6 +102,7 @@
         SessionFactory sessionFactory = configuration.buildSessionFactory();
 
     * In spring/springboot application.properties file is used to do the configuration
+    * Configuration().configure() -> Always looks for hibernate.cfg.xml file
 
 6. Steps to connect to Hibernate -
 
@@ -180,9 +181,60 @@
 
 8. Selective and Transient -
 
-9. Lazy vs Eager loading -
+9. Lazy vs Eager loading ( load vs get )-
+
+    Lazy Loading -
+
+        Loads data only when required
+        Reduces no of DB hits
+        Hibernate returns a proxy object initially.
+
+        example -
+            @OneToMany(mappedBy = "department", fetch = FetchType.LAZY)
+            private List<Employee> employees;
+            department.getEmployees() will cause a DB hit only when called
+
+            Session session = sessionFactory.openSession();
+            Department dept = session.load(Department.class, 1); // No DB hit yet
+            System.out.println("Department loaded."); // Still no DB hit
+            System.out.println(dept.getName()); // Now hits DB (lazy fetch)
+            session.close();
+
+    
+    Eager Loading -
+
+        Loads data immediately
+        example -
+        @OneToMany(mappedBy = "department", fetch = FetchType.EAGER)
+        rivate List<Employee> employees;
+        fetch a Department, its employees list is also fetched instantly.
+
+        Session session = sessionFactory.openSession();
+        Department dept = session.get(Department.class, 1); // DB hit immediately
+        System.out.println("Department name: " + dept.getName()); // Already fetched
+        session.close();
+
 
 10. Level 1 & Level 2 caching -
+
+    Level 1 Caching -
+
+        By default implemented in Hibernate
+        It caches objects within CURRENT SESSION only, if session is closed cache is cleared
+        If same object is requested multiple times, it will not hit the DB again and again 
+        example -
+
+        Session session = sessionFactory.openSession();
+        User user1 = session.get(User.class, 1);  // 🔄 Hits DB
+        User user2 = session.get(User.class, 1);  // ✅ From cache (no DB hit)
+        session.close();
+    
+    Level 2 Caching -
+
+        It is optional
+        It caches objects across MULTIPLE SESSIONS
+        It works at SessionFactory level
+
 
 11. Association Mapping -
 
