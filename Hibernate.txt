@@ -102,14 +102,20 @@
         SessionFactory sessionFactory = configuration.buildSessionFactory();
 
     * In spring/springboot application.properties file is used to do the configuration
-    * Configuration().configure() -> Always looks for hibernate.cfg.xml file
+
+    * Configuration().configure() -> Always looks for hibernate.cfg.xml file, to use hibernate.properties
+      file directly use Configuration() and not .configure()
+
+    * We need to manually tell hibernate about the Entity mapping, whereas in spring it automatically detects
 
 6. Steps to connect to Hibernate -
 
         1. Load Configuration -
 
             Configuration config = new Configuration().configure();
+
             * For adding path manually - .configure("path/to/hibernate.cfg.xml")
+
             * For loading hibernate.properties manually -
                 Properties props = new Properties();
                 props.load(new FileInputStream("src/main/resources/config/hibernate.properties"));
@@ -200,7 +206,6 @@
             System.out.println(dept.getName()); // Now hits DB (lazy fetch)
             session.close();
 
-    
     Eager Loading -
 
         Loads data immediately
@@ -213,7 +218,6 @@
         Department dept = session.get(Department.class, 1); // DB hit immediately
         System.out.println("Department name: " + dept.getName()); // Already fetched
         session.close();
-
 
 10. Level 1 & Level 2 caching -
 
@@ -235,6 +239,62 @@
         It caches objects across MULTIPLE SESSIONS
         It works at SessionFactory level
 
+        Configuration -
+                # Caching settings (if caching is enabled)
+                hibernate.cache.use_second_level_cache=true
+                hibernate.cache.use_query_cache=true
+                hibernate.cache.region.factory_class=org.redisson.hibernate.RedissonRegionFactory
+                hibernate.cache.redisson.config=redisson.yaml
+        
+        Packages - 
+            <!--  Hibernate package -->
+                <dependency>
+                    <groupId>org.hibernate</groupId>
+                    <artifactId>hibernate-core</artifactId>
+                    <version>6.4.4.Final</version>
+                </dependency>
+                <dependency>
+                    <groupId>jakarta.persistence</groupId>
+                    <artifactId>jakarta.persistence-api</artifactId>
+                    <version>3.1.0</version>
+                </dependency>
+            
+            <!-- Database package -->
+                <dependency>
+                    <groupId>mysql</groupId>
+                    <artifactId>mysql-connector-java</artifactId>
+                    <version>8.0.33</version>
+                </dependency>
+                <dependency>
+                    <groupId>org.projectlombok</groupId>
+                    <artifactId>lombok</artifactId>
+                    <version>1.18.30</version>
+                    <scope>provided</scope>
+                </dependency>
+
+            <!-- Redisson Hibernate integration -->
+                <dependency>
+                    <groupId>org.redisson</groupId>
+                    <artifactId>redisson-hibernate-53</artifactId>
+                    <version>3.23.1</version>
+                </dependency>
+
+            <!-- Jedis client for Redis -->
+            <dependency>
+                <groupId>redis.clients</groupId>
+                <artifactId>jedis</artifactId>
+                <version>4.4.3</version>
+            </dependency>
+
+        Redisson.yaml file -
+            singleServerConfig:
+                address: "redis://127.0.0.1:6379"
+            threads: 4
+            nettyThreads: 4
+        
+        At Entity -
+            @org.hibernate.annotations.Cache(usage = org.hibernate.annotations.CacheConcurrencyStrategy.READ_WRITE)
+            * Does Entity Level Caching
 
 11. Association Mapping -
 
