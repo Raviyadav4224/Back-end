@@ -298,6 +298,55 @@
 
 11. Association Mapping -
 
+    OneToOne -
+    OneToMany -
+    ManyToOne -
+    ManyToMany -
+
+        @JoinTable	Tells Hibernate to create and use a third table
+        joinColumns	Refers to the owning entity's foreign key (Book)
+        inverseJoinColumns	Refers to the other entity's foreign key (Category)
+
+    Owning Side / JoinColumn -
+
+        The entity with the foreign key column in its table is the owning side
+
+        It has @JoinColumn annotation
+
+        It controls the relationship
+
+        In bidirectional mapping, the owning side is mandatory to persist the relationship
+
+        example -
+            
+            @ManyToOne
+            @JoinColumn(name = "author_id")  // foreign key in BlogPost table
+            private Author author;
+
+    mappedBy - 
+        
+        It is on the non-owning side
+        Always use the field name (not class name, not column name) from the owning side of the 
+        relationship.
+
+        example -
+
+            @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
+            private List<BlogPost> blogPosts = new ArrayList<>();
+
+    Cascade Operations -
+
+        It allows you to perform operations on associated entities automatically when done on parent
+
+        Cascade types -
+
+            PERSIST	- When parent is saved, child is saved too
+            MERGE	- When parent is updated, child is updated too
+            REMOVE	- When parent is deleted, child is deleted too
+            REFRESH	- If parent is refreshed from DB, child is also refreshed
+            DETACH	- When parent is detached from persistence context, child is too
+            ALL	- Includes all of the above (except DETACH in some contexts)
+
 12. HQL -
 
 13. CRUD using HQL -
