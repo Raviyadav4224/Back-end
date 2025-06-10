@@ -30,6 +30,57 @@
 
 4. Hibernate Architecture -
 
+    1. Configuration - 
+
+            Reads hibernate.cfg.xml (or properties file).
+            Sets up Hibernate with:
+                DB connection details
+                Entity class mappings
+                Hibernate properties
+
+            Configuration config = new Configuration().configure();
+
+    2. SessionFactory (Heavyweight, Thread-safe 🔐)
+
+            Created from Configuration.
+            Acts like a factory for Session objects.
+            Immutable and should be created once and reused throughout the application.
+
+            SessionFactory factory = config.buildSessionFactory();
+
+    3. Session (Lightweight, Not thread-safe ❌) -
+
+            Created from SessionFactory
+            Responsible for:
+            CRUD operations
+            Caching (1st level)
+            Managing persistent objects
+            Session session = factory.openSession();
+
+    4. Transaction -
+
+            Optional but strongly recommended.
+            Wraps DB operations for atomicity and rollback.
+            Transaction tx = session.beginTransaction();
+            session.save(user);
+            tx.commit();
+
+    5. Query -
+
+            Used to perform:
+            HQL
+            Native SQL
+            Criteria API
+            Query query = session.createQuery("from User");
+
+    6. JDBC (Database Layer) - 
+
+            Hibernate finally talks to the database via JDBC.
+            All SQL generated from HQL or session operations is converted into JDBC calls.
+
+    * Level 1 cache by default - at SESSION Level
+    * Level 2 cache can be implemented using Redis - at SessionFactory Level
+    
 5. Ways to configure Hibernate properties -
 
     1. Using hibernate.cfg.xml file -
@@ -348,5 +399,27 @@
             ALL	- Includes all of the above (except DETACH in some contexts)
 
 12. HQL -
+
+    Hibernate Query Language is an Object oriented version of SQL
+    Instead of Table and column names we use Java class and property names
+    It is case-insensitive ( except Java class/ property names )
+    It queries the database via mapped Java classes and not directly via tables
+
+    Basic Queries - 
+        * SELECT -
+            select u from User u
+            select u.name, u.email from User u
+        
+        * JOINS -
+
+            from User u join u.playList p
+            from User u left join u.playList p
+            u.playList must be a mapped relationship (@OneToMany, etc.)
+
+        * INSERT is not possible using queries in HQL, instead use session.persist or save to save and entity
+
+        * UPDATE & DELETE can be done   
+            update User set name = :name where id = :id
+            delete from User where id = :id
 
 13. CRUD using HQL -
