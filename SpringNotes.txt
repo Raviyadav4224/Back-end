@@ -1,0 +1,420 @@
+1. What is Spring Framework - 
+
+    Spring is a Java Framework which is used for building enterprises level applications
+
+    It Reduces the boiler plate code
+
+    Makes application loosely coupled
+
+    Supports various modules like Spring MVC, Spring Data JPA, Spring AOP, Spring Security etc
+
+2. Inversion of Control (IoC) -
+
+    It is a principle where the control of creating and managing objects is given to the Spring container
+    instead of developer manually creating them
+
+        W/O IoC ( Traditionally ) -
+
+            Car car = new Car("Toyota") - Tight Coupling
+        
+        With IoC - 
+
+            @Component
+            Class car{
+                private final Engine engine
+                public Car ( Engine engine ){
+                    this.engine=engine
+                }
+            }
+
+            * Here Spring creates Engine and injects into car
+
+3. IoC Container -
+
+    This is the Heart of Spring
+
+    It instantiates objects (Beans)
+
+    Manages their Lifecycle
+
+    Injects Dependencies
+
+    These are of two types -
+
+        Bean Factory Level
+        ApplicationContext Level
+
+4. Spring Beans -
+    Bean Lifecycle
+    Bean Scopes (singleton, prototype)
+    @Component, @Service, @Repository, @Controller
+    @Autowired, @Qualifier
+
+    A Bean is simply a Java object that is managed by Spring IoC Container
+
+    * Not all Java objects are Beans, only those that Spring manages and instantiates
+
+4. Dependency Injection (DI) -
+
+    It is a Design pattern where Spring injects required dependencies into a class instead of the class
+    creating them
+
+    These are of three types -
+
+        Constructor Injection - 
+
+            package com.ravi.spring;
+
+            import org.springframework.stereotype.Component;
+
+                @Component
+                public class Car {
+
+                    private final Battery battery;
+
+                    // Constructor Injection
+                    public Car(Battery battery) {
+                        this.battery = battery;
+                    }
+
+                    public void start() {
+                        battery.supplyPower();
+                        System.out.println("Car started");
+                    }
+                }
+
+            * @Autowired is optional here because Spring auto-wires the only constructor.
+
+        Setter Injection - 
+
+            @Component
+            public class Car {
+
+                private Battery battery;
+
+                // Setter Injection
+                @Autowired
+                public void setBattery(Battery battery) {
+                    this.battery = battery;
+                }
+
+                public void start() {
+                    battery.supplyPower();
+                    System.out.println("Car started");
+                }
+            }
+            
+        Field Injection - 
+
+            @Component
+            public class Car {
+
+                // Field Injection
+                @Autowired
+                private Battery battery;
+
+                public void start() {
+                    battery.supplyPower();
+                    System.out.println("Car started");
+                }
+            }
+
+    * Real World Analogy -
+
+        Constructor Injection	
+
+            Battery is installed before the car is assembled	
+            Must-have parts like Engine, Tyres
+
+        Setter Injection	
+
+            Battery is installed before delivery, can be changed	
+            Optional features like Music system, Dashboard camera
+
+        Field Injection	
+
+            Battery is sealed inside the car, cannot replace easily
+        
+    *   Use constructor injection + final for required dependencies
+        Use setter injection for optional or late-bound dependencies
+        Avoid field injection in real-world, testable codebases
+
+5. Spring Configuration Types -
+
+    XML-based Configuration -
+
+        Earlier versions of Spring uses XML Configuration to define beans (objects) and manage dependency
+        injections
+
+        Key XML Tags -
+
+            <bean>	- 
+                
+                Defines a Spring bean (object)
+
+            id	
+                Unique name for the bean
+
+            class	
+
+                Fully qualified class name
+
+            <property>	
+
+                Used for setter injection
+
+            ref	
+
+                Refers to another bean (used inside property)
+
+            value	
+
+                Injects a literal value
+
+            <constructor-arg>	
+
+                Used for constructor injection
+
+        example -
+
+            Constructor Injection
+
+                package com.ravi.spring;
+
+                    public class Processor {
+                        public void performComputation() {
+                            System.out.println("Processor is performing computation...");
+                        }
+                    }
+
+                package com.ravi.spring;
+
+                    public class Laptop {
+                        private Processor processor;
+                        private String modelName;
+
+                        public Laptop(Processor processor, String modelName) {
+                            this.processor = processor;
+                            this.modelName = modelName;
+                        }
+
+                        public void run() {
+                            processor.performComputation();
+                            System.out.println("Laptop model: " + modelName + " is running...");
+                        }
+                    }
+
+                XML Configuration - 
+
+                    <!-- Processor Bean -->
+                    <bean id="ProcessorBean" class="com.ravi.spring.Processor"/>
+
+                    <!-- Laptop Bean using constructor injection -->
+                    <bean id="LaptopBean" class="com.ravi.spring.Laptop">
+                        <constructor-arg ref="ProcessorBean"/>
+                        <constructor-arg value="Dell Inspiron"/>
+                    </bean>
+
+            Setter Injection -
+
+                package com.ravi.spring;
+
+                    public class Laptop {
+                        private Processor processor;
+                        private String modelName;
+
+                        public void setProcessor(Processor processor) {
+                            this.processor = processor;
+                        }
+
+                        public void setModelName(String modelName) {
+                            this.modelName = modelName;
+                        }
+
+                        public void run() {
+                            processor.performComputation();
+                            System.out.println("Laptop model: " + modelName + " is running...");
+                        }
+                    }
+
+                    XML Configuration -
+
+                        <bean id="LaptopBean" class="com.ravi.spring.Laptop">
+                            <property name="processor" ref="ProcessorBean"/>
+                            <property name="modelName" value="Dell Inspiron"/>
+                        </bean>
+
+    Annotation-based Configuration -
+
+        It uses Java Annotations to define and inject beans, no spring.xml needed
+
+        @Component	
+
+            Marks a class as a Spring-managed bean
+
+        @Controller	
+
+            Marks a class as a Spring MVC controller
+
+        @Service	
+
+            Marks a service layer bean (semantic)
+
+        @Repository	
+
+            Marks a DAO layer bean (adds exception translation)
+
+        @Configuration	
+
+            Declares a Java class that defines Spring beans
+
+        @Bean	
+
+            Declares a bean method inside a config class
+
+        @ComponentScan	
+
+            Tells Spring where to look for @Component classes
+
+        @Autowired	
+
+            Automatically injects a bean by type
+
+        @Qualifier	
+
+            Specifies the exact bean to inject (if multiple)
+
+        @Inject	
+
+            JSR-330 alternative to @Autowired
+
+        @Value	
+
+            Injects values from properties or literals
+            @Value("${db.url}")
+            private String url;
+
+        @PostConstruct	
+
+            Runs a method after the bean is initialized
+
+        @PreDestroy	
+
+            Runs a method before the bean is destroyed
+
+        @PropertySource	
+
+            Loads .properties file into Spring environment
+            @PropertySource("classpath:application.properties")
+
+        @Profile	
+
+            Activates a bean only in specific environments
+            @Profile lets you define environment-specific beans
+            spring.profiles.active=dev // in application.properties
+            @Profile("prod") or  @Profile("dev")
+
+        @Scope	
+
+            It tells Spring How many instances of beans to create and when
+
+            singleton -
+            
+                Only one instance for the entire Spring container (default)	Most used in services, 
+                utilities
+
+            prototype - 	
+            
+                A new instance every time the bean is requested	When stateful or short-lived
+
+            request -
+            
+                One instance per HTTP request	Web apps (Spring MVC)
+
+            session	-
+            
+                One instance per HTTP session	Web apps (Spring MVC)
+
+            application	-
+            
+                One instance per ServletContext	Web apps
+
+            websocket -
+            
+                One instance per WebSocket	WebSocket apps
+
+
+        * @Service, @Repository, and @Controller are specialized forms of @Component.
+          They register the class as a Spring bean, add semantic meaning, and in some cases, provide extra 
+          behavior.
+
+          for example - 
+
+            @Repository Adds exception translation — converts database-specific exceptions (like SQLException) 
+            into Spring’s DataAccessException hierarchy
+        
+            @Controller - Internally acts as a @Component, plus enables request mapping via annotations like 
+            @GetMapping, @PostMapping, etc.
+
+    Java-based Configuration
+
+6.Spring AOP (Aspect-Oriented Programming) -
+
+    Cross-cutting concerns
+    @Aspect, @Before, @After, @Around, @Pointcut
+    logging, transactions
+    Custom annotations (basic idea)
+
+7. Spring Boot
+
+    Difference between Spring and Spring Boot
+    Auto-configuration & starters
+    @SpringBootApplication, @RestController, @RequestMapping, @ComponentScan
+    Externalized configuration with application.properties / YAML
+    Spring Profiles for environment management
+    Building and testing REST APIs
+
+7. Spring Data JPA
+
+    JPA vs Hibernate
+    @Entity, @Id, @GeneratedValue
+    @OneToMany, @ManyToOne, @JoinColumn, fetch types, cascades
+    Custom queries using JPQL/Native + @Query
+    Projections, DTO mapping
+    Pagination & Sorting
+
+Transaction Management
+
+    @Transactional — what it does, rollback rules
+    Isolation levels, propagation types (basic understanding)
+
+Spring Security
+
+    Authentication vs Authorization
+    Custom UserDetailsService
+    PasswordEncoder
+    JWT token-based authentication (very common in real-world)
+    SecurityFilterChain config
+
+Exception Handling
+
+@ControllerAdvice, @ExceptionHandler
+Custom exceptions with status codes
+
+TestingUnit testing with JUnit + Mockito
+Integration testing with @SpringBootTest
+
+Additional Topics (Production/DevOps Awareness)Spring Boot Actuator
+Dockerize a Spring Boot app
+Swagger/OpenAPI integration
+Caching basics (optional but useful)
+
+🟡 Optional (Nice-to-Have)
+Spring Scheduler (@Scheduled)
+
+Spring Events (ApplicationEventPublisher)
+
+File upload/download APIs
+
+Multi-module Maven project setup
+how to change server port or server in spring application
