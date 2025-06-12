@@ -45,14 +45,12 @@
         ApplicationContext Level
 
 4. Spring Beans -
-    Bean Lifecycle
-    Bean Scopes (singleton, prototype)
-    @Component, @Service, @Repository, @Controller
-    @Autowired, @Qualifier
 
     A Bean is simply a Java object that is managed by Spring IoC Container
 
     * Not all Java objects are Beans, only those that Spring manages and instantiates
+
+    Bean Lifecycle
 
 4. Dependency Injection (DI) -
 
@@ -237,12 +235,12 @@
                         }
                     }
 
-                    XML Configuration -
+                XML Configuration -
 
-                        <bean id="LaptopBean" class="com.ravi.spring.Laptop">
-                            <property name="processor" ref="ProcessorBean"/>
-                            <property name="modelName" value="Dell Inspiron"/>
-                        </bean>
+                    <bean id="LaptopBean" class="com.ravi.spring.Laptop">
+                        <property name="processor" ref="ProcessorBean"/>
+                        <property name="modelName" value="Dell Inspiron"/>
+                    </bean>
 
     Annotation-based Configuration -
 
@@ -271,6 +269,48 @@
         @Bean	
 
             Declares a bean method inside a config class
+            
+            * It is used to manually creaate a bean when you don't control the source code or want to
+              pass constructor arguments
+
+                Suppose you have  third-party class that you cannot annotate with @Component, 
+                for example:
+
+                    public class EmailService {
+                        private String smtpServer;
+
+                        public EmailService(String smtpServer) {
+                            this.smtpServer = smtpServer;
+                        }
+
+                        public void send(String to, String message) {
+                            System.out.println("Sending email to " + to + " via " + smtpServer);
+                        }
+                    }
+
+                    @Configuration
+                        public class AppConfig {
+
+                            @Bean
+                            public EmailService emailService() {
+                                return new EmailService("smtp.gmail.com");
+                            }
+                        }
+
+                    @Component
+                    public class NotificationService {
+
+                        private EmailService emailService;
+
+                        @Autowired // constructor injection
+                        public NotificationService(EmailService emailService){
+                            this.emailService=emailService
+                        }
+                        
+                        public void notifyUser() {
+                            emailService.send("user@example.com", "Welcome!");
+                        }
+                    }
 
         @ComponentScan	
 
@@ -283,15 +323,19 @@
         @Qualifier	
 
             Specifies the exact bean to inject (if multiple)
+            Uses classname in camelCase format
 
-        @Inject	
+            example -
+                @Qualifier("petrolEngine")
 
-            JSR-330 alternative to @Autowired
+        @Primary 
+
+            Declares the bean as Primary i.e default
 
         @Value	
 
             Injects values from properties or literals
-            @Value("${db.url}")
+            @Value("${db.url}") // from application.properties file
             private String url;
 
         @PostConstruct	
@@ -311,6 +355,7 @@
 
             Activates a bean only in specific environments
             @Profile lets you define environment-specific beans
+
             spring.profiles.active=dev // in application.properties
             @Profile("prod") or  @Profile("dev")
 
@@ -343,7 +388,6 @@
             
                 One instance per WebSocket	WebSocket apps
 
-
         * @Service, @Repository, and @Controller are specialized forms of @Component.
           They register the class as a Spring bean, add semantic meaning, and in some cases, provide extra 
           behavior.
@@ -356,14 +400,84 @@
             @Controller - Internally acts as a @Component, plus enables request mapping via annotations like 
             @GetMapping, @PostMapping, etc.
 
-    Java-based Configuration
+    Java-based Configuration -
 
-6.Spring AOP (Aspect-Oriented Programming) -
+        Here we use @Configuration and @Bean to define and manage beans
 
-    Cross-cutting concerns
-    @Aspect, @Before, @After, @Around, @Pointcut
-    logging, transactions
-    Custom annotations (basic idea)
+6. Spring AOP (Aspect-Oriented Programming) -
+
+    * Spring AOP is used to add cross-cutting concerns like logging, security, or performance monitoring 
+      without modifying the actual business logic. 
+      
+    * It allows us to inject custom code before, after, or around method executions using annotations 
+      like @Before, @After, @Around, etc
+
+    * AOP Cocepts -
+
+        | Term                              | Simple Definition                                                                                    | Example                                                              |
+        | --------------------------------- | ---------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------- |
+        | AOP (Aspect-Oriented Programming) | A way to write code for tasks like logging, security, etc., separately from main business logic.     | Add logging to every service method without editing each method. |
+        | Aspect                            | A class where your cross-cutting logic (like logging) lives.                                         | `LoggingAspect` class                                                |
+        | Advice                            | The code you want to run before/after/around a method.                                               | `@Before` advice logs method name before it's called.                |
+        | Join Point                        | A specific point in the code like a method call where advice can be applied.                         | `getUser()` method in `UserService`                                  |
+        | Pointcut                          | A rule or expression that tells where the advice should apply.                                       | `execution(* com.ravi.service.*.*(..))`                              |
+        | Weaving                           | The process of injecting advice into target methods during runtime.                                  | Spring uses proxies to do this.                                      |
+
+    * execution(* com.ravi.annotation..*(..)) 
+
+        Here - 
+
+            * means any return type 
+                void , String anything
+
+            com.ravi.annotation.. means the base package and its sub-packages
+                .. double dot means match any class inside this package and sub-package 
+                com.ravi.annotation.Aspect
+                com.ravi.annotation.Controller
+                com.ravi.annotation.Car.PetrolEngine
+
+            * means any method name
+                startEngine, stopEngine etc
+
+            (..) means any number of arguments and of any type
+                (*, String) – method with 2 arguments, first any type, second must be String
+        
+    * Custom annotations (basic idea) -
+
+        Create Annotation -
+
+            package com.ravi.annotation;
+
+            import java.lang.annotation.*;
+
+            @Target(ElementType.METHOD)
+            @Retention(RetentionPolicy.RUNTIME)
+            public @interface Loggable {
+            }
+
+        Use Annotation - 
+
+            @Component
+            public class Car {
+                
+                @Loggable
+                public void drive() {
+                    System.out.println("Driving...");
+                }
+            }
+
+        Create Aspect -
+
+            @Before("@annotation(com.ravi.annotation.Loggable)")
+            public void logBefore(JoinPoint joinPoint) {
+                System.out.println("Method called: " + joinPoint.getSignature().getName());
+            }
+
+        Enable AOP and Component Scanning -
+
+            @Configuration
+            @ComponentScan("com.ravi")
+            @EnableAspectJAutoProxy
 
 7. Spring Boot
 
