@@ -270,7 +270,7 @@
 
             Declares a bean method inside a config class
             
-            * It is used to manually creaate a bean when you don't control the source code or want to
+            * It is used to manually create a bean when you don't control the source code or want to
               pass constructor arguments
 
                 Suppose you have  third-party class that you cannot annotate with @Component, 
@@ -404,6 +404,15 @@
 
         Here we use @Configuration and @Bean to define and manage beans
 
+    * For XML based configuration we use -
+
+        ApplicationContext context = new ClassPathXmlApplicationContext( "SpringConfigFile.xml" )
+    
+    * For Annotations based configuration we use -
+
+        ApplicationContext context = new AnnotationConfigApplicationContext( MainMethodClass.class )
+        Here class is one where @Configuration is mentioned
+
 6. Spring AOP (Aspect-Oriented Programming) -
 
     * Spring AOP is used to add cross-cutting concerns like logging, security, or performance monitoring 
@@ -424,6 +433,10 @@
         | Weaving                           | The process of injecting advice into target methods during runtime.                                  | Spring uses proxies to do this.                                      |
 
     * execution(* com.ravi.annotation..*(..)) 
+
+            @Pointcut("execution (* com.ravi.annotation..*(..))")
+            public void allMethodsInPackage() {
+            }
 
         Here - 
 
@@ -479,6 +492,27 @@
             @ComponentScan("com.ravi")
             @EnableAspectJAutoProxy
 
+7. Spring AOP Logging -
+
+    * Springboot by default provides SLF4J ( Simple Logging Facade for Java ) and Logback for Logging activities
+
+    * In Springboot application.properties file is used to configure the Logging details whereas for core
+      Spring application we need to use logback.xml 
+
+    * For core Spring application we need to manually add SLF4J and Logback dependencies
+
+    * For Springboot we define every thing in application.properties file
+
+        logging.file.name=logs/app.log
+        logging.logback.rollingpolicy.file-name-pattern=logs/app-%d{yyyy-MM-dd}.%i.log
+        logging.logback.rollingpolicy.max-file-size=10MB
+        logging.logback.rollingpolicy.max-history=30
+
+        logging.pattern.console=%d{HH:mm:ss.SSS} %-5level %logger{36} - %msg%n
+        logging.pattern.file=%d{HH:mm:ss.SSS} %-5level %logger{36} - %msg%n
+
+        logging.level.com.ravi=INFO
+
 7. Spring Boot
 
     Difference between Spring and Spring Boot
@@ -512,23 +546,23 @@ Spring Security
 
 Exception Handling
 
-@ControllerAdvice, @ExceptionHandler
-Custom exceptions with status codes
+    @ControllerAdvice, @ExceptionHandler
+    Custom exceptions with status codes
 
-TestingUnit testing with JUnit + Mockito
-Integration testing with @SpringBootTest
+    TestingUnit testing with JUnit + Mockito
+    Integration testing with @SpringBootTest
 
 Additional Topics (Production/DevOps Awareness)Spring Boot Actuator
-Dockerize a Spring Boot app
-Swagger/OpenAPI integration
-Caching basics (optional but useful)
+    Dockerize a Spring Boot app
+    Swagger/OpenAPI integration
+    Caching basics (optional but useful)
 
 🟡 Optional (Nice-to-Have)
-Spring Scheduler (@Scheduled)
+    Spring Scheduler (@Scheduled)
 
-Spring Events (ApplicationEventPublisher)
+    Spring Events (ApplicationEventPublisher)
 
-File upload/download APIs
+    File upload/download APIs
 
-Multi-module Maven project setup
-how to change server port or server in spring application
+    Multi-module Maven project setup
+    how to change server port or server in spring application
