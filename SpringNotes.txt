@@ -573,7 +573,83 @@
             Docker deployment is simpler using a Java base image (e.g., openjdk:17).
             Easy to configure and production-ready out of the box.
             Supports replacing Tomcat with Jetty or Undertow if needed.
+
+7. * Spring Web MVC -
+
+        Traditional Servlet Development (with Tomcat)
+
+            In this case, you’re working directly with Jakarta Servlet API.
+
+            Typical steps:
             
+                Use @WebServlet("/hello") to map a URL.
+                Create a class extending HttpServlet.
+                Override methods like doGet() or doPost().
+
+            example -
+
+                @WebServlet("/hello")
+                public class HelloServlet extends HttpServlet {
+                    @Override
+                    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+                        resp.getWriter().write("Hello from Servlet");
+                    }
+                }
+
+        Spring Core with Servlet API (Without Spring Boot)
+
+            Spring doesn't use @WebServlet directly (unless you're doing very low-level integration).
+            Instead, it uses:
+            A configuration class like WebConfig
+            A DispatcherServlet (core part of Spring MVC)
+            Mappings like @RequestMapping instead of doGet() or doPost()
+
+            example -
+
+            public class WebAppInitializer implements WebApplicationInitializer {
+                @Override
+                public void onStartup(ServletContext servletContext) throws ServletException {
+                    // Create Spring application context
+                    AnnotationConfigWebApplicationContext context = new AnnotationConfigWebApplicationContext();
+                    context.register(WebConfig.class); // Register config class
+                    
+                    // Create and register DispatcherServlet
+                    DispatcherServlet dispatcherServlet = new DispatcherServlet(context);
+                    ServletRegistration.Dynamic registration = servletContext.addServlet("dispatcher", dispatcherServlet);
+                    
+                    registration.setLoadOnStartup(1); // Load servlet on app startup
+                    registration.addMapping("/");     // Map to root URL
+                        }
+                    }
+
+        ** What WebApplicationInitializer does 
+            
+            Create Spring application context
+            Register config class
+            Create and register DispatcherServlet
+            Load servlet on app startup
+            Map to root URL
+
+        What WebConfig does:
+
+            Registers Spring's DispatcherServlet
+            This servlet intercepts all incoming HTTP requests.
+            Configures the component scanning
+            So it can detect your @Controller, @Service, etc.
+            Adds ViewResolvers, HandlerMappings, and other MVC infrastructure.
+
+        * DispatcherServlet replaces the need for @WebServlet.
+
+        * Spring handles request routing based on annotations like @RequestMapping, @GetMapping, etc.
+
+        * The WebAppInitializer + WebConfig combo plays the role of both the web.xml and servlet mapping 
+          config.
+
+        ** DispatcherServlet processes all the incoming HTTP Requests and forwards it to correct 
+           controller/method
+           It is like Receptionist
+           In Spring MVC we have only one servlet which handles everything i.e DispatcherServlet
+
 7. Spring Boot
 
     Difference between Spring and Spring Boot
