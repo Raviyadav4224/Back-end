@@ -513,6 +513,67 @@
 
         logging.level.com.ravi=INFO
 
+    * For Spring Core - 
+
+        Packages Required -
+
+            spring-aop ->
+
+                Required to use Spring's AOP features like @Aspect, @Before, @AfterReturning, etc.
+
+            aspectjweaver -> 
+
+                Required for runtime weaving of aspects into beans.
+                Works with Spring AOP to process your annotations like @Before, @AfterReturning, etc
+
+            slf4j-api ->
+
+                Logging API interface.
+                You use LoggerFactory.getLogger() and logger.info() in your Java code
+
+            logback-classic -> 
+
+                This is the logging backend implementation
+
+            spring-webmvc -> 
+
+                Enables you to build RESTful web applications with Spring Core.
+                Provides DispatcherServlet, @RestController, @GetMapping, @RequestMapping, etc
+
+            jakarta.servlet-api ->
+
+                Required for working with servlet containers like Tomcat.
+                Provides HttpServletRequest, ServletContext, etc.
+                scope=provided: Because the server (Tomcat, Jetty) provides it at runtime.
+
+            <packaging>war</packaging> - 
+
+                WAR packaging indicates you're building a web archive to be deployed to a servlet 
+                container (like Tomcat).
+                
+                Needed when using WebApplicationInitializer and DispatcherServlet manually 
+                (i.e., not using Spring Boot)
+
+    * Spring MVC (Traditional) vs Spring Boot ( MVC )
+
+        Spring -
+            
+            Requires external Tomcat or other servlet containers.
+            Application is packaged as a WAR (.war) file.
+            WAR is deployed manually to a servlet container (like tomcat:10-jdk17 in Docker).
+            Servlet container must be managed and configured separately.
+            Docker deployment requires a Tomcat base image.
+            Common use in legacy or enterprise apps.
+        
+        Spring Boot -
+
+            Comes with an embedded Tomcat (default), no need for external server.
+            Application is packaged as a JAR (.jar) file.
+            Run directly using java -jar app.jar.
+            Docker deployment is simpler using a Java base image (e.g., openjdk:17).
+            Easy to configure and production-ready out of the box.
+            Supports replacing Tomcat with Jetty or Undertow if needed.
+            
 7. Spring Boot
 
     Difference between Spring and Spring Boot
