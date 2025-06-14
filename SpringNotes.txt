@@ -650,6 +650,11 @@
            It is like Receptionist
            In Spring MVC we have only one servlet which handles everything i.e DispatcherServlet
 
+        * In tradional servlets application where we were using Tomcat and @webservlet(path)
+          here me have to create multiple servlets to serve diffrent urls say /products /users etc 
+          but with Spring MVC we can do it in one servlet using @Requestmapping and single Dispatcher 
+          Servlet is used
+
 7. Spring Boot
 
     Difference between Spring and Spring Boot
