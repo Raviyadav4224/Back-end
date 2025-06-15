@@ -526,6 +526,10 @@
                 Required for runtime weaving of aspects into beans.
                 Works with Spring AOP to process your annotations like @Before, @AfterReturning, etc
 
+            aspectjrt ->
+
+                Required for getting annotations like @Aspect, @Before etc
+
             slf4j-api ->
 
                 Logging API interface.
@@ -651,10 +655,28 @@
            In Spring MVC we have only one servlet which handles everything i.e DispatcherServlet
 
         * In tradional servlets application where we were using Tomcat and @webservlet(path)
-          here me have to create multiple servlets to serve diffrent urls say /products /users etc 
+          here we have to create multiple servlets to serve diffrent urls say /products /users etc 
           but with Spring MVC we can do it in one servlet using @Requestmapping and single Dispatcher 
           Servlet is used
 
+        * Filters - 
+
+            Filters are Java Classes that implements javax.servlet.Filter interface
+
+            They are executed before the request reaches DispatcherServlet
+
+            Client -> Filter(s) -> DispatcherServlet -> Controller -> View
+
+            FilterRegistration.Dynamic filterRegis = servletContext.addFilter("myLoggingFilter", new LoggingFilter());
+		    filterRegis.addMappingForUrlPatterns(null, false, "/*");
+
+        * Serving JSP -
+
+            For serving JSP files we need to configure JSP resolver in WebConfig file
+            ** Need to use @Controller instead of @RestController, 
+               For @RestController = @Controller + @ResponseBody i.e return value is treated as Response body
+               and not view name resolver
+               
 7. Spring Boot
 
     Difference between Spring and Spring Boot
