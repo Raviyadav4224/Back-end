@@ -667,8 +667,8 @@
 
             Client -> Filter(s) -> DispatcherServlet -> Controller -> View
 
-            FilterRegistration.Dynamic filterRegis = servletContext.addFilter("myLoggingFilter", new LoggingFilter());
-		    filterRegis.addMappingForUrlPatterns(null, false, "/*");
+            FilterRegistration.Dynamic filterRegistration = servletContext.addFilter("myLoggingFilter", new LoggingFilter());
+		    filterRegistration.addMappingForUrlPatterns(null, false, "/*");
 
         * Serving JSP -
 
@@ -676,7 +676,47 @@
             ** Need to use @Controller instead of @RestController, 
                For @RestController = @Controller + @ResponseBody i.e return value is treated as Response body
                and not view name resolver
-               
+            
+        * WebApplicationInitializer vs @WebFilter -
+          
+            For core Spring MVC we register servlet by implementing WebApplicationInitializer
+
+            This is managed by Servlet and not by Spring context so we cannot use @Autowired here
+
+            To bridge the gap between Servlet and Spring context we can use 
+
+                // Register filter that delegates to Spring bean
+                FilterRegistration.Dynamic filter = servletContext.addFilter("myFilter",
+                new DelegatingFilterProxy("myFilter")); // matches @Component name 
+
+            ** @WebFilter is a servlet-standard way to register filters outside of Spring.
+                Use it only in Spring Boot with @ServletComponentScan, or in plain servlet apps.
+                In Spring MVC (non-Boot), use DelegatingFilterProxy to get full Spring support (@Autowired, etc.).
+
+        * Request Flow in Spring MVC -
+
+            Browser (HTTP Request)
+            ↓
+            Servlet Container (Tomcat / Jetty / etc.)
+                    ↓
+            [1] Filters (e.g. Auth, Logging, CORS)
+                    ↓
+            [2] DispatcherServlet (Spring’s Front Controller)
+                    ↓
+            [3] HandlerMapping (Which controller to call?)
+                    ↓
+            [4] Controller (Your @RestController or @Controller)
+                    ↓
+            [5] Return response → ViewResolver or ResponseBody
+                    ↓
+            Back through Filters
+                    ↓
+            Back to Client
+
+        * @ControllerAdvice is used to create Global exception handler
+          @ExceptionHandler(SomeException.class) will catch that exception whenever it’s thrown in any 
+          controller 
+
 7. Spring Boot
 
     Difference between Spring and Spring Boot
