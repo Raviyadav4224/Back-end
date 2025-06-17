@@ -578,7 +578,7 @@
             Easy to configure and production-ready out of the box.
             Supports replacing Tomcat with Jetty or Undertow if needed.
 
-7. * Spring Web MVC -
+8. * Spring Web MVC -
 
         Traditional Servlet Development (with Tomcat)
 
@@ -772,57 +772,3 @@
                         private String message;
                         private T data; 
                     }
-
-7. Spring Boot
-
-    Difference between Spring and Spring Boot
-    Auto-configuration & starters
-    @SpringBootApplication, @RestController, @RequestMapping, @ComponentScan
-    Externalized configuration with application.properties / YAML
-    Spring Profiles for environment management
-    Building and testing REST APIs
-
-7. Spring Data JPA
-
-    JPA vs Hibernate
-    @Entity, @Id, @GeneratedValue
-    @OneToMany, @ManyToOne, @JoinColumn, fetch types, cascades
-    Custom queries using JPQL/Native + @Query
-    Projections, DTO mapping
-    Pagination & Sorting
-
-Transaction Management
-
-    @Transactional — what it does, rollback rules
-    Isolation levels, propagation types (basic understanding)
-
-Spring Security
-
-    Authentication vs Authorization
-    Custom UserDetailsService
-    PasswordEncoder
-    JWT token-based authentication (very common in real-world)
-    SecurityFilterChain config
-
-Exception Handling
-
-    @ControllerAdvice, @ExceptionHandler
-    Custom exceptions with status codes
-
-    TestingUnit testing with JUnit + Mockito
-    Integration testing with @SpringBootTest
-
-Additional Topics (Production/DevOps Awareness)Spring Boot Actuator
-    Dockerize a Spring Boot app
-    Swagger/OpenAPI integration
-    Caching basics (optional but useful)
-
-🟡 Optional (Nice-to-Have)
-    Spring Scheduler (@Scheduled)
-
-    Spring Events (ApplicationEventPublisher)
-
-    File upload/download APIs
-
-    Multi-module Maven project setup
-    how to change server port or server in spring application
