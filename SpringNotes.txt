@@ -717,6 +717,62 @@
           @ExceptionHandler(SomeException.class) will catch that exception whenever it’s thrown in any 
           controller 
 
+        * JWT's -
+
+            * Spring package used - java-jwt
+
+            * JWT -  <Header>.<Payload>.<Signature>
+
+                    Header: Algorithm and token type.
+
+                    Payload: Claims (data like userId, role, etc.).
+
+                    Signature: HMACSHA256(base64UrlEncode(header) + "." + base64UrlEncode(payload), secret)
+
+            * public class JwtUtils {
+
+                private final static String secret_key = "my_secret_key";
+
+                public static String generateJwtToken(String username) {
+
+                    return JWT.create().withSubject(username).withIssuedAt(new Date())
+                            .withExpiresAt(new Date(System.currentTimeMillis() + 10 * 60 * 1000)) // 10 minutes
+                            .sign(Algorithm.HMAC256(secret_key));
+
+                }
+
+                public static String validateToken(String token) {
+
+                    try {
+                        DecodedJWT jwt = JWT.require(Algorithm.HMAC256(secret_key)).build().verify(token);
+
+                        return jwt.getSubject();
+                    } catch (JWTVerificationException e) {
+                        System.out.println(e.getMessage());
+                        return null;
+                    }
+                }
+            }
+
+            * Register the JWTFilter in ApplicationInitializer just like DispatcherServlet,
+              inside JWTFilter check and validate the token using JwtUtils.valdiateToken
+            
+        * ResponseEntity - 
+            
+            It is used to return response with more control
+            ResponseEntity<String> response = new ResponseEntity<>(body, headers, status);
+
+            * We can have custom Response entity with predefined DTO as well 
+
+                ResponseEntity<ResponseMap<String>> response = new ResponseEntity<>(body, headers, status);
+                where ResponseMap<T> is itself a class 
+                    class ResponseMap<T>{
+                        private boolean success;
+                        private boolean error;
+                        private String message;
+                        private T data; 
+                    }
+
 7. Spring Boot
 
     Difference between Spring and Spring Boot
