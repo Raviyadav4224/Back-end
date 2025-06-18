@@ -1,0 +1,99 @@
+1. What is Spring Boot -
+
+    Springboot is a framework which is built on the top of Spring that simplifies the developement of
+    spring applications by
+
+        * Eliminating the boiler plate configuration
+        * It provides embedded servers like Tomcat, Jetty
+        * Uses default configurations i.e auto-configuration
+        * Supports rapid developement with production ready features
+
+2. Spring Core vs Springboot -
+
+    | Feature                   | **Spring Core**                                                                                          | **Spring Boot**                                                                                  |
+    | ------------------------- | -------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+    | **Definition**            | Base framework for building Java applications using Dependency Injection and Aspect-Oriented Programming | Extension of Spring that makes it easier to build production-ready applications quickly          |
+    | **Setup**                 | Manual configuration of beans, XML or Java-based                                                         | Auto-configuration based on classpath contents                                                   |
+    | **Boilerplate Code**      | Requires a lot of boilerplate code (XML configs, bean declarations)                                      | Minimal boilerplate using starters and embedded server                                           |
+    | **Web Server Setup**      | External servers like Tomcat, Jetty need to be manually deployed                                         | Comes with **embedded Tomcat/Jetty** – just run the app like a Java program                      |
+    | **Configuration Files**   | Often uses **XML files** or `@Configuration` in Java                                                     | Uses `application.properties` or `application.yml` for configuration                             |
+    | **Dependencies**          | You need to add all required dependencies manually in `pom.xml`                                          | Uses **starter dependencies** (e.g., `spring-boot-starter-web`) which bundle common dependencies |
+    | **Deployment**            | WAR file generation, deploy to external servlet container                                                | Runs as a **standalone JAR** (just run with `java -jar`)                                         |
+    | **Application Bootstrap** | You create your own `main` method with lots of context loading                                           | Just annotate with `@SpringBootApplication` and run                                              |
+    | **Dev Tools**             | No built-in dev support                                                                                  | Comes with **Spring Boot DevTools** for live reload, hot swap, etc.                              |
+    | **Monitoring**            | Needs manual integration for health checks/metrics                                                       | Has **Spring Boot Actuator** out of the box for health checks, metrics, etc.                     |
+    | **Community/Modern Use**  | Still used for fine-grained control or in legacy projects                                                | Preferred in **modern enterprise apps** and microservices                                        |
+
+3. Auto-Configuration in Springboot -
+
+    It is one of the core features of Springboot application that allows developers to get started quickly
+    by automatically configuring Spring application components based on classpath contents, defined beans 
+    and application properties file
+
+    * @SpringBootApplication -
+        
+        It is a combination of 
+
+            @Configuration
+            @ComponentScan
+            @EnableAutoConfiguration
+
+            | Annotation                 | Purpose                                                                                            |
+            | -------------------------- | -------------------------------------------------------------------------------------------------- |
+            | `@Configuration`           | Tells Spring that this class is a source of bean definitions                                       |
+            | `@ComponentScan`           | Automatically scans the package and sub-packages for `@Component`, `@Service`, `@Repository`, etc. |
+            | `@EnableAutoConfiguration` | Enables auto-configuration (scans `spring.factories` as explained above)                           |
+
+4. Springboot dependencies -
+
+    Auto-configuration & starters
+    Externalized configuration with application.properties / YAML
+    application.properties file deep dive
+    Spring Profiles for environment management
+    Building and testing REST APIs
+
+2. Spring Data JPA
+
+    JPA vs Hibernate
+    @Entity, @Id, @GeneratedValue
+    @OneToMany, @ManyToOne, @JoinColumn, fetch types, cascades
+    Custom queries using JPQL/Native + @Query
+    Projections, DTO mapping
+    Pagination & Sorting
+
+Transaction Management
+
+    @Transactional — what it does, rollback rules
+    Isolation levels, propagation types (basic understanding)
+
+3. Spring Security
+
+    Authentication vs Authorization
+    Custom UserDetailsService
+    PasswordEncoder
+    JWT token-based authentication (very common in real-world)
+    SecurityFilterChain config
+
+Exception Handling
+
+    @ControllerAdvice, @ExceptionHandler
+    Custom exceptions with status codes
+    TestingUnit testing with JUnit + Mockito
+    Integration testing with @SpringBootTest
+
+4. Additional Topics (Production/DevOps Awareness)
+
+    Spring Boot Actuator
+    Dockerize a Spring Boot app
+    Swagger/OpenAPI integration
+    Caching basics (optional but useful)
+
+🟡 Optional (Nice-to-Have)
+    Spring Scheduler (@Scheduled)
+
+    Spring Events (ApplicationEventPublisher)
+
+    File upload/download APIs
+
+    Multi-module Maven project setup
+    how to change server port or server in spring application
