@@ -655,7 +655,7 @@
            In Spring MVC we have only one servlet which handles everything i.e DispatcherServlet
 
         * In tradional servlets application where we were using Tomcat and @webservlet(path)
-          here we have to create multiple servlets to serve diffrent urls say /products /users etc 
+          here we have to create multiple servlets to serve different urls say /products /users etc 
           but with Spring MVC we can do it in one servlet using @Requestmapping and single Dispatcher 
           Servlet is used
 
@@ -713,50 +713,54 @@
                     ↓
             Back to Client
 
-        * @ControllerAdvice is used to create Global exception handler
-          @ExceptionHandler(SomeException.class) will catch that exception whenever it’s thrown in any 
-          controller 
+9. Exception Handling in Spring MVC - 
+        
+        @ControllerAdvice is used to create Global exception handler
+        @ExceptionHandler(SomeException.class) will catch that exception whenever it’s thrown in any 
+        controller 
 
-        * JWT's -
+10. Json Web Token's ( JWT's ) -
 
-            * Spring package used - java-jwt
+        * Spring package used - java-jwt
 
-            * JWT -  <Header>.<Payload>.<Signature>
+        * JWT -  <Header>.<Payload>.<Signature>
 
-                    Header: Algorithm and token type.
+                Header: Algorithm and token type.
 
-                    Payload: Claims (data like userId, role, etc.).
+                Payload: Claims (data like userId, role, etc.).
 
-                    Signature: HMACSHA256(base64UrlEncode(header) + "." + base64UrlEncode(payload), secret)
+                Signature: HMACSHA256(base64UrlEncode(header) + "." + base64UrlEncode(payload), secret)
 
-            * public class JwtUtils {
+        * public class JwtUtils {
 
-                private final static String secret_key = "my_secret_key";
+            private final static String secret_key = "my_secret_key";
 
-                public static String generateJwtToken(String username) {
+            public static String generateJwtToken(String username) {
 
-                    return JWT.create().withSubject(username).withIssuedAt(new Date())
-                            .withExpiresAt(new Date(System.currentTimeMillis() + 10 * 60 * 1000)) // 10 minutes
-                            .sign(Algorithm.HMAC256(secret_key));
+                return JWT.create().withSubject(username).withIssuedAt(new Date())
+                        .withExpiresAt(new Date(System.currentTimeMillis() + 10 * 60 * 1000)) // 10 minutes
+                        .sign(Algorithm.HMAC256(secret_key));
 
-                }
-
-                public static String validateToken(String token) {
-
-                    try {
-                        DecodedJWT jwt = JWT.require(Algorithm.HMAC256(secret_key)).build().verify(token);
-
-                        return jwt.getSubject();
-                    } catch (JWTVerificationException e) {
-                        System.out.println(e.getMessage());
-                        return null;
-                    }
-                }
             }
 
-            * Register the JWTFilter in ApplicationInitializer just like DispatcherServlet,
-              inside JWTFilter check and validate the token using JwtUtils.valdiateToken
-            
+            public static String validateToken(String token) {
+
+                try {
+                    DecodedJWT jwt = JWT.require(Algorithm.HMAC256(secret_key)).build().verify(token);
+
+                    return jwt.getSubject();
+                } catch (JWTVerificationException e) {
+                    System.out.println(e.getMessage());
+                    return null;
+                }
+            }
+        }
+
+        * Register the JWTFilter in ApplicationInitializer just like DispatcherServlet,
+            inside JWTFilter check and validate the token using JwtUtils.valdiateToken
+        
+11. Response Entity Object - 
+    
         * ResponseEntity - 
             
             It is used to return response with more control
@@ -772,3 +776,4 @@
                         private String message;
                         private T data; 
                     }
+
