@@ -11,18 +11,18 @@
 2. Spring Core vs Springboot -
 
     | Feature                   | **Spring Core**                                                                                          | **Spring Boot**                                                                                  |
-    | ------------------------- | -------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
-    | **Definition**            | Base framework for building Java applications using Dependency Injection and Aspect-Oriented Programming | Extension of Spring that makes it easier to build production-ready applications quickly          |
-    | **Setup**                 | Manual configuration of beans, XML or Java-based                                                         | Auto-configuration based on classpath contents                                                   |
-    | **Boilerplate Code**      | Requires a lot of boilerplate code (XML configs, bean declarations)                                      | Minimal boilerplate using starters and embedded server                                           |
-    | **Web Server Setup**      | External servers like Tomcat, Jetty need to be manually deployed                                         | Comes with **embedded Tomcat/Jetty** – just run the app like a Java program                      |
-    | **Configuration Files**   | Often uses **XML files** or `@Configuration` in Java                                                     | Uses `application.properties` or `application.yml` for configuration                             |
-    | **Dependencies**          | You need to add all required dependencies manually in `pom.xml`                                          | Uses **starter dependencies** (e.g., `spring-boot-starter-web`) which bundle common dependencies |
-    | **Deployment**            | WAR file generation, deploy to external servlet container                                                | Runs as a **standalone JAR** (just run with `java -jar`)                                         |
-    | **Application Bootstrap** | You create your own `main` method with lots of context loading                                           | Just annotate with `@SpringBootApplication` and run                                              |
-    | **Dev Tools**             | No built-in dev support                                                                                  | Comes with **Spring Boot DevTools** for live reload, hot swap, etc.                              |
-    | **Monitoring**            | Needs manual integration for health checks/metrics                                                       | Has **Spring Boot Actuator** out of the box for health checks, metrics, etc.                     |
-    | **Community/Modern Use**  | Still used for fine-grained control or in legacy projects                                                | Preferred in **modern enterprise apps** and microservices                                        |
+    | ------------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+    | **Definition**            | Base framework for building Java applications using DI and AOP         | Extension of Spring that makes it easier to build production-ready applications quickly          |
+    | **Setup**                 | Manual configuration of beans, XML or Java-based                       | Auto-configuration based on classpath contents                                                   |
+    | **Boilerplate Code**      | Requires a lot of boilerplate code (XML configs, bean declarations)    | Minimal boilerplate using starters and embedded server                                           |
+    | **Web Server Setup**      | External servers like Tomcat, Jetty need to be manually deployed       | Comes with **embedded Tomcat/Jetty** – just run the app like a Java program                      |
+    | **Configuration Files**   | Often uses **XML files** or `@Configuration` in Java                   | Uses `application.properties` or `application.yml` for configuration                             |
+    | **Dependencies**          | You need to add all required dependencies manually in `pom.xml`        | Uses **starter dependencies** (e.g., `spring-boot-starter-web`) which bundle common dependencies |
+    | **Deployment**            | WAR file generation, deploy to external servlet container              | Runs as a **standalone JAR** (just run with `java -jar`)                                         |
+    | **Application Bootstrap** | You create your own `main` method with lots of context loading         | Just annotate with `@SpringBootApplication` and run                                              |
+    | **Dev Tools**             | No built-in dev support                                                | Comes with **Spring Boot DevTools** for live reload, hot swap, etc.                              |
+    | **Monitoring**            | Needs manual integration for health checks/metrics                     | Has **Spring Boot Actuator** out of the box for health checks, metrics, etc.                     |
+    | **Community/Modern Use**  | Still used for fine-grained control or in legacy projects              | Preferred in **modern enterprise apps** and microservices                                        |
 
 3. Auto-Configuration in Springboot -
 
@@ -42,15 +42,117 @@
             | -------------------------- | -------------------------------------------------------------------------------------------------- |
             | `@Configuration`           | Tells Spring that this class is a source of bean definitions                                       |
             | `@ComponentScan`           | Automatically scans the package and sub-packages for `@Component`, `@Service`, `@Repository`, etc. |
-            | `@EnableAutoConfiguration` | Enables auto-configuration (scans `spring.factories` as explained above)                           |
+            | `@EnableAutoConfiguration` | Enables auto-configuration (scans `spring.factories`)                           |
 
-4. Springboot dependencies -
+4. Springboot starter dependencies -
 
-    Auto-configuration & starters
+    It is a preconfigured dependency that simplifies the addition of commonly used libraries
+    for example - spring-boot-starter-web Builds web,RESTful api's,spring-boot-starter-data-jpa etc
+
+    * Custom starter dependency -
+
+        1. Create a Maven spring project
+
+        2. Add spring-boot-autoconfigure (To use Spring Boot AutoConfiguration) and add 
+           spring-boot-starter (starter for transitive dependencies)
+
+        3. Create LoggerClass and configure it w/o @SpringBootApplication
+            package com.example.logger;
+
+            public class LoggerService {
+                public void log(String message) {
+                    System.out.println("🔊 LoggerService: " + message);
+                }
+            }
+            package com.example.logger;
+
+            import org.springframework.context.annotation.Bean;
+            import org.springframework.context.annotation.Configuration;
+
+            @Configuration
+            public class LoggerAutoConfig {
+
+                @Bean
+                public LoggerService loggerService() {
+                    LoggerService logger = new LoggerService();
+                    logger.log("LoggerService initialized via custom starter");
+                    return logger;
+                }
+            }
+        
+        4. Located at: src/main/resources/META-INF/spring.factories
+
+            org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+            com.example.logger.LoggerAutoConfig
+
+            This is how Spring Boot discovers the config class when you import the starter
+
+        5. Use the dependency in the POM of new project where you want to use this custom starter  
+
+5. @RequestBody vs @PathVariable vs @RequestParam -
+
+    RequestParam (user?id=10&name="ravi") - Refers to the Query parameters
+    
+    PathVariable (users/10) - Refers to the path variable of the URL
+
+    RequestBody - JSON/ XML request body
+
+6. JSON Validation in RequestBody -
+
+    To validate the incoming JSON in request body we need to use 
+    package - spring-boot-starter-validation
+
+    example -
+        public class UserDTO {
+            @NotNull(message = "Name is required")
+            @Size(min = 3)
+            private String name;
+
+            @Email(message = "Invalid email")
+            private String email;
+        }
+    * @Valid is used to validate the field
+
+    * It is applied at the CONTROLLER LEVEL
+
+    *  BindingResult interface gives result for any validation fail
+
+    ** @Valid @RequestBody UserDto user,BindingResult result ( BindingResult must come after 
+       @Valid else it will give error)
+
+    *  example -
+    
+        public String registerUser(@PathVariable int id, @Valid @RequestBody UserDTO user, BindingResult result,
+                @RequestParam String role) {
+            System.out.println("User Requestbody" + user);
+            if (result.hasErrors()) {
+                System.out.println(
+                        result.getAllErrors().stream().map(item -> item.getDefaultMessage()).collect(Collectors.toList()));
+                return result.getAllErrors().stream().map(item -> item.getDefaultMessage()).collect(Collectors.toList())
+                        .toString();
+            }
+            return usrservice.registerUser(id, user, role);
+        }
+
+7. How Springboot achieves Auto-Configuration -
+
+    How does Spring Boot auto-configuration actually work?
+    How does Spring Boot know which configuration class to load at startup?
+    What is the role of spring.factories or META-INF/spring/org.springframework.boot.autoconfigure.EnableAutoConfiguration?
+    How do you exclude or override a specific auto-configuration class?
+    How do you write a custom AutoConfiguration class?
+    How do you define a custom Condition using @Conditional?
+    How would you override a bean created by Spring Boot’s auto-configuration?
+    What strategies do you use to reduce memory usage and startup time in large Spring Boot applications?
+    How do you profile and monitor a Spring Boot app in production?
+    How does lazy initialization improve performance in Spring Boot 2.2+?
+    What are your go-to JVM or GC tuning options for a high-traffic Spring Boot application?
+    How do you support API versioning in Spring Boot?
+    What are Spring Boot Starters? Give examples.
+    How do you create a custom starter?
+    What is the difference between @RequestParam, @PathVariable, and @RequestBody?
+    How can you validate incoming JSON in a Spring Boot API?
     Externalized configuration with application.properties / YAML
-    application.properties file deep dive
-    Spring Profiles for environment management
-    Building and testing REST APIs
 
 2. Spring Data JPA
 
