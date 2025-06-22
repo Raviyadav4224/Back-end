@@ -1,0 +1,126 @@
+1. What is Spring Data JPA ?
+
+    * Spring Data JPA is a part of Spring Data project that simplifies working with Relational Databases
+      using JPA
+
+    * It is a High Level abstraction of JPA and Hibernate
+
+    * It is built on the top of JPA and Hibernate and eliminates the need to write standard CRUD operation
+      queries manually
+
+    * It provides built in repository interfaces such as JpaRepository, CrudRepository etc which provides
+      methods such as findById , save etc
+
+    * It also generates queries based on method names like findByUsername etc and supports custom queries 
+      using @Query
+
+    * spring-boot-starter-jpa includes Hibernate as its default JPA provider , No need to manually manage 
+      packages , it auto configures everything , just the starter jpa and Database driver is all you need
+
+2. JPA vs Hibernate vs Spring Data JPA
+
+    JPA contains set of interfaces that define how ORM should work
+
+    Hibernate is an implementation of these interfaces
+
+    Spring Data JPA is an abstraction of Hibernate and JPA and eliminates boiler plate code and allows 
+    developers to focus more on business logic
+
+3. JpaRepository, CrudRepository, PagingAndSortingRepository
+
+    CrudRepository -
+
+        Provides basic CRUD operations 
+        like -
+            S save(S entity);
+            Optional<T> findById(ID id);
+            Iterable<T> findAll();
+            void deleteById(ID id);
+            boolean existsById(ID id);
+
+    PagingAndSortingRepository -
+
+        Add supports for Sorting and Pagination and extends the CrudRepository
+
+        example -
+            public interface UserRepository extends PagingAndSortingRepository<User, Long> {
+                List<User> findByUsernameContaining(String name, Pageable pageable);
+            }
+
+    JpaRepository -
+
+        JPA extends both PagingAndSortingRepository and CrudRepository and adds JPA specific methods
+        
+        example -
+            public interface UserRepository extends JpaRepository<User, Long> {
+                List<User> findByUsernameContainingIgnoreCase(String keyword);
+            }
+
+4. @Transient - 
+
+    @Transient in JPA is used when you want to keep a field in your entity class but don't want
+    it to be mapped to any database column. It’s useful for computed values or fields used only in 
+    application logic
+
+    example -
+
+        @Transient
+        private double totalPrice;  // Not stored in DB
+
+
+5.
+    Embeddable and Embedded Objects
+
+
+    ✅ Repository Features
+    Custom Finder Methods (e.g., findByUsernameAndStatus)
+    @Query annotation (JPQL and native SQL)
+    Pagination and Sorting
+    Custom Repository Implementations
+    Named Queries
+
+    ✅ Transactions and Entity Lifecycle
+    @Transactional – on service and repository layers
+    EntityManager vs Spring Data Repositories
+    Entity States (Transient, Persistent, Detached, Removed)
+    Lifecycle Callbacks (@PrePersist, @PostLoad, etc.)
+    @Transactional — what it does, rollback rules
+    Isolation levels, propagation types (basic understanding)
+
+    ✅ Performance and Optimization
+    N+1 Problem and Fetch Joins
+    Caching Strategies (1st level and 2nd level)
+    Batching and Lazy Initialization Exceptions
+    Query Performance Analysis (@EntityGraph, etc.)
+
+9. Spring Security
+
+    Authentication vs Authorization
+    Custom UserDetailsService
+    PasswordEncoder
+    JWT token-based authentication (very common in real-world)
+    SecurityFilterChain config
+
+    Exception Handling
+
+        @ControllerAdvice, @ExceptionHandler
+        Custom exceptions with status codes
+        TestingUnit testing with JUnit + Mockito
+        Integration testing with @SpringBootTest
+
+10. Additional Topics (Production/DevOps Awareness)
+
+    Spring Boot Actuator
+    Dockerize a Spring Boot app
+    Swagger/OpenAPI integration
+    Caching basics (optional but useful)
+
+    🟡 Optional (Nice-to-Have)
+        Spring Scheduler (@Scheduled)
+
+        Spring Events (ApplicationEventPublisher)
+
+        File upload/download APIs
+
+        Multi-module Maven project setup
+        how to change server port or server in spring application
