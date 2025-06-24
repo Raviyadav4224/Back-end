@@ -21,7 +21,7 @@
 
     JPA contains set of interfaces that define how ORM should work
 
-    Hibernate is an implementation of these interfaces
+    Hibernate is an implementation of these interfaces i.e JPA
 
     Spring Data JPA is an abstraction of Hibernate and JPA and eliminates boiler plate code and allows 
     developers to focus more on business logic
@@ -67,60 +67,90 @@
         @Transient
         private double totalPrice;  // Not stored in DB
 
+5. Pagination And Sorting -
 
-5.
-    Embeddable and Embedded Objects
+    We can use Pageable and Sort classes to do the same
+    example -
 
+        Controller 
+            public List<User> getAllUsers(
+                    @RequestParam(defaultValue = "0") int page,
+                    @RequestParam(defaultValue = "5") int size,
+                    @RequestParam(defaultValue = "id") String sortBy,
+                    @RequestParam(defaultValue = "asc") String direction
+                    ) {
+                return userService.getAllUsers(page,size,sortBy,direction);
+            }
+        
+        Service -
 
-    ✅ Repository Features
-    Custom Finder Methods (e.g., findByUsernameAndStatus)
-    @Query annotation (JPQL and native SQL)
-    Pagination and Sorting
-    Custom Repository Implementations
-    Named Queries
+            public List<User> getAllUsers(int page, int size, String sortBy, String direction) {
+                Sort sort = direction.equalsIgnoreCase("asc") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+                Pageable pageable = PageRequest.of(page, size, sort);
+                return userRepo.findAll(pageable).get().collect(Collectors.toList());
+            }
 
-    ✅ Transactions and Entity Lifecycle
-    @Transactional – on service and repository layers
-    EntityManager vs Spring Data Repositories
-    Entity States (Transient, Persistent, Detached, Removed)
-    Lifecycle Callbacks (@PrePersist, @PostLoad, etc.)
-    @Transactional — what it does, rollback rules
-    Isolation levels, propagation types (basic understanding)
+6. @CreatedDate, @LastModifiedDate, @CreatedBy, @LastModifiedBy -
 
-    ✅ Performance and Optimization
-    N+1 Problem and Fetch Joins
-    Caching Strategies (1st level and 2nd level)
-    Batching and Lazy Initialization Exceptions
-    Query Performance Analysis (@EntityGraph, etc.)
+    @EnableJpaAuditing(auditorAwareRef = "auditorProvider")
+        
+    @Component
+    public class AuditorAwareImpl implements AuditorAware<String> {
+        @Override
+        public Optional<String> getCurrentAuditor() {
+            // You can fetch it from Spring Security context, or hardcode for testing
+            return Optional.of("ravi"); // or SecurityContextHolder.getContext().getAuthentication().getName()
+        }
+    }
 
-9. Spring Security
+7. * @Transactional -  
 
-    Authentication vs Authorization
-    Custom UserDetailsService
-    PasswordEncoder
-    JWT token-based authentication (very common in real-world)
-    SecurityFilterChain config
+    * It ensures that a series of database operation works as a single TestingUnit
 
-    Exception Handling
+    * If any one of the operations fails the entire transaction is rolled back to maintain data consistency
 
-        @ControllerAdvice, @ExceptionHandler
-        Custom exceptions with status codes
-        TestingUnit testing with JUnit + Mockito
-        Integration testing with @SpringBootTest
+    * By default Transactional checks UNCHECKED EXCEPTIONS i.e RuntimeException and its subclasses
 
-10. Additional Topics (Production/DevOps Awareness)
+    * To rollback on checked exceptions use @Transactional( rollbackFor = Exception.class ) 
 
-    Spring Boot Actuator
-    Dockerize a Spring Boot app
-    Swagger/OpenAPI integration
-    Caching basics (optional but useful)
+    * Internal method calls inside the same class won't apply @Transactional.
+        example 
+        class user.java
+            @Transactional
+            public void outer() {
+                inner();  // @Transactional on inner() won't work here!
+            }
 
-    🟡 Optional (Nice-to-Have)
-        Spring Scheduler (@Scheduled)
+            @Transactional
+            public void inner() {
+                throw new RuntimeException("Rollback?");
+            }
 
-        Spring Events (ApplicationEventPublisher)
+8. @Query annotation (JPQL and native SQL) - 
 
-        File upload/download APIs
+    Query annotation lets you write custom queries using JPQL or Native SQL Queries
 
-        Multi-module Maven project setup
-        how to change server port or server in spring application
+    JPQL - Based on Entity Class and fields
+        @Query(value = "SELECT u FROM users u WHERE u.username = :username")
+
+    Native SQL Query - Based on actual DB Table and Column Name
+        @Query(value = "SELECT * FROM users WHERE username = :username", nativeQuery = true)
+
+9. N+1 Problem - 
+
+    List<User> users = userRepository.findAll();
+
+    when we do userRepo.findAll()
+
+    if user has OneToOne or OneToMany mapping
+
+    1st - It fetches all the users
+    2nd - For all the users it fetches its userprofile 
+
+    So for say N users , first it runs once then for every user it runs once
+    i.e Total: 1 (initial) + N (extra queries) = N+1 queries
+
+    * Instead use FETCH JOIN which solves This
+    
+        @Query("SELECT u FROM User u JOIN FETCH u.userProfile") // ✅ single query
+        List<User> findAllUsersWithProfile()
