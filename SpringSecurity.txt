@@ -1,0 +1,88 @@
+1. What is Spring Security -
+
+    * It is a powerfull Authentication and Access Control framework which provides 
+        1. Authentication - Who are you 
+        2. Authorization - What are you allowed to do (Grants access based on Roles)
+    
+    * Authentication happens first and then Authorization
+
+    * It is based on Chain of Filters, where each request goes through a Security Filter Chain
+      Key filters - UsernamePasswordAuthenticationFilter, BearerAuthenticationFilter etc
+
+    * DelegatingFilterProxy acts as bridge between Spring's Application Context and Servlet Filter API,
+      auto registered in Springboot or in Web.xml file
+    
+    * In Spring Boot -
+
+        WebApplicationInitializer and web.xml-style manual filter registration is not required.
+
+        Spring Boot auto-registers the filters by using DelegatingFilterProxy under the hood.
+
+        You just define a SecurityFilterChain bean, and Boot handles the rest.
+
+
+2. SecurityFilterChain vs AuthenticationManager vs UserDetailsService -
+
+    SecurityFilterChain - 
+
+        * Chain of Filters which intercepts Http requests i.e controls access
+        
+        * Decides what requests are allowed or restricted
+
+        * Configures:
+            Public vs secured endpoints
+            Login/logout behavior
+            Session, CSRF, CORS, etc.
+
+        * example - 
+
+            SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+            http
+                .authorizeHttpRequests(auth->auth
+                        .requestMatchers("/public/**")
+                        .permitAll()
+                        .requestMatchers("/admin/**")
+                        .hasRole("ADMIN")
+                        .anyRequest()
+                        .authenticated()
+                        )
+                .formLogin(withDefaults())
+                .logout(log->log.logoutUrl("/logout")
+                        .logoutSuccessUrl("/public/home"));
+                        
+            return http.build();
+        }
+
+    AuthenticationManager - 
+    
+        * Authenticates whether the username and passwords are correct or not
+
+        * example -
+
+            @Bean
+            AuthenticationManager authManager(HttpSecurity http) throws Exception {
+                return http.getSharedObject(AuthenticationManagerBuilder.class)
+                    .userDetailsService(userDetailsService)
+                    .passwordEncoder(passwordEncoder())
+                    .and()
+                    .build();
+            }
+
+    UserDetailsService -
+
+        * Fetches user details from DB or Hardcoded and converts user entity to Spring-compatible 
+          UserDetails Object
+        * example -
+
+            @Service
+            public class CustomUserDetailsService implements UserDetailsService {
+                @Override
+                public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+                    if ("Ravi".equals(username)) {
+                        return new User("Ravi", "{noop}admin123",
+                            List.of(new SimpleGrantedAuthority("ROLE_ADMIN")));
+                    }
+                    throw new UsernameNotFoundException("User not found");
+                }
+            }
+
