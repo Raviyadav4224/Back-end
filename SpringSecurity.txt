@@ -20,7 +20,6 @@
 
         You just define a SecurityFilterChain bean, and Boot handles the rest.
 
-
 2. SecurityFilterChain vs AuthenticationManager vs UserDetailsService -
 
     SecurityFilterChain - 
@@ -36,22 +35,17 @@
 
         * example - 
 
+            @Bean
             SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-            http
-                .authorizeHttpRequests(auth->auth
-                        .requestMatchers("/public/**")
-                        .permitAll()
-                        .requestMatchers("/admin/**")
-                        .hasRole("ADMIN")
-                        .anyRequest()
-                        .authenticated()
-                        )
-                .formLogin(withDefaults())
-                .logout(log->log.logoutUrl("/logout")
-                        .logoutSuccessUrl("/public/home"));
-                        
-            return http.build();
-        }
+
+                http
+                    .csrf(csrf->csrf.disable()) // Disables CSRF
+                    .authorizeHttpRequests(
+                        auth -> auth.requestMatchers("/api/v1/public/**").permitAll()
+                                .anyRequest().authenticated())
+                                .formLogin(withDefaults());
+                return http.build();
+            }
 
     AuthenticationManager - 
     
@@ -61,17 +55,18 @@
 
             @Bean
             AuthenticationManager authManager(HttpSecurity http) throws Exception {
-                return http.getSharedObject(AuthenticationManagerBuilder.class)
-                    .userDetailsService(userDetailsService)
-                    .passwordEncoder(passwordEncoder())
-                    .and()
-                    .build();
+                AuthenticationManagerBuilder auth = http.getSharedObject(AuthenticationManagerBuilder.class);
+                auth.userDetailsService(myuserdetailsservice)
+                    .passwordEncoder(passEncoder());
+
+                return auth.build();
             }
 
     UserDetailsService -
 
         * Fetches user details from DB or Hardcoded and converts user entity to Spring-compatible 
           UserDetails Object
+          
         * example -
 
             @Service
@@ -86,3 +81,104 @@
                 }
             }
 
+3. Jwts - 
+
+    package - 
+
+        jjwt-api - Core JWT features
+        jjwt-impl , jjwt-jackson - For runtime
+
+    To generate -
+
+        Jwts.builder() 
+        then -> .subject() , .issuedAt() , .expiration() , .signWith(Key in  Bytes[])
+
+    To parse Jwts -
+
+        Jwts.parse()
+        then -> .setSigningKey(), .parseSignedClaims(token), .getPayload()
+
+    JWT Filter -
+
+        To create JWTFilter we need to extend OncePerRequestFilter and implement doFilterInternal method
+
+    STATELESS -
+
+        Using session creation policy as stateless
+
+            No JSESSIONID cookie is created
+            No HttpSession is maintained by the server
+            Each request must include a valid JWT token 
+            Server authenticates each request individually
+			http.sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+
+    * CORS -  
+
+        For CORS just add 
+            http.cors(withDefaults())
+        
+        For handling allowed origin, headers etc we need to define CorsConfiguration bean which spring
+        inject itself
+            @Bean
+            CorsConfigurationSource corsConfigurationSource() {
+                CorsConfiguration config = new CorsConfiguration();
+                
+                config.setAllowedOrigins(List.of(allowedOrigins)); // Allow all origins (not recommended for prod)
+                config.setAllowedMethods(List.of(allowedMethods));
+                config.setAllowedHeaders(List.of(allowedHeaders));
+                config.setAllowCredentials(allowedCredentials); // when using Cookie or authorization Handler
+
+                UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+
+                source.registerCorsConfiguration("/**", config);
+                return source;
+            }
+
+4. @PreAuthorize, @PostAuthorize, @Secured ( Used at Method level ) -
+
+    Secured - 
+
+        Used for simple role check
+        @Secured("ROLE_ADMIN")
+            
+    @PreAuthorize -
+
+        Runs before methods and supports expression
+        @PreAuthorize("#id == authentication.principal.id")
+        @PreAuthorize("hasRole('ADMIN')")
+
+    @PostAuthorize -
+
+        Runs after methods and Can check return values with expressions
+        @PostAuthorize("returnObject.owner == authentication.name")
+
+    * @EnableMethodSecurity(securedEnabled = true, prePostEnabled = true)
+    
+    * Method-level security vs URL-level security -
+
+        URL level security is done using FilterChains
+        Method level is done using @PreAuthorize, @PostAuthorize, @Secured
+
+5. OAuth2 for Social Login -
+
+    Basic understanding of OAuth2 flows
+    Understanding tokens: Access Token, Refresh Token
+    Custom AuthenticationEntryPoint (unauthorized)
+    Custom AccessDeniedHandler (forbidden)
+    Using Redis for token blacklisting (e.g., JWT logout)
+
+6. Springboot Actuator -    
+
+    * package - spring-boot-starter-actuator
+
+    * It provides Production Ready features to check and monitor spring boot applications
+
+    * It exposes endpoints (like /actuator/health, /actuator/info, /actuator/metrics, etc.) to check 
+      the internal state of the application without accessing the code
+      
+    * management.endpoints.web.exposure.include=* in application.properties exposes all endpoints
+
+    * To secure end points we can do it in securityConfig
+
+    * In production, Prometheus is commonly used with Actuator + Micrometer to collect and monitor metrics 
+      from Spring Boot applications
