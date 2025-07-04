@@ -1,9 +1,37 @@
-1. Polymorphism - 
+1. OOPS - 
 
-    Poly means many and morphism means forms or behaviour
+    * Polymorphism -
 
-    Runtime Polymorphism - Method over-riding 
-    Compile Time Polymorphism - Method overloading
+        Poly means many and morphism means forms or behaviour
+        
+        examples- 
+
+            * Runtime Polymorphism - Method over-riding 
+              Compile Time Polymorphism - Method overloading
+            
+            * A person behaves differently in Home as a Son and in office as a Engineer
+
+    * Data Abstraction -
+
+        Hiding the inner implementation and showing only the essential features is termed as Abstraction
+
+        example -
+
+            * In Java we use interfaces to implement data abstraction
+            * Using Car, ATMs etc , not knowing how internally it works
+
+    * Inheritance -
+
+        Inheriting properties for parent to the child so that we can re-use the already created things
+
+        example - Class extends another class
+
+    * Data Encapsulation -
+
+        Wrapping up of all the data members and methods as a single unit and restricting direct 
+        access to some of the objevt components
+
+        example - Medicine capsule
 
 2. Input from user - 
 
@@ -112,97 +140,214 @@
         Occurs when casting a superclass reference back to subclass 
             Dog dog=(Dog) animal;
 
-6. Method Overloading - 
+6. Method Overloading vs Method Over-riding - 
 
-    When we create methods having same name but
-        - different number of parameters
-        - different type of parameters
-        is termed as method overloading
-    * It implements compile time polymorphism
-    *return type doesnot matter
+    Method Overloading -
+    
+        When we create methods having same NAME but
+            - DIFFERENT number of parameters
+            - DIFFERENT type of parameters
+            is termed as method overloading
 
-7. Strings - 
+        * It implements compile time polymorphism
 
-    Strings are immutable in Java
-    Each time an operation is performed on string a new object is created
+        * return type doesn't matter
 
-    String str1="Hello"
-    String str2="World"
-    str1.concat(str2);
-    sysout(str1) ---> Hello
-    String str=new String("This is a string")
+        ** Overloaded methods can have different return types, but if only return type differs then its not
+            overloading
 
-    * Use equals() for string value comparison and == for reference comparison
+    Method Over-riding -
 
-8. String Pool - 
-    String pool is a place in Heap Memory where all the strings defined are stored.
-    Whenever we create a string variable , JVM checks the string pool and if string object is 
-    present then same is returned else new object is created.
+        When we create method having 
+            - SAME method name
+            - SAME parameters
+            - SAME return type
+        
+        * It implements RUNTIME Polymorphism where subclass provides the implementation of a method which
+          is already defined in the Parent class. It helps to achieve dynamic behavior by allowing Child 
+          class to change or extend the functionality of Parent class
 
+    ** Can we OVERRIDE STATIC methods ? 
+
+        We cannot override STATIC methods, since static methods are resolved at COMPILE time, they belong
+        to the Class and not to the reference
+
+    * Can an overriding method throw a different exception than the base method ?
+
+        Yes, an overriding method can throw different exceptions then the base class only if it is
+        NARROWER CHECKED EXCEPTION or FEWER. It cannot throw BROADER or UNCHECKED Exception since they 
+        are not enforced at Compile time and will break the polymorphism
+        
+        example -
+            class Parent {
+                void doSomething() throws IOException {
+                    System.out.println("Parent doing something");
+                }
+            }
+
+            class Child extends Parent {
+                // ❌ Hypothetically throwing a broader exception
+                void doSomething() throws Exception {  
+                    throw new Exception("Child exception");
+                }
+            }
+
+            public class Main {
+                public static void main(String[] args) {
+                    Parent obj = new Child();
+                    obj.doSomething(); // 
+                }
+            }
+
+            The Problem:
+
+                At compile time, the compiler only sees Parent obj = new Child();
+                So it checks Parent.doSomething() — which throws only IOException
+                But at runtime, it calls Child.doSomething() which throws Exception (a broader checked exception!)
+                Now, the catch block doesn't handle Exception — leading to a runtime error
+
+7. Strings vs String Pool - 
+
+    * Strings are immutable in Java
+
+    * Each time an operation is performed on string a new object is created
+
+    * String pool is a place in Heap Memory where all the strings defined are stored.
+      Whenever we create a string variable , JVM checks the string pool and if string object is 
+      present then same is returned else new object is created.
+
+        String str1 = "Hello"
+        String str2 = "World"
+        str1.concat(str2);
+        sysout(str1) ---> Hello
+        String str = new String("This is a string")
+        
     * Strings created using the new keyword are created inside the HEAP memory and are UNIQUE 
       even if their contents mathces
 
-        String str3=new String("Hello");
-        String str4=new String("Hello");
-        System.out.println(str4 == str3); // FALSE
-    
-9. Static Keyword -
+        example - 
+
+            String str1 = "Hello"
+            String str2 = "Hello"
+            System.out.println(str1 == str2); // TRUE Since refers to same value in pool
+
+            String str3 = new String("Hello");
+            String str4 = new String("Hello");
+            System.out.println(str4 == str3); // FALSE Since creates new value everytime
+
+    * Use equals() for string value comparison and == for reference comparison
+
+8. Static Keyword -
 
     Static variables - 
+
         static String code;
 
-        Static variable is a variable that is shared across all the instances of a class.
-        It belongs to the class rather than any reference meaning only onecopy of variable
-        exists in the memory
+        * Static variable is a variable that is shared across all the instances of a class.
+        
+        * It belongs to the class rather than any reference meaning only onecopy of variable
+          exists in the memory
+
         * Static variables can be accessed directly using the ClassName, we dont need to create objects for
-        them to access
+          them to access
+
         * JVM has special area to handle static variables
 
     Static methods - 
 
-        Non static variables cannot be used inside static methods, because to use non static variables we need
+        * Non static variables cannot be used inside static methods, because to use non static variables we need
         to create object of it.
-        Indirect access is possible by sending a function parameters
-        In Non Static methods static variable can be used.
+
+        * Indirect access is possible by sending a function parameters
+
+        * In Non Static methods static variable can be used.
+
     Static block - 
 
-        static{
+        static {
             name="Ravi"
         }
 
-        Static block is used to initialize the static variables 
-        If we initialize them in Constructor , Whenever object is created it static variable will be 
-        re-initialized
-        Whenever the Class loads static block is executed first and then Constructor method is called.
-        Class loads only once
+        * Static block is used to initialize the static variables 
+
+        * If we initialize them in Constructor , Whenever object is created, static variable will be 
+          re-initialized
+
+        * Whenever the Class loads static block is executed first and then Constructor method is called.
+
+        * Class loads only once
+
         * Class.forName("Person")  Loads the class
 
-    *   Person p1=new Person()
-        Here p1 is the reference variable of type Person
-        new Person() creates an Object of type Person
-        Person p1=new Person()
-        The reference variable stores the reference of object created in Heap memory
+        *   Person p1=new Person()
+            Here p1 is the reference variable of type Person
+            new Person() creates an Object of type Person
+            Person p1=new Person()
+            The reference variable stores the reference of object created in Heap memory
 
-10. Final keyword - 
+9. Final keyword - 
 
     * Final keyword means CONSTANT
+
     * Value once declared final cannot be re-initialized
-    * To stop method over-riding - declare method as final
-    * To stop Inheritance - declare class as final
+
+    * To stop method over-riding - declare method as final i.e final methods cannot be over rided
+
+    * To stop Inheritance - declare class as final i.e final class cannot be extended
+
     * A Final object reference cannot be re-initialized but its internal state can still be modified
-    
-11. super() vs this() - 
+
+        example -
+
+            final Person p = new Person("Ravi");
+            p.setName("Raj"); // ✅ Allowed – modifying internal state
+            // p = new Person("Rahul"); ❌ Not allowed – reassigning final reference
+
+    * How final variables are initialized ?
+
+        * It depends on how they are created
+
+            * If static, then during class load
+
+                class App {
+                    static final int VERSION;
+
+                    static {
+                        VERSION = 1;  // ✅ Static final initialized in static block
+                    }
+                }
+
+            * If instance then during constructor call
+
+                    class Car {
+                        final String brand; // final instance variable
+
+                        // Constructor – required if not initialized at declaration
+                        Car(String brand) {
+                            this.brand = brand;  // ✅ Valid initialization
+                        }
+                    }
+
+            * If local then before accessing
+
+                void doSomething() {
+                    final int x; // declaration
+                    x = 10;      // initialization before use ✅
+                    System.out.println(x);
+                }
+
+10. super() vs this() - 
 
     Every Constructor in Java has a method called super() which is used to call the parent's Constructor
     * First Parent's contructor gets called and then Child's contructor
 
     this() - Executes the Constructor of the same class
 
-12. Inheritance -
+11. Inheritance -
 
-        In Java MultiLevel Inheritance is supported but not Multiple Inheritance
-
-        Inheritance is done using the keyword extends
+        * In Java MULTIPLE Inheritance is not supported
+        
+        * Inheritance is done using the keyword extends
 
         * For Multiple Inheritance - Multiple class can have same methods which creates an ambiguity i.e 
           JVM cannot decide which method to call, so Multiple inheritance is not supported
