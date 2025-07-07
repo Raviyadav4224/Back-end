@@ -569,29 +569,48 @@
                     }
             }
 
-21. Collections class vs Collection interface -
+20. Collections class vs Collection interface -
 
     Collections -
+    
         It is an utility class in Java that provides various static methods to work with Collection types
         (eg List, Set, Queue)
+
         for example - 
+
             Collections.sort()
             Collections.swap()
             Collections.reverse()
+            Collections.max()
+            Collections.min()
+            Collections.replaceAll()
+            Collections.frequency()
+
         * It doesn't implements the Collection interface although it is a part of Java Collections Framework
     
     Collection -
+
         It is an interface in Java Collections Framework
+
         It is implemented by List, Queue, Set interfaces
+
         * Classes that implements these interfaces ->
+
             List -> ArrayList, LinkedList, Vector
+
             Set -> HashSet, LinkedHashSet, TreeSet
+
             Queue -> PriorityQueue, LinkedList, ArrayDeque
-    
+
+        * ArrayList vs LinkedList -
+
+            ArrayList uses DYNAMIC ARRAY and is great for random access i.e get/set taken O(1) time
+            Whereas LinkedList uses DOUBLY LINKED LIST and it great for frequent insertion/deletion O(1)
+            
     Map - 
 
         **Map is not the part of Collection interface, Although it is part of the Java Collections Framework 
-        that represents a key-value pair where each key is UNIQUE
+          that represents a key-value pair where each key is UNIQUE
 
         * Map is an interface which is being implemented by classes such as HashMap, TreeMap, LinkedHashMap etc
 
@@ -601,19 +620,53 @@
         * TreeMap stores in ordered format(ascending) and doesn't allows for null key values but allows multiple
           null values, for basic operations such as get, put it takes O(logN)
 
-22. Comparator vs Comparable ->
+        * HashMap vs LinkedHashMap vs ConcurrentHashMap vs TreeMap -
+
+            HashMap -
+
+                An UNORDERED, NON-THREAD-SAFE map that allows one null key and multiple null values and 
+                for basic operations such as get, put, it takes O(1) time
+            
+            LinkedHashMap -
+
+                An ORDERED version of HashMap that maintains insertion order of entries using a 
+                doubly-linked list internally.
+            
+            ConcurrentHashMap -
+
+                A THREAD-SAFE version of HashMap that allows concurrent read/write operations without 
+                locking the entire map
+
+            TreeMap -
+
+                A sorted map based on Red-Black Tree, which keeps keys in natural order 
+                (or custom comparator) and does not allow null keys.
+        
+        * Internal working of HashMap -
+
+        How do you handle concurrent modifications in a ConcurrentHashMap?
+
+21. Comparator vs Comparable ->
 
     Comparator -
+
         It is an functional interface used to define CUSTOM SORTING order of objects without modifying the class
+
         It is a part of java.util package
+
         It is not the part of Java Collections Framework
+
         example Comparator<Student> marksComparator = (s1, s2) -> Integer.compare(s2.marks, s1.marks);
 
     Comparable -
+    
         It is an functional interface which is used to define the NATURAL SORTING order of objects by 
         modifying the class
+
         It is implemented on Class level
+
         It is a part of java.lang
+        
         for example -
             class Student implements Comparable<Student> {
                 int id;
