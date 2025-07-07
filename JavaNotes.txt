@@ -108,12 +108,14 @@
         int a=10;
         double b=a;
 
-    Explicit type casting - 
+    Explicit type casting -
+
         Occurs when converting LARGER values to SMALLER values
         double b=100.0;
         int a=int(b);
     
     Upcasting - 
+
         Occurs between objects when casting a subclass object to superclass reference
         class Animal { (SuperClass)
             void sound() {
@@ -137,6 +139,7 @@
         }
         
     Downcasting - 
+
         Occurs when casting a superclass reference back to subclass 
             Dog dog=(Dog) animal;
 
@@ -354,13 +357,13 @@
 
         * For Inheritance you only need .class file 
 
-13. Object class -
+12. Object class -
 
         By default every class in Java extends the Object Class directly or indirectly
         It means every class in Java has access to the Object class methods
         * Primitive values doesn't extends the Object class
 
-14. Wrapper class - 
+13. Wrapper class - 
 
         Primitive values doesn't extends the Object Class
         Wrapper class is a way to use Primitive data types as Objects
@@ -381,7 +384,8 @@
     * Dis-Advantage - Once created, wrapper objects cannot be modified. Any change creates 
       a new object.
 
-15. Anonymous inner class -
+14. Anonymous inner class -
+
         abstract class Car {
             public abstract void Drive() ;
         }
@@ -397,58 +401,84 @@
             Car car=new Tata()
             car.Drive()
         }
+
         * Here the sole purpose of class Tata is to implement the abstract method
+
         * Same can be done using Lambda expression for Functional interface
             Car car=()-> System.out.println("Tata is driving the Car");
             This is known as Anonymous inner class i.e class without name
 
-16. Abstract class -
+15. Abstract class -
         
         Abstract means just the idea and not its implementation
+
         * Abstract methods can only belong to Abstract class
+
         * When a class extends the Abstract class it must implement the abstract  methods
+
         * You cannot create an object of Abstract class only reference of that class can be created
+
         * Abstract class may or may not have abstract methods
 
-17. Interface -
+16. Interface -
 
     * Instead of using abstract class we can use interface
+
     * Interface is not a Class
+
     * By default every method in an interface is PUBLIC and ABSTRACT
+
     * Interface will have only the methods and not their implementations
+
     * To implement an interface we use IMPLEMENTS keyword
+
     * All variables inside interface are FINAL and STATIC
+
     * Class can implement multiple interfaces but abstract class can extend only one class
 
         Class  -> Class (extends)
         Class  -> Interface  (implements)
         Interface -> Interface (extends)
 
-    Functional Interface -
-    
-    Interface having only one method
-    @FunctionalInteface annotation can be used
-    Here Lambda expressions can be used
+    * Types of Interface -
 
-    Types of Interface - 
-        Normal Interface -> Interface having MULTIPLE METHODS
-        Functional Interface -> Interface having ONE METHOD
-        Marker Interface -> Interface having NO METHODS (used in serialization)
+        Normal Interface -> 
+        
+            Interface having MULTIPLE METHODS
+
+        Functional Interface -> 
+            
+            Interface having only one method
+
+            @FunctionalInteface annotation can be used
+
+            It makes the code more readable, modular, allows using Lambda expressions and
+            also used to avoid Anonymous inner class to create object
+
+        Marker Interface -> 
+
+            Interface having NO METHODS (used in serialization)
+
+    * examples -
+
+        Vehicle class having startEngine as an abstract method
+        Now twoWheeler class can define its own startEngine method annd similarly threeWheeler can also
+        define its own startEngine method
 
     * We can create reference of an interface and object of a class
         example -
             Runnable obj=new A();
 
-19. Lambda expression -
+17. Lambda expression -
 
-        It is applicable only for Functional interfaces i.e interface having only one method\
+        It is applicable only for Functional interfaces i.e interface having only one method
 
-19. Exception Handling -
+18. Exception Handling -
     
     Exceptions are events that can disrupt the normal execution of a program when some 
     unexpected situation occurs
 
-    *Types of Exception -
+    * Types of Exception -
 
         Checked exception - (COMPILE-TIME)
 
@@ -459,12 +489,16 @@
             These are exceptions that occur during the RUNTIME of a program, for example -Arithmetic Exception,
             NullPointerException etc 
     
-    *finally block always gets executed but there are situations where it may not get executed -
+    * finally block always gets executed but there are situations where it may not get executed -
+
         * If JVM crashes (due to OutOfMemoryError error)
+
         * try block has some infinite loop
+
         * If the thread executing the try block is killed
 
-    *Custom Exception Handling -
+    * Custom Exception Handling -
+
         We can have custom exception handling by extending the Exception class
         for example - 
             Class CustomException extends Exception{
@@ -478,14 +512,17 @@
             } catch (CustomException e) {
                 System.out.println(e.getMessage());
             }
-    *Throw - 
-        It is used to explicitly throw an exception, for example - new CustomException("This is a custom exception");
+
+    * Throw - 
+
+        It is used to explicitly throw an exception, for example - throw new CustomException("This is a custom exception");
     
-    *Throws - 
+    * Throws - 
+
         It is used to declare the exceptions that a METHOD can throw, it doesn't handles the exception itself
         for example -  void calculate(int x) throws ArithmeticException
 
-    *Throwable -
+    * Throwable -
 
         It is the root class in Java from which both Errors and Exceptions are derived
 
@@ -496,11 +533,15 @@
 
         Exception - ArithmeticException, IOException etc
 
-20. enum -
+19. enum -
+
     enum are special data type that represents a group of constants
+
     It is used to define a set of named values
-    *Enums are FINAL and STATIC implicitly
-    *Enums are more than constants; they can include fields, constructors, and methods.
+
+    * Enums are FINAL and STATIC implicitly
+
+    * Enums are more than constants; they can include fields, constructors, and methods.
         for example -
             enum Day{
                 MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY;
