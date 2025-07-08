@@ -469,6 +469,13 @@
         example -
             Runnable obj=new A();
 
+    ** STATIC methods in interface - 
+        
+        Static methods in interfaces acts as a utility helper methods
+
+        We cannot OVERRIDE static methods in an interface since static methods are resolved at 
+        compile time and override happens at run time using dynamic dispatch (polymorphism)
+
 17. Lambda expression -
 
         It is applicable only for Functional interfaces i.e interface having only one method
@@ -664,7 +671,7 @@
         modifying the class
 
         It is implemented on Class level
-
+        
         It is a part of java.lang
         
         for example -
