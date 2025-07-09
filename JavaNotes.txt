@@ -649,9 +649,9 @@
                 A sorted map based on Red-Black Tree, which keeps keys in natural order 
                 (or custom comparator) and does not allow null keys.
         
-        * Internal working of HashMap -
+        ** Internal working of HashMap -
 
-        How do you handle concurrent modifications in a ConcurrentHashMap?
+        * How do you handle concurrent modifications in a ConcurrentHashMap?
 
 21. Comparator vs Comparable ->
 
@@ -692,11 +692,27 @@
                 }
             }
 
-23. Threads ->
-        Multiple tasks running at same time
-        Smallest unit with which we can work is called a Thread
-        * In  every Thread we need to have run method
+22. Multi Threading ->
+
+        * Threading is the ability of CPU to run different tasks parallelly on different CPU cores
+
+        * Smallest unit with which we can work is called a Thread
+        
+        * We can create Thread using 
+
+            1. Extending Thread Class ( which internally implements the Runnable inteface )
+            2. Implementing Runnable Interface
+        
+        * start() vs run() -
+
+            start() creates a NEW THREAD and internally calls run() method inside the new thread
+
+            run() - directly runs in the CURRENT THREAD
+
+        * In every Thread we need to have run method
+
         * Using start() method we start the Thread
+
             class A extends Thread{
                 public void run() {
                     for (int i = 0; i < 10; i++) {
@@ -704,10 +720,66 @@
                     }
                 }
             }
+
             public static void main(String args[]) {
                 A obj1 = new A();
                 obj1.start();
             }
+
+        * Runnable vs Callable -
+        
+        * Thread Life cycle -
+
+            Java threads go through 6 states:
+
+                NEW  - Thread created but not started
+
+                RUNNABLE - Thread is ready to Run
+
+                RUNNING - Thread is currently running
+
+                BLOCKED - Waiting for a lock
+
+                WAITING - Waiting indefinitely ( eg join, wait)
+
+                TIMED_WAITING - Waiting with timeout ( eg sleep() )
+
+                TERMINATED - Thread has finished
+
+        * wait() -
+
+            It is used to make a thread pause and release the lock until another thread notifies it to 
+            resume.
+
+            It belongs to Object method and not Thread method
+
+        * What happens when you call wait()?
+
+            The current thread must hold the monitor lock (i.e., must be inside a synchronized block
+            or method).
+
+            The thread enters the WAITING state.
+
+            The thread releases the lock (so others can proceed).
+
+            The thread stays paused until it is Woken up using notify() or notifyAll() from another thread.
+
+            When resumed, it reacquires the lock before continuing.
+
+        * notify() vs notifyAll() -
+
+            It is used to notify one thread which is currently in waiting stage
+            Whereas notifyAll notifies all waiting threads
+
+        * join() -
+        
+            When you call t1.join() on a thread t1, the current thread (e.g., main thread) pauses and 
+            waits for t1 to complete before continuing further.
+
+        * Thread.sleep() -  
+
+            Pauses the current execution and continues after the specified time
+
         * obj.getPriority() gives the priority of Thread , we can also set the priority of the Thread using
             obj.setPriority(10)
             
@@ -715,35 +787,58 @@
             0 --> Normal priority
             10 --> Highest priority
 
-        * Thread is a class which implements Runnable interface
-        * Ways to create a Thread - we can use Thread class or implement Runnable
+        * Runnable -
 
-24. Runnable ->
+            * We can create a Thread by implementing the Runnable interface
 
-        We can create a Thread by implementing the Runnable interface
-        But here we have to create a Thread object to have start() method
-            Thread t1=new Thread(obj1);
-            using Lambda expression -> 
-                Runnable obj1 = ()->{
-                    for (int i = 0; i < 10; i++) {
-                        System.out.println("Hi");
-                        try {
-                            Thread.sleep(10);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
+            * But here we have to create a Thread object to have start() method
+            
+                Thread t1=new Thread(obj1);
+                using Lambda expression -> 
+                    Runnable obj1 = ()->{
+                        for (int i = 0; i < 10; i++) {
+                            System.out.println("Hi");
+                            try {
+                                Thread.sleep(10);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
                         }
-                    }
-                };  
-        * Thread safe means only one method can work with Thread at one time
-        * join() method is used to wait for the Thread to finish
-        * using SYNCHRONIZED both threads does not goes to the same variable at the same time, and prevents
-            Race Condition
-            public synchronized void increment() {
-                this.count++;
-            }
-        *wait(), notify() methods -
-    
-25. Stream API ->
+                    };  
+            
+            * Thread safe means only one method can work with Thread at one time
+
+            * using SYNCHRONIZED both threads does not goes to the same block/method at the same time, 
+              and prevents Race Condition
+
+                public synchronized void increment() {
+                    this.count++;
+                }
+
+        * Callable -
+
+            * It is an functional interface defined in java.util.concurrent package and is used to define
+              tasks which returns a result and can throw CHECKED exceptions
+            
+            * Callable itself is just a task (just like Runnable) — it does not create or run a thread 
+              on its own.
+              To run it in a new thread, you must submit it to something like: ExecutorService
+
+            * example -
+                
+                ExecutorService executor = Executors.newSingleThreadExecutor();
+
+                Callable<String> task = () -> {
+                    System.out.println("Running in: " + Thread.currentThread().getName());
+                    return "Callable result";
+                };
+
+                Future<String> future = executor.submit(task);
+                System.out.println("Result: " + future.get());
+
+                executor.shutdown();
+
+24. Stream API ->
 
         Introduced in Java 8, it provides ways to process pipeline(series) of operations to the elements
         of a collection or other data source in a functional and declarative programming style
