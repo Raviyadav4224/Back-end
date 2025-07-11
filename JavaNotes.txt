@@ -868,7 +868,7 @@
                     .collect(Collectors
                     .groupingBy(Employee::getDepartment, Collectors.maxBy(Comparator.comparing(Employee::getSalary))))
 
-24. String Builder vs StringBuffer -
+24. StringBuilder vs StringBuffer -
 
         StringBuilder and StringBuffer are MUTABLE classes in java used for manipulating strings
         They provide methods to modify strings WITHOUT CREATING new strings
@@ -984,46 +984,81 @@
         * String currentDate=LocalDateTime.now().format(formatter);
         * LocalDate date=LocalDate.parse(birthday,formatter);
 
-29. File Handling -
+27. File Handling -
 
-        It is a process that allows you to Read, Write, Update & Delete a file in Java
+        * Paths, Path and Files are used to work with Files and Paths in java, available in java.nio.* package
 
-        Create -
+        * Path — 
+            
+            Represents a file/directory path
         
-            File file=new File("path with file name");
-            if(file.createFile()) -- Creates file if not present 
+            Path path = Paths.get("data/file.txt");  // relative path
 
-        Read -  
+        * Paths — 
+            
+            Factory class to create Path objects
 
-            FileReader reader=new FileReader(above created file or filePath)
+            Think of it as: A helper class to get Path instances
 
-            reader.read() -- gives one charecter at a time and if no charecter are present then -1
-            int text;
-            while ((text = reader.read()) != -1) {
-                System.out.print((char) text);
-            }
+        * Files -
+            
+            Performs operations on files/directories
+            It allows you to Read, Write, Update & Delete a file in Java
+            Path path = Paths.get("file.txt");
 
-        Write -
+            Reading -
 
-            FileWriter writer=new FileWriter(file);
-            writer.write("This content is being written into the file");
+                String content = Files.readString(path);
+                List<String> lines = Files.readAllLines(path);
+                Stream<String> stream = Files.lines(path);
 
-        Update -
-        
-            FileWriter writer=new FileWriter(file,true(append true or false));
-            writer.write("This content is appended");
+            Writing -
 
-        Delete -
+                Files.writeString(path, "Hello");
+                Files.write(path, List.of("Line 1", "Line 2"));
 
-            File file=new File("path with file name");
-            if(file.delete()){
-                file deleted successfully
-            }
+            Checking -
+
+                Files.exists(path);
+                Files.isDirectory(path);
+
+            Directory ops -
+
+                Files.list(path);
+                Files.createDirectories(path);
+
+            File ops -
+
+                Files.copy(src, dest, StandardCopyOption.REPLACE_EXISTING);
+                Files.move(oldPath, newPath);
+                Files.deleteIfExists(path);
+
+            Binary -
+
+                byte[] data = Files.readAllBytes(path);
+                Files.write(path, byteArray);
 
     * BufferedReader & BufferedWriter -
 
-        BufferedWriter writer=new BufferedWriter(new FileWriter(file,true));
-        BufferedReader reader = new BufferedReader(new FileReader(file));
+        BufferedReader -
+
+            Path path = Paths.get("data/notes.txt");
+
+            try (BufferedReader reader = Files.newBufferedReader(path)) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    System.out.println(line);
+                }
+            }
+
+        BufferedWriter - 
+            
+            Path path = Paths.get("data/output.txt");
+
+            try (BufferedWriter writer = Files.newBufferedWriter(path)) {
+                writer.write("Hello, world!\n");
+                writer.write("Buffered writing with Files!");
+            }
 
     ** Every Read and Write operation directly interacts with HardDisk whereas,BufferedReader & BufferedWriter
        classes creates a buffer of chunk of data and reduces the number of interactions with HardDisk, Thus optimizing
