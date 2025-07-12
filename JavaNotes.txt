@@ -1064,7 +1064,7 @@
        classes creates a buffer of chunk of data and reduces the number of interactions with HardDisk, Thus optimizing
        file handling process
 
-30. Serialization, De-serialization ,transient & serialVersionUID-
+28. Serialization, De-serialization ,transient & serialVersionUID-
 
         Serialization is the process of converting object's state into byte stream such that it can be 
         stored in a database or a file
@@ -1073,9 +1073,9 @@
 
         For Serialization (Writing into a File) -
 
-            1. Opens file for writing into -
-        
-                FileOutputStream fos=new FileOutputStream("file path");
+            1. Opens file using the path -
+
+                OutputStream fileOut = Files.newOutputStream(filePath);
 
             2. Creates Buffer - 
 
@@ -1083,31 +1083,39 @@
 
             3. Converts Java objects into byte stream -
 
-                ObjectOutputStream oos=new ObjectOutputStream(bos);
+                ObjectOutputStream oos=new ObjectOutputStream(bos); 
+                OR
+                ObjectOutputStream oos=new ObjectOutputStream(fileOut); 
 
             4. Writes the object -
                 oos.writeObject(Person)
 
         For De-Serialization -
 
-            FileInputStream fis=new FileInputStream("path of file");
-            BufferedInputStream bis=new BufferedInputStream(fis);
+            InputStream fileIn = Files.newInputStream(filePath);
+            BufferedInputStream bis=new BufferedInputStream(fileIn);
+
             ObjectInputStream ois=new ObjectInputStream(bis);
+            OR 
+            ObjectInputStream ois=new ObjectInputStream(fileIn);
+            
             ois.readObject();
 
         * Transient keyword is used to indicate that the field should not be serialized
 
-        * SerialVersionUID - It is a unique identifier used during de-serialization process to verify 
-            that the sender and receiver of serialized object have compatible classes
-            It must be STATIC FINAL LONG
-            private static final long serialVersionUID=1234L;
+        * SerialVersionUID - 
 
-        * static and transient data members are not stored during serialization
+            * It is a unique identifier used during de-serialization process to verify 
+              that the sender and receiver of serialized object have compatible classes
+
+            * It must be STATIC FINAL LONG
+              private static final long serialVersionUID=1234L;
+
+        * STATIC and TRANSIENT data members are not stored during serialization
 
         * Constructor of Object is not called during de-serialization of the object
 
-
-31. Autoboxing -
+29. Autoboxing -
 
     Autoboxing in Java is conversion of primitive data types into the corresponding Wrapper class Objects
     example -
@@ -1115,7 +1123,7 @@
         int num=10;
         a=num; // Here num is primitive which is being converted to Integer class object
 
-        *Behind the scene Java uses Integer.valueOf(num) to convert into corresponding Wrapper class object
+        * Behind the scene Java uses Integer.valueOf(num) to convert into corresponding Wrapper class object
     
     * Caching in Wrapper classes - 
 
