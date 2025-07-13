@@ -691,6 +691,14 @@
                     return this.marks - other.marks; // Natural order: ascending marks
                 }
             }
+        List<Student> students = Arrays.asList(
+            new Student(3, "Ravi",91),
+            new Student(1, "Amit",92),
+            new Student(2, "Karan",99)
+        );
+
+        Collections.sort(students); // Uses compareTo
+        students.forEach(System.out::println);
 
 22. Multi Threading ->
 
@@ -1140,5 +1148,221 @@
             Integer b=200;
              if(a==b)  // FALSE since out of range  
         
-        * For Double and Float (No Caching is implemented) wrapper clasess always use .equals()
+        * For Double and Float - No Caching is implemented
 
+        * For Byte , Short, Integer( 0 t0 127 ), Long,Charecter , Boolean wrapper classes cache is implemented
+
+        * Always use .equals() for comparison of two values
+
+30. 0.1 * 2  == 0.2 ✅ vs 0.1 * 3 == 0.3 ❌ -
+
+    ✅ 0.1 * 2 == 0.2
+
+        0.1 is approximated in binary (slightly off, but close)
+
+        Multiplying by 2 gives a result very close to 0.2
+
+        And 0.2 is also approximate, but they match closely enough
+
+        So: true
+
+    ❌ 0.1 * 3 == 0.3 -
+
+        0.1 * 3 = 0.30000000000000004 (in binary floating-point)
+
+        0.3 = 0.299999999999999988897 (approx)
+
+        These values are not exactly equal, hence: false
+
+    ✅ Correct Way to Compare Floating-Point Values
+    Always compare floating-point numbers with a tolerance (epsilon):
+
+    double a = 0.1 * 3;
+    double b = 0.3;
+    System.out.println(Math.abs(a - b) < 0.0000001); // ✅ true
+
+    ** Due to floating-point precision errors, some decimal values like 0.1, 0.2, 0.3 cannot be 
+        represented exactly in binary. So direct comparison with == is unreliable. It's safer to compare 
+        using a tolerance range
+
+31. Java 8 Features -
+
+    1. Lambda Expressions - 
+        
+        Introduced functional-style programming by allowing us to write annonymous functions  
+        List<String> names = Arrays.asList("Ravi", "Amit", "Karan");
+        names.forEach(name -> System.out.println(name));
+
+    2. Functional Interfaces -
+
+        Interfaces with only one abstract method, used primarily with lambda expressions.
+        Common examples: Runnable, Comparator, and custom @FunctionalInterface.
+
+    3. Stream API -
+    
+        Introduced to process collections in a declarative and functional way (like filtering, mapping, reducing).
+    
+    4. Default and Static Methods in Interfaces -
+
+        Interfaces can now have default implementations using the default keyword and also static methods.
+        example:
+        interface MyInterface {
+            default void show() { System.out.println("Default Method"); }
+            static void display() { System.out.println("Static Method"); }
+        }
+
+    5. Optional Class -
+
+        Helps avoid NullPointerException by wrapping a value that may or may not be present.
+
+    6. Method References -
+
+        Shorthand for calling methods using ClassName::methodName.
+        Example:
+        names.forEach(System.out::println);
+
+32. Optional Class ( Optional<T> ) -
+
+    * A container object to represent a value that may or may not be present — 
+      helps avoid NullPointerException.
+
+    Common Methods -
+
+    of() - 
+
+        Create Optional with non-null value
+
+    ofNullable() - 
+
+        Create Optional with null-safe value
+
+    empty() - 
+
+        Create an empty Optional
+
+    isPresent() - 
+
+        Check if value exists
+
+    get() - 
+
+        Get value (⚠ risky without check)
+
+    orElse() - 
+
+        Return default if value absent
+
+    orElseGet() - 
+
+        Use supplier for fallback
+
+    orElseThrow() - 
+
+        Throw exception if empty
+
+    ifPresent() - 
+
+        Run code if value present
+
+    map() - 
+
+        Transform the value if present
+
+    flatMap() - 
+
+        Same as map but avoids nested Optional
+
+    filter() - 
+
+        Keep value only if it matches condition
+
+    🔹 Production Use Case (API) -
+
+        Spring Boot REST API to fetch user by ID:
+
+        @GetMapping("/users/{id}")
+        public ResponseEntity<?> getUserById(@PathVariable Long id) {
+            return userRepository.findById(id)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.status(404).body("User not found"));
+        }   
+
+33. equals() vs == - 
+
+    equals() -
+    
+        Use .equals() when you want to check if two objects are logically equal (same data).
+
+    == -
+        
+        Use == when you want to check if two objects are the exact same instance (reference).
+
+    ** Always override .hashCode() when you override .equals() — it ensures correct behavior in 
+       hash-based collections like HashSet or HashMap. 
+
+    ** If two objects are equal according to .equals(), they must return the same hashCode(). 
+       This ensures consistent behavior in hash-based collections like HashMap or HashSet. 
+       However, the reverse isn't true — two different objects can have the same hashCode due to collisions
+
+    examples - 
+
+        Student s1 = new Student(1, "Ravi");
+        Student s2 = new Student(1, "Ravi");
+
+        s1 == s2;           // ❌ false — different memory references
+        s1.equals(s2);      // ✅ true — same content (if equals is overridden)
+        s1.equals(s2);      // ❌ false — same content (if equals is NOT overridden)
+
+34.  Performance & Optimization
+
+     How do you detect and fix memory leaks in Java applications?
+
+35. What’s your go-to approach for optimizing Java code for performance?
+
+    Minimize unnecessary object creation (especially in loops)
+
+    Prefer StringBuilder for string concatenation inside loops
+
+    Use appropriate data structures (HashMap vs TreeMap)
+
+    Leverage Java 8+ Streams carefully to avoid performance pitfalls
+
+    Cache expensive operations (memoization, where applicable)
+
+36. Which recent Java feature has had the most impact:
+
+    Switch expressions improved readability and reduced boilerplate, especially in state machine or 
+    command-based logic
+
+37. Java Concepts & Best Practices ,What are some Java best practices you wish you had known earlier in your career?
+
+    Early in my career, I wish I had known the importance of:
+
+        Immutable objects: They're thread-safe by design and easier to reason about.
+
+        Using Optional wisely instead of nulls to avoid NPEs.
+
+        Writing unit tests first (TDD) — saves a lot of debugging time.
+
+        Understanding the cost of using collections (e.g., ArrayList vs LinkedList performance differences).
+
+38. Do you prefer writing if-else chains or using switch expressions in Java 14+? Why?
+
+    I prefer using switch expressions introduced in Java 14+ because they:
+
+    Are more readable than long if-else chains
+
+    Support multi-label cases and yield expressions
+
+    Reduce risk of missing break statements (no fallthrough issues)
+
+    Example:
+
+    String result = switch (status) {
+        case "ACTIVE" -> "User is active";
+        case "BLOCKED" -> "User is blocked";
+        default        -> "Unknown status";
+    };
+
+39. How do you structure large-scale Java applications to keep them maintainable?
+ 
