@@ -80,7 +80,7 @@
         JSON	Stores JSON formatted data
         BLOB	Binary Large Object (used for images, files, etc.)
         ENUM	Stores predefined string values (e.g., ENUM('Small', 'Medium', 'Large'))
-        SET	Stores multiple predefined values
+        SET	    Stores multiple predefined values
     
 7. Using SQL Commands ->
 
@@ -242,7 +242,6 @@
             * Select * from Employees order by id,name -> sorts by id first and if same id then by name alphabetically
             * Select * from Employees order by id desc,name desc-> sorts by id in desc first and if same id then by name desc order
 
-        
         Group By - groups same values in a specified column
             select age,AVG(salary) from employees group by age;
 
@@ -412,6 +411,7 @@
                 Alter table employees add column salary int default 1000;
 
 11. Joins -
+
         Joins are used to combine data from multiple tables based on related columns using PRIMARY & FOREIGN key
 
         There are 5 types of joins -
@@ -465,7 +465,7 @@
 
         Complex queries can be stored as views and can be reused
         
-        *Some Views allow INSERT, UPDATE & DELETE if 
+        * Some Views allow INSERT, UPDATE & DELETE if 
             created using single table
             It does not contains DISTINCT, GROUP BY, JOINS, AGGREGATE Functions 
 
@@ -531,6 +531,7 @@
 17. KeyPoints -
 
     * In Linux MYSQL is CASE SENSITIVE
+    
     * Extract Month,Year,Day -
 
         MONTH(2018-01-31) -> 01
@@ -604,6 +605,31 @@
         group by sell_date
         order by sell_date
 
+18. Backup of Database -
+
+    1. Create a Database Backup using mysqldump:
+        To back up all databases:
+
+        mysqldump -uroot -p --all-databases > database_backup.sql
+        
+        To back up a specific database:
+
+        mysqldump -uroot -p your_database_name > database_backup.sql
+        
+    2. Copy the Backup File into the MySQL Docker Container:
+
+        Assuming your MySQL container name is mysqlC:
+
+        docker cp database_backup.sql mysqlC:/database_backup.sql
+
+    3. Restore the Backup Inside the MySQL Container:
+
+        Access the MySQL container:
+
+        docker exec -it mysqlC bash
+        Then restore the backup:
+
+        mysql -uroot -p < /database_backup.sql
 
 
 ********************************************************************************************************
