@@ -455,10 +455,34 @@
         SELECT ISNULL(NULL); -- 1
         SELECT ISNULL(10); -- 0
 
-
     IFNULL() - Returns a default value if the given value is NULL.
         SELECT IFNULL(NULL, 'Default Value'); -- Output: 'Default Value'
         SELECT IFNULL(10, 20); -- Output: 10 (since 10 is not NULL)
+
+    IF(condition, value_if_true, value_if_false)   
+
+    CASE
+        WHEN condition1 THEN result1
+        WHEN condition2 THEN result2
+        ...
+        ELSE default_result
+        END as COLUMN_NAME
+
+        example -
+            
+            select
+                o.customer_name ,
+                o.order_amount ,
+                o.order_date,
+                if(o.order_amount>800,'Big Order','Small Order') as order_value,
+                case
+                    when o.order_date >= NOW()-INTERVAL 1 DAY THEN 'TODAY'
+                    WHEN o.order_date >= NOW()- INTERVAL 7 DAY THEN 'THIS WEEK'
+                    WHEN o.order_date >= NOW()- INTERVAL 1 MONTH THEN 'THIS MONTH'
+                    else 'Older'
+                end as order_age
+            from
+                orders o;
 
 13. Views -
 
@@ -634,7 +658,19 @@
 
         mysql -uroot -p < /database_backup.sql
 
+19. Window Functions -
 
+    <function_name>() OVER (
+        [PARTITION BY ...]
+        [ORDER BY ...]
+        [ROWS BETWEEN ...]
+    )
+
+    OVER()	Declares a window to apply the function
+    PARTITION BY	Divides rows into groups (like GROUP BY)
+    ORDER BY	Orders rows within each partition
+    ROWS BETWEEN	Defines a frame of rows to consider (previous, current, following rows)
+    
 ********************************************************************************************************
 * PRACTICE QUESTIONS -
 
@@ -731,6 +767,36 @@
         INNER JOIN emp e2 ON e1.salary = e2.salary AND e1.id < e2.id;
 
     ✅ 15. Get cumulative salary per department using window functions
-    SELECT name, department_id, salary,
-        SUM(salary) OVER (PARTITION BY department_id ORDER BY salary) AS totalSalary
-    FROM emp;
+        SELECT name, department_id, salary,
+            SUM(salary) OVER (PARTITION BY department_id ORDER BY salary) AS totalSalary
+        FROM emp;
+
+REVISION -
+✅ DATA TYPES - Numeric, String , Date & Time, Boolean, JSON & Other types
+
+✅ DDL - Create , Alter, Drop ,Truncate
+✅ DML - Update , Delete , Insert
+✅ DQL - Select
+✅ DCL - Grant, Revoke
+✅ TCL - Transaction, Rollback, Commit
+
+✅ Data Contraints - NOT NULL, UNIQUE, PRIMARY KEY, FOREIGN KEY, COMPOSITE KEY, DEFAULT KEY 
+
+✅ Clauses - WHERE, HAVING, ORDER BY, GROUP BY, LIMIT, OFFSET
+
+✅ Aggregate Functions - SUM, AVG, COUNT,MAX, MIN, COALESCE, REPLACE, LIKE , REGEXP, ROUND, FLOOR, CEIL, UPPER,
+✅ LOWER, RAND, ISNULL, IFNULL
+
+✅ JOINS - LEFT, RIGHT, INNER, OUTER(LEFT UNION RIGHT), CROSS
+
+✅ WINDOW FUNCTIONS
+
+✅ IF ELSE , SWITCH CASE
+
+✅ COMMON TABLE EXPRESSIONS
+
+✅ INDEXES
+
+✅ VIEWS
+
+✅ SQL Vulnerabilities
