@@ -772,31 +772,32 @@
         FROM emp;
 
 REVISION -
-✅ DATA TYPES - Numeric, String , Date & Time, Boolean, JSON & Other types
 
-✅ DDL - Create , Alter, Drop ,Truncate
-✅ DML - Update , Delete , Insert
-✅ DQL - Select
-✅ DCL - Grant, Revoke
-✅ TCL - Transaction, Rollback, Commit
+    ✅ DATA TYPES - Numeric, String , Date & Time, Boolean, JSON & Other types
 
-✅ Data Contraints - NOT NULL, UNIQUE, PRIMARY KEY, FOREIGN KEY, COMPOSITE KEY, DEFAULT KEY 
+    ✅ DDL - Create , Alter, Drop ,Truncate
+    ✅ DML - Update , Delete , Insert
+    ✅ DQL - Select
+    ✅ DCL - Grant, Revoke
+    ✅ TCL - Transaction, Rollback, Commit
 
-✅ Clauses - WHERE, HAVING, ORDER BY, GROUP BY, LIMIT, OFFSET
+    ✅ Data Contraints - NOT NULL, UNIQUE, PRIMARY KEY, FOREIGN KEY, COMPOSITE KEY, DEFAULT KEY 
 
-✅ Aggregate Functions - SUM, AVG, COUNT,MAX, MIN, COALESCE, REPLACE, LIKE , REGEXP, ROUND, FLOOR, CEIL, UPPER,
-✅ LOWER, RAND, ISNULL, IFNULL
+    ✅ Clauses - WHERE, HAVING, ORDER BY, GROUP BY, LIMIT, OFFSET
 
-✅ JOINS - LEFT, RIGHT, INNER, OUTER(LEFT UNION RIGHT), CROSS
+    ✅ Aggregate Functions - SUM, AVG, COUNT,MAX, MIN, COALESCE, REPLACE, LIKE , REGEXP, ROUND, FLOOR, CEIL, UPPER,
+    ✅ LOWER, RAND, ISNULL, IFNULL
 
-✅ WINDOW FUNCTIONS
+    ✅ JOINS - LEFT, RIGHT, INNER, OUTER(LEFT UNION RIGHT), CROSS
 
-✅ IF ELSE , SWITCH CASE
+    ✅ WINDOW FUNCTIONS
 
-✅ COMMON TABLE EXPRESSIONS
+    ✅ IF ELSE , SWITCH CASE
 
-✅ INDEXES
+    ✅ COMMON TABLE EXPRESSIONS
 
-✅ VIEWS
+    ✅ INDEXES
 
-✅ SQL Vulnerabilities
+    ✅ VIEWS
+
+    ✅ SQL Vulnerabilities
