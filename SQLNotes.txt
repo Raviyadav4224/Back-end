@@ -426,7 +426,7 @@
             be achieved using LEFT JOIN UNION RIGHT JOIN
 
             Cross join - Returns the Cartesian product of both tables (every row from Table A joins with
-             every row from Table B).
+             every row from Table B) i.e ( M * N )
 
             Self Join - Table is joined with itself 
 
@@ -508,8 +508,23 @@
 
 14. Indexes -
 
-    Indexes are created for Query optimization
-    Using indexes MySQL locate the relevant data without fully scanning the whole table
+    * It is a data structure used for data retrieval
+
+    * Indexes are created for Query optimization
+
+    * Using indexes MySQL locate the relevant data without fully scanning the whole table
+
+    * Types of Indexes -    
+
+        Primary key index: Unique and not null.
+
+        Unique index: Ensures unique values.
+
+        Regular index: Speeds up searches.
+
+        Full-text index: For text searching.
+
+        Spatial index: For geospatial data.
 
     CREATE INDEX INDEX_NAME ON TABLE TABLE_NAME (COLUMN_NAME)
 
@@ -660,17 +675,82 @@
 
 19. Window Functions -
 
-    <function_name>() OVER (
+    * Windows functions performs calculations on group of rows related with current row w/o collapsing 
+      them into single row like group by
+
+    * <function_name>() OVER (
         [PARTITION BY ...]
         [ORDER BY ...]
         [ROWS BETWEEN ...]
-    )
+        )
 
     OVER()	Declares a window to apply the function
     PARTITION BY	Divides rows into groups (like GROUP BY)
     ORDER BY	Orders rows within each partition
     ROWS BETWEEN	Defines a frame of rows to consider (previous, current, following rows)
+
+20. Storage Engines in MySQL -
+
+    InnoDB - 
+
+        * It is the DEFAULT engine of MySQL
+        * It supports ACID transactions, foreign - keys , crash recovery and is highly reliable for OLTP
+          (Online Transaction Protocols) workloads
+
+    MyISAM (My Indexed Sequential Access Method) -
+
+        * It is Older engine
+        * Faster reads but no support for ACID transactions and foreign keys
     
+    Memory -
+
+        It stores data is RAM and data is lost upon restart
+        It is fast and is used to store temporary data
+    
+    CSV -
+
+        It stores data is CSV files, rarely used
+
+    * We can define engine while creating table 
+         Create table Employees ( emp_id int not null) ENGINE=InnoDB;
+
+21. ACID Properties -
+
+        ACID stands for:
+
+            Atomicity: Transactions are all or nothing.
+
+            Consistency: Data remains consistent after transactions.
+
+            Isolation: Transactions don’t interfere with each other.
+
+            Durability: Once committed, changes persist even after crashes.
+
+22. Normalization - 
+
+    * Normalization is a systematic approach to organize data within a database to reduce redundancy
+
+    * The process involves breaking down large tables into smaller, well-structured ones and defining 
+      relationships between them
+
+    * First Normal Form (1NF): Eliminating Duplicate Records
+
+    * Second Normal Form (2NF): 1NF +  Eliminating Partial Dependency
+
+    * Third Normal Form (3NF): 2NF +  Eliminating Transitive Dependency
+
+23. Optimize Slow Queries -
+
+    * Use EXPLAIN to analyze query plans.
+
+    * Add proper indexes.
+
+    * Avoid SELECT *; select only needed columns.
+
+    * Rewrite subqueries as joins (or vice versa).
+
+    * Use LIMIT for pagination.
+
 ********************************************************************************************************
 * PRACTICE QUESTIONS -
 
