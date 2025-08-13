@@ -689,6 +689,19 @@
     ORDER BY	Orders rows within each partition
     ROWS BETWEEN	Defines a frame of rows to consider (previous, current, following rows)
 
+    * RANK() vs DENSE_RANK() -
+
+        RANK is used to rank column based on values
+        When value is tied, same rank is assigned
+        It leaves gaps after ties
+
+        DENSE_RANK is also used to rank column based on values but it doesn't leaves gaps
+
+        example -
+            for emp_id 101,102,102,103
+            rank - 1,2,2,4
+            dense_rank - 1,2,2,3
+            
 20. Storage Engines in MySQL -
 
     InnoDB - 
