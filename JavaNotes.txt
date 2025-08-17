@@ -29,7 +29,7 @@
     * Data Encapsulation -
 
         Wrapping up of all the data members and methods as a single unit and restricting direct 
-        access to some of the objevt components
+        access to some of the object components
 
         example - Medicine capsule
 
@@ -52,6 +52,7 @@
 3. JDK vs JRE vs JIT vs JVM -
 
     JVM (Java Virtual Machine) - 
+
         It provides environment to execute java byte code i.e .class file
         
         JVM - Loads the bytecode
@@ -74,26 +75,33 @@
             Libraries - Essential Java Libraries like java.util , java.lang etc
 
     JDK (Java Development Kit) - 
+
         It is a software development kit used for developing java applications
         It includes - 
          JVM for running bytecode
          Libraries - Essential Java Libraries like java.util , java.lang etc
-         Development tools Z( Compiler , Debugger)
+         Development tools ( Compiler , Debugger)
 
     JVM - Executes bytecode
     JIT - part of JVM to optimize performance
     JRE - JVM + Libraries
-    JDK - JRE + Development tools ( Compiler , Debugger)
+    JDK - JRE + Libraries + Development tools ( Compiler , Debugger)
+
+    * .java file is converted into bytecode (.class) by javac compiler which is platform independent, 
+      then JVM loads the bytecode using the Class Loader, it interprets and uses JIT Compilation and shows
+      output to the user
 
 4. Data Types - 
 
     Primitive data types - 
+    
         Number - byte(1) , short(2), int(4), long(8)
         Float - float(4) , double(8)
         boolean - true or false (not 1 or 0)
         char - 2bytes (single quotation , UNICODES and not ASCII values)
 
     Non - Primitive data types - 
+
         Arrays
         String
         class
@@ -132,7 +140,7 @@
                 System.out.println("Dog can guard");
             }
         }
-        public static vodi main(){
+        public static void main(){
             Animal animal=new Dog();
             animal.sound(); // Upcasting
 
@@ -152,12 +160,12 @@
             - DIFFERENT type of parameters
             is termed as method overloading
 
-        * It implements compile time polymorphism
+        * It implements COMPILE time polymorphism
 
         * return type doesn't matter
 
         ** Overloaded methods can have different return types, but if only return type differs then its not
-            overloading
+           overloading
 
     Method Over-riding -
 
@@ -254,12 +262,12 @@
         * Static variables can be accessed directly using the ClassName, we dont need to create objects for
           them to access
 
-        * JVM has special area to handle static variables
+        * JVM has special area to handle static variables i.e METHOD AREA
 
     Static methods - 
 
         * Non static variables cannot be used inside static methods, because to use non static variables we need
-        to create object of it.
+          to create object of it.
 
         * Indirect access is possible by sending a function parameters
 
@@ -280,7 +288,7 @@
 
         * Class loads only once
 
-        * Class.forName("Person")  Loads the class
+        * Class.forName("Person") - Loads the class
 
         *   Person p1=new Person()
             Here p1 is the reference variable of type Person
@@ -348,7 +356,7 @@
 
 11. Inheritance -
 
-        * In Java MULTIPLE Inheritance is not supported
+        * In Java MULTIPLE Inheritance is NOT supported
         
         * Inheritance is done using the keyword extends
 
@@ -458,6 +466,12 @@
         Marker Interface -> 
 
             Interface having NO METHODS (used in serialization)
+            
+            Used to “mark” a class so that JVM gives special behavior
+
+            Serializable → tells JVM this object can be serialized.
+
+            Cloneable → tells JVM object can be cloned using clone().
 
     * examples -
 
@@ -475,6 +489,20 @@
 
         We cannot OVERRIDE static methods in an interface since static methods are resolved at 
         compile time and override happens at run time using dynamic dispatch (polymorphism)
+
+    ** DEFAULT methods in inteface -
+
+        Before Java 8:
+        If you added a new method to an existing interface, all implementing classes would break, 
+        since they’d be forced to implement the new method.
+
+        With Java 8+:
+        You can provide a default implementation in the interface → existing classes don’t break.
+
+        Default methods can be overridden
+
+        If two interfaces provide the same default method, the implementing class must resolve the 
+        conflict by overriding it.
 
 17. Lambda expression -
 
@@ -609,10 +637,17 @@
 
             Queue -> PriorityQueue, LinkedList, ArrayDeque
 
-        * ArrayList vs LinkedList -
+        * ArrayList vs LinkedList vs Vector -
 
-            ArrayList uses DYNAMIC ARRAY and is great for random access i.e get/set taken O(1) time
-            Whereas LinkedList uses DOUBLY LINKED LIST and it great for frequent insertion/deletion O(1)
+            ArrayList uses DYNAMIC ARRAY and is great for random access i.e get/set by index 
+            takes O(1) time but slower for insert/remove in middle as it takes O(n) time and not
+            thread safe
+
+            Whereas LinkedList uses DOUBLY LINKED LIST and is great for frequent insertion/deletion O(1)
+            but slow for random access O(n) and not thread safe
+
+            Vector is similar to ArrayList but it is Thread safe but slower than ArrayList due to 
+            synchronization
             
     Map - 
 
@@ -650,8 +685,6 @@
                 (or custom comparator) and does not allow null keys.
         
         ** Internal working of HashMap -
-
-        * How do you handle concurrent modifications in a ConcurrentHashMap?
 
 21. Comparator vs Comparable ->
 
@@ -1313,7 +1346,7 @@
         s1.equals(s2);      // ✅ true — same content (if equals is overridden)
         s1.equals(s2);      // ❌ false — same content (if equals is NOT overridden)
 
-34.  Performance & Optimization
+34. Performance & Optimization
 
      How do you detect and fix memory leaks in Java applications?
 
