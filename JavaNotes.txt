@@ -983,11 +983,29 @@
         * stream() is used to create a stream and it provides various methods to be applied on the stream 
           such as map, filter, reduce
         
-          for example -
-            List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5);
-            int product = numbers.stream().map(n->n*2);
+        * Intermediate operations - (lazy, return a stream)
+          Examples: map, filter, sorted, distinct, limit, skip, flatMap.
+
+          Terminal operations - (consume the stream, return non-stream result)
+          Examples: collect, reduce, forEach, count, findFirst, findAny, toArray.
+          Once a terminal operation is called, the stream cannot be reused.
+        
+        * numbers.stream().map().toList() - Creates Im-mutable List
+
+        * numbers.stream().map().collect(Collectors.toList()) - Creates Mutable List
+
+        * Collectors.toMap(Key,Value,if duplicate then what)
+
+        * Collectors.groupingBy((e)->e.getDept(),Collectors.toList()) expects a classifier function (how to group elements)
+          and optionally a downstream collector (like Collectors.toList() or Collectors.toSet())
+
+        * numbers.stream().flatMap()
+
+        * Comparator.comparing(Employee::getSalary) - Compares using comparator
 
         * collect() is used to terminate the stream and convert the stream back into specific data types
+
+        * .collect(Collectors.summingInt(Employee::getSalary));
 
         * To handle infinite streams of data we can use any of the terminations operations like findfirst(),
             findAny(), anyMatch(), limit() etc
