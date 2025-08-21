@@ -1128,7 +1128,8 @@
 26. Date,Time & DateTime API - 
 
         Introduced in Java 8 in the java.time package.
-        * All classes inside java.time are immutable and thread safe
+        * All classes inside java.time are IMMUTABLE and THREAD SAFE
+
         * It has TimeZones support
 
         classes - LocalDate, LocalTime, LocalDateTime, ZonedDateTime, DateTimeFormatter
@@ -1136,6 +1137,27 @@
         * DateTimeFormatter formatter= DateTimeFormatter.ofPattern("MM/dd/yyyy");
         * String currentDate=LocalDateTime.now().format(formatter);
         * LocalDate date=LocalDate.parse(birthday,formatter);
+
+        ** UTC ( Co-ordinated Universal Time ) is global reference clock not tied to any country or 
+           time zone .It is always written with a Z i.e Zulu time 
+
+        ** ISO is just a format of writing time, it can include Date, Date+Time, Date+Time+Time zone offset 
+           or UTC 
+
+        * We generally store UTC in DB's and convert them back to ISO format with local date time when 
+          showing to user
+        
+        ** It has Time zone support and doesn't requires manual handling of offsets
+           Example -
+            Instant utc = Instant.now();
+            ZonedDateTime ist = utc.atZone(ZoneId.of("Asia/Kolkata"));
+            ZonedDateTime nyc = utc.atZone(ZoneId.of("America/New_York"));
+
+        * Example -
+
+            Instant ist= Instant.now() - Gives LocalDateTime in UTC
+            String localdatetime = LocalDateTime.ofInstant(Instant.now(),ZoneId.systemDefault()) -- Converts LocalDateTime into ISO
+            .format(DateTimeFormatter.ofPattern("dd-MMM-yyyy hh:mm a"));
 
 27. File Handling -
 
