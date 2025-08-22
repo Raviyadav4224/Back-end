@@ -1317,7 +1317,7 @@
         
         * For Double and Float - No Caching is implemented
 
-        * For Byte , Short, Integer( 0 t0 127 ), Long,Charecter , Boolean wrapper classes cache is implemented
+        * For Byte , Short, Integer( 0 to 127 ), Long, Character, Boolean wrapper classes cache is implemented
 
         * Always use .equals() for comparison of two values
 
@@ -1390,18 +1390,40 @@
 
 32. Optional Class ( Optional<T> ) -
 
-    * A container object to represent a value that may or may not be present — 
-      helps avoid NullPointerException.
+    * Optional classes are used to handle null values without throwing Null Pointer Exceptions and helps
+      to reduce the boiler plate code of checking for null values
+    
+    * Optional<T> is a container object introduced in Java 8.
+
+    * It may or may not contain a non-null value.
+
+      Example -
+
+        Employee emp = null;
+
+            if (emp != null && emp.getName() != null) {
+            	System.out.println(emp.getName().toLowerCase());
+            }
+            else {
+            	System.out.println("Emp is null");
+            }
+
+            Optional<Employee> optionalEmp = Optional.ofNullable(emp);
+
+            String email = optionalEmp.map(Employee::getName).map(String::toLowerCase).orElse("Email not found");
+            System.out.println(email);
 
     Common Methods -
 
     of() - 
 
-        Create Optional with non-null value
+        Create Optional with non-null value 
+        It is used when we know that the value cannot be NULL
 
     ofNullable() - 
 
         Create Optional with null-safe value
+        It is used when we know that value can be NULL
 
     empty() - 
 
@@ -1410,6 +1432,9 @@
     isPresent() - 
 
         Check if value exists
+        optionalEmp.map(Employee::getName).ifPresent(user -> {
+			System.out.println(user);
+		});
 
     get() - 
 
@@ -1501,6 +1526,18 @@
     Switch expressions improved readability and reduced boilerplate, especially in state machine or 
     command-based logic
 
+        String result = switch (status) {
+        case "ACTIVE" -> "User is active";
+        case "BLOCKED" -> "User is blocked";
+        case "Active": {
+			yield "User is active";
+		}
+        default        -> "Unknown status";
+        };
+
+    * Instead of break statements, which simply exit the switch block, YIELD explicitly specifies 
+        the value that the switch expression should evaluate to for a given case
+
 37. Java Concepts & Best Practices ,What are some Java best practices you wish you had known earlier in your career?
 
     Early in my career, I wish I had known the importance of:
@@ -1513,23 +1550,16 @@
 
         Understanding the cost of using collections (e.g., ArrayList vs LinkedList performance differences).
 
-38. Do you prefer writing if-else chains or using switch expressions in Java 14+? Why?
+38. How do you structure large-scale Java applications to keep them maintainable?
 
-    I prefer using switch expressions introduced in Java 14+ because they:
+Fail-fast vs Fail-safe iterators
+Difference between HashMap and ConcurrentHashMap. When to use each?
 
-    Are more readable than long if-else chains
+How does HashMap handle collisions internally?
+* How do you handle concurrent modifications in a ConcurrentHashMap?
 
-    Support multi-label cases and yield expressions
 
-    Reduce risk of missing break statements (no fallthrough issues)
-
-    Example:
-
-    String result = switch (status) {
-        case "ACTIVE" -> "User is active";
-        case "BLOCKED" -> "User is blocked";
-        default        -> "Unknown status";
-    };
-
-39. How do you structure large-scale Java applications to keep them maintainable?
- 
+    Fail-fast vs Fail-safe iterators
+Memory & Performance
+    Heap vs Stack
+    Garbage Collection basics
