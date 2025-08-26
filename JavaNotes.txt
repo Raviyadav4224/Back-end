@@ -1095,6 +1095,7 @@
         * WildCards (?)-
 
             WildCards are used for unknown types
+
                 public static void printList(List<?> list) {
                     for (Object obj : list) {
                         System.out.println(obj);
@@ -1102,6 +1103,10 @@
                 }
                 (? extends T): Represents any type that is a subtype of T
                 (? super T): Represents any type that is a supertype of T
+
+            * ? extends T (upper bound) → read-only producer.
+
+            * ? super T (lower bound) → write-only consumer.
 
         * Generic Interfaces -
 
@@ -1113,6 +1118,8 @@
         * Generics with Collection -
 
             List<Integers> num=new ArrayList<>();
+
+    * Wildcards (super, extends) only allowed in method parameters, not in class type parameters.
 
     * Generics use TYPE ERASURE which means type information is removed during compile time.
       At runtime all Box<T> objects are treated as Box<Object>, Therefore we cannot instantiate Generics
@@ -1552,14 +1559,81 @@
 
 38. How do you structure large-scale Java applications to keep them maintainable?
 
-Fail-fast vs Fail-safe iterators
-Difference between HashMap and ConcurrentHashMap. When to use each?
+39. Fail-fast vs Fail-safe iterators -
 
-How does HashMap handle collisions internally?
-* How do you handle concurrent modifications in a ConcurrentHashMap?
+    Fail-fast iterators -
 
+        * Fail-fast is found in most of the Java collection Framework like ArrayList, HashMap,HashSet.
 
-    Fail-fast vs Fail-safe iterators
-Memory & Performance
-    Heap vs Stack
-    Garbage Collection basics
+        * If we try to modify a collection while iterating through it, it throws ConcurrentModificationException
+          i.e iterators work on Original collections and they check for structural modification(i.e add/remove)
+          by comparing a modCount.
+        
+        * Fail-fast ensures that bugs like Multiple threads modifying the collection unexpectedly are
+          detected earlier.
+
+        * Example -
+
+            List<String> fruits = new ArrayList<>();
+            fruits.add("Apple");
+            fruits.add("Banana");
+            fruits.add("Orange");
+            fruits.add("Grape");
+
+            System.out.println("Original list: " + fruits);
+
+            // Attempting to modify the list while iterating using an enhanced for loop
+            for (String fruit : fruits) {
+                if (fruit.equals("Banana")) {
+                    fruits.remove(fruit); // This line will cause the exception
+                }
+            }
+
+        * Fail-fast behavior applies only when using an iterator (directly or via for-each loop)
+          Iterator + remove() → safe
+          Iterator + list.remove() → unsafe
+
+    Fail-safe iterators -
+
+        * These are found in concurrent collections like ConcurrentHashMap
+
+        * These iterators do not throw exception if collection is being modified during iteration
+          since they iterate over a cloned snapshot of collection
+        
+        * Fail-safe is better for multi-threaded applications (safety).
+
+40. Garbage Collection and Memory Leakage -
+
+    Garbage Collection -
+
+        * Java uses automatic garbage collection to free memory occupied by objects which are no longer
+          reachable in the program.
+
+        * Garbage collection is not deterministic i.e we cannot force garbage collection but only suggest
+          using System.gc(), but JVM decides when to run it.
+        
+        * It works in three phases i.e Mark - Sweep - Compact 
+
+          Mark - mark objects which are still reachable
+          Sweep - Delete objects which are no longer reachable and reclaims memory
+          Compact - Reorganize the memory
+
+    Memory Leakages -
+
+        * Memory leakage occurs when objects which are no longer needed but are still referenced and 
+          Garbage collector cannot reclaim the memory. Over time this causes OutOfMemoryError.
+        
+        * Static fields holding objects -
+
+            class MemoryLeak {
+                private static List<String> cache = new ArrayList<>();
+                public void addData(String data) {
+                    cache.add(data); // static list keeps growing, never released
+                }
+            }
+        * Unclosed resources 
+        
+        * To prevent memory leak we can use, try with resources which closes the resources , weak references,
+          avoid unnecessary static references, some profiling tools to detect leaks.
+
+41. Refletion in Java
