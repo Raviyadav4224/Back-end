@@ -683,8 +683,6 @@
 
                 A sorted map based on Red-Black Tree, which keeps keys in natural order 
                 (or custom comparator) and does not allow null keys.
-        
-        ** Internal working of HashMap -
 
 21. Comparator vs Comparable ->
 
@@ -1593,6 +1591,8 @@
           Iterator + remove() → safe
           Iterator + list.remove() → unsafe
 
+        * Adding/removing keys while iterating → Causes ConcurrentModificationException.
+
     Fail-safe iterators -
 
         * These are found in concurrent collections like ConcurrentHashMap
@@ -1636,4 +1636,102 @@
         * To prevent memory leak we can use, try with resources which closes the resources , weak references,
           avoid unnecessary static references, some profiling tools to detect leaks.
 
-41. Refletion in Java
+41. Refletion in Java -
+ 
+    * Reflection in Java is a feature which allows you to inspect and manipulate classes, methods, fields 
+      and constructors at runtime even if you dont know them at compile time.
+
+    * Normal Objects -  We use them when we know the Class Structure
+      Reflection Objects - we use them when we dont know the Class Structure
+
+    * Why Reflection is important -
+
+        * Frameworks like Spring / Springboot uses Reflection behind the annotations like @Autowired, 
+          @Entity, @RequestMapping etc
+        
+        * How Spring Boot Uses It -
+
+            At startup, Spring scans classes and builds beans.
+
+            For @Autowired private UserService userService;, Spring uses reflection:
+
+            Field f = UserController.class.getDeclaredField("userService");
+            f.setAccessible(true); // set private fields accessible
+            f.set(controllerObj, userServiceBean);
+
+            So beans are injected without new keyword, even into private fields
+
+    * Example
+        Employee emp = new Employee();
+        emp.work();   // Output: Default Name is working...
+
+        // --- Reflection Part ---
+        // 1. Get Class reference
+        Class<?> clazz = emp.getClass();
+
+        // 2. Get private field "name"
+        Field field = clazz.getDeclaredField("name");
+
+        // 3. Allow access to private field
+        field.setAccessible(true);
+
+        // 4. Set new value into the private field
+        field.set(emp, "Ravi Kumar");
+
+        // 5. Verify change
+        emp.work();   // Output: Ravi Kumar is working...
+
+42. Internal working of HashMap -
+
+    Imagine HashMap as a Locker Room
+
+    1. The Locker Room (Array of Buckets)
+
+        Think of a locker room with 16 lockers (default capacity).
+        Each locker = bucket.
+
+    2. The Key (hashCode)
+
+        When you store something, you give the guard your key (hashCode).
+        The guard runs it through a formula to decide which locker to put it in.
+
+    3. Collision (Two keys for same locker)
+
+        Sometimes, two people are told to use the same locker.
+
+        Before Java 8: They kept their things in a linked list inside the locker.
+
+        After Java 8: If the locker got too crowded (>8), the items were organized into a tree 
+        (Red-Black tree) so searching is faster.
+
+    4. Get (Search)
+
+        When you come back, you hand your key.
+        The guard knows which locker to open, and inside he checks equals() to find your exact item.
+
+    5. Resize (Room Expansion)
+
+        If the locker room gets 75% full, they build a bigger room (double the lockers).
+        Then they re-distribute everything into new lockers → rehashing.
+
+    6. Time Taken
+
+        Normally, the guard directly takes you to your locker → O(1).
+
+        If crowded (all in same locker):
+
+        Before Java 8: Check one by one → O(n).
+
+        After Java 8: Tree search → O(log n).
+
+    Simple Summary for Interview
+
+        HashMap = locker room (array of buckets).
+
+        Put: Compute hash → find locker → place item.
+
+        Get: Compute hash → open locker → search item.
+
+        Collisions → list (old) or tree (new).
+
+        Resize → bigger locker room at 75% full.
