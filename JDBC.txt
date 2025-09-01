@@ -34,7 +34,7 @@
     
     Prepared Statements -
 
-        It is used for dynamic processing of queries using with placeholders ? (parameters)
+        It is used for dynamic processing of queries using placeholders ? (parameters)
         It is pre-compiled i.e compiled only once
         Parameters are added on Runtime
         It is safe from SQL Injection
