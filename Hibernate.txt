@@ -262,7 +262,7 @@
         Loads data immediately
         example -
         @OneToMany(mappedBy = "department", fetch = FetchType.EAGER)
-        rivate List<Employee> employees;
+        private List<Employee> employees;
         fetch a Department, its employees list is also fetched instantly.
 
         Session session = sessionFactory.openSession();
