@@ -66,7 +66,7 @@
 
     It is a mechanism used by Servlets to transfer control from one Servlet to another without Client
     being aware
-    * It is used to forward a reuest from one servlet to another
+    * It is used to forward a request from one servlet to another
     * It is used to include response from one servlet to another
     * It is also used to implement MVC pattern i.e forwarding to JSP from a server 
 
