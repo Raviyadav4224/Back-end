@@ -31,7 +31,8 @@
 
 3. IoC Container -
 
-    This is the Heart of Spring
+    This is the Heart of Spring Framework and is responsible for managing the Lifecycle of Java objects,
+    known as Beans
 
     It instantiates objects (Beans)
 
@@ -636,9 +637,10 @@
 
         What WebConfig does:
 
-            Registers Spring's DispatcherServlet
-            This servlet intercepts all incoming HTTP requests.
-            Configures the component scanning
+            DispatcherServlet is registered via WebApplicationInitializer (or Boot).
+            DispatcherServlet intercepts all HTTP requests → forwards to controllers.
+            WebConfig (with @EnableWebMvc and @ComponentScan) tells Spring where to find controllers, services, etc.
+            WebConfig customizes MVC infrastructure → ViewResolvers, HandlerMappings, Formatters, Interceptors, etc.
             So it can detect your @Controller, @Service, etc.
             Adds ViewResolvers, HandlerMappings, and other MVC infrastructure.
 
@@ -679,11 +681,25 @@
             
         * WebApplicationInitializer vs @WebFilter -
           
+           * When we create filter in Spring MVC it is managed by the Tomcat and not by Spring
+             Since A Servlet Filter is created by the servlet container (Tomcat, Jetty, etc.), not by Spring.
+             So when we try to use 
+                public class MyFilter implements Filter {
+                    @Autowired
+                    private UserService user_service;
+
+                }   
+
+                Here user_service is always null since it not managed by Spring
+            
+                So we use DelegatingFilterProxy which calls Tomcat proxy, proxy looks for spring managed bean
+                then it delegates that request to that bean which is fully managed by Spring
+
             For core Spring MVC we register servlet by implementing WebApplicationInitializer
 
-            This is managed by Servlet and not by Spring context so we cannot use @Autowired here
+            * This is managed by Servlet and not by Spring context so we cannot use @Autowired here
 
-            To bridge the gap between Servlet and Spring context we can use 
+            * To bridge the gap between Servlet and Spring context we can use 
 
                 // Register filter that delegates to Spring bean
                 FilterRegistration.Dynamic filter = servletContext.addFilter("myFilter",
@@ -776,4 +792,62 @@
                         private String message;
                         private T data; 
                     }
+
+12. Summary of Servlets & Spring Web MVC -
+
+    🔹 Traditional Servlets
+
+        To handle a request:
+
+        Create a class that extends HttpServlet.
+
+        Map it using @WebServlet("/path") or in web.xml.
+
+        For multiple URLs → multiple servlet classes.
+
+        To forward to JSP/another servlet → use RequestDispatcher.
+
+        request.getRequestDispatcher("page.jsp").forward(request, response);
+
+        Lifecycle (creation, init, service, destroy) is container-managed (Tomcat/Jetty).
+
+    🔹 Spring MVC
+
+        Instead of many servlets, you just need one DispatcherServlet.
+
+        This DispatcherServlet is registered in Java config using WebApplicationInitializer (no @WebServlet required).
+
+        Create an AnnotationConfigWebApplicationContext.
+
+        Register your @Configuration (WebConfig).
+
+        Register the DispatcherServlet and map it to /.
+
+        public class MyWebAppInitializer implements WebApplicationInitializer {
+            @Override
+            public void onStartup(ServletContext servletContext) {
+                AnnotationConfigWebApplicationContext context = new AnnotationConfigWebApplicationContext();
+                context.register(WebConfig.class);
+
+                ServletRegistration.Dynamic dispatcher =
+                        servletContext.addServlet("dispatcher", new DispatcherServlet(context));
+                dispatcher.setLoadOnStartup(1);
+                dispatcher.addMapping("/");
+            }
+        }
+
+
+        WebConfig (with @EnableWebMvc + @ComponentScan) tells Spring where controllers/services are.
+
+        No need for multiple servlets → all requests go through the single DispatcherServlet.
+
+        Mapped to methods using @Controller + @RequestMapping.
+
+    🔹 Filters in Spring
+
+        If you need a filter that depends on Spring beans (@Autowired), you cannot let Tomcat create it.
+
+        Use DelegatingFilterProxy → Tomcat calls the proxy, proxy delegates to the Spring-managed filter.
+
+        Example: springSecurityFilterChain, JWT authentication filters, logging filters with DI.
 
