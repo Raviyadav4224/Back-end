@@ -115,7 +115,7 @@
 
     * It is applied at the CONTROLLER LEVEL
 
-    *  BindingResult interface gives result for any validation fail
+    * BindingResult interface gives result for any validation fail
 
     ** @Valid @RequestBody UserDto user,BindingResult result ( BindingResult must come after 
        @Valid else it will give error)
@@ -136,16 +136,146 @@
 
 7. How Springboot achieves Auto-Configuration -
 
-    How does Spring Boot auto-configuration actually work?
-    How does Spring Boot know which configuration class to load at startup?
-    What is the role of spring.factories or META-INF/spring/org.springframework.boot.autoconfigure.EnableAutoConfiguration?
-    How do you exclude or override a specific auto-configuration class?
-    How do you write a custom AutoConfiguration class?
-    How do you define a custom Condition using @Conditional?
-    How would you override a bean created by Spring Boot’s auto-configuration?
-    What strategies do you use to reduce memory usage and startup time in large Spring Boot applications?
-    How do you profile and monitor a Spring Boot app in production?
-    How does lazy initialization improve performance in Spring Boot 2.2+?
-    What are your go-to JVM or GC tuning options for a high-traffic Spring Boot application?
-    How do you support API versioning in Spring Boot?
-    Externalized configuration with application.properties / YAML
+    * Auto-configuration 
+        
+        * It is a feature in Spring Boot that automatically configures your application based on the 
+          dependencies you include in your project. 
+
+        * It aims to reduce or eliminate the need for boilerplate configuration by inspecting the classpath,
+          properties, and environment, and setting up beans accordingly.
+
+        * For example:
+
+            If you add spring-boot-starter-data-jpa, it configures an EntityManager, DataSource, transaction 
+            management, etc., without you having to explicitly define them.
+    
+    * Key Components Behind Auto-Configuration
+        
+        * Spring Factories and spring.factories File
+
+            * Auto-configuration classes are registered using the META-INF/spring.factories file.
+
+            * This file lists fully qualified class names under the key:
+
+                org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+                org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration,\
+                org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration
+
+            * When the application starts, Spring Boot loads these classes using the SpringFactoriesLoader.
+
+        * @EnableAutoConfiguration Annotation
+
+            * This is the main entry point that tells Spring Boot to load the auto-configuration classes.
+
+            * It’s typically enabled via @SpringBootApplication, which is equivalent to:
+
+                @SpringBootConfiguration
+                @EnableAutoConfiguration
+                @ComponentScan
+
+            * @EnableAutoConfiguration uses @Import(AutoConfigurationImportSelector.class), which selects
+              and imports the appropriate auto-configuration classes at runtime.
+
+        * AutoConfigurationImportSelector
+
+            * It reads the spring.factories file.
+
+            * It determines which configuration classes to load based on conditions.
+
+            * It imports them into the application context.
+
+        * Conditional Annotations
+
+            * Most auto-configurations are only applied if certain conditions are met, using annotations like:
+
+                @ConditionalOnClass – Applies configuration if a certain class is present.
+
+                @ConditionalOnMissingBean – Applies configuration if a specific bean is missing.
+
+                @ConditionalOnProperty – Applies configuration if a property is set in application.properties or application.yml.
+
+                @ConditionalOnBean – Applies only if a bean is already present.
+
+            * For example, DataSourceAutoConfiguration is applied only if:
+
+                DataSource class is present.
+
+                No other DataSource bean is already configured.
+
+                Properties like spring.datasource.url are defined.
+
+        * Property Binding
+
+            * Auto-configuration reads properties from application.properties or application.yml.
+
+            * Uses @ConfigurationProperties to bind properties to Java objects.
+
+            * Example: spring.datasource.url is bound to a DataSourceProperties bean.
+
+        * How It All Works Together
+
+            1. Spring Boot starts.
+
+            2. @SpringBootApplication triggers @EnableAutoConfiguration.
+
+            3. AutoConfigurationImportSelector reads spring.factories.
+
+            4. It loads all auto-configuration classes.
+
+            5. It checks conditions using @ConditionalOnClass, @ConditionalOnMissingBean, etc.
+
+            6. It registers beans in the application context.
+
+            7. Beans are available without explicit configuration.
+
+        * Interview Ready Answer -
+            
+            Spring Boot achieves auto-configuration by using the @EnableAutoConfiguration annotation, which is included
+            by default in @SpringBootApplication. This triggers the AutoConfigurationImportSelector to load 
+            configuration classes listed in the META-INF/spring.factories file. These classes define how Spring Boot 
+            should configure beans based on the dependencies available in the classpath and application properties.
+
+            Auto-configuration classes use conditional annotations like @ConditionalOnClass, @ConditionalOnMissingBean, 
+            and @ConditionalOnProperty to ensure that configurations are applied only when appropriate. It also reads 
+            properties from application.properties or application.yml and binds them to Java beans using 
+            @ConfigurationProperties. This way, Spring Boot can intelligently configure your application with 
+            minimal explicit setup.
+
+
+8. How do you EXCLUDE or OVERRIDE a specific auto-configuration class?
+
+    * We can OVERRIDE the auto configuration class by providing our own bean of same type. So Springboot 
+      version of Bean will not be used.
+
+        * For example -
+
+            @Configuration
+            public class MyDataSourceConfig {
+
+                @Bean
+                public DataSource dataSource() {
+                    HikariDataSource dataSource = new HikariDataSource();
+                    dataSource.setJdbcUrl("jdbc:mysql://localhost:3306/mydb");
+                    dataSource.setUsername("root");
+                    dataSource.setPassword("password");
+                    return dataSource;
+                }
+            }
+
+        * Here SpringBoot will not auto configure the Datasource and your bean definition will take precedence
+    
+    * We can EXCLUDE AutoConfiguration class so that it doesnot apply at all    
+
+        * @SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})
+
+        * @EnableAutoConfiguration(exclude = {HibernateJpaAutoConfiguration.class})
+
+        * In Application.properties file 
+
+            spring.autoconfigure.exclude=\
+            org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration,\
+            org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration
+
+9. How do you write a custom AutoConfiguration class?
+
+    * It is used for creating shared configurations like Logging, Cloud setup, authentication etc
