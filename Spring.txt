@@ -836,7 +836,6 @@
             }
         }
 
-
         WebConfig (with @EnableWebMvc + @ComponentScan) tells Spring where controllers/services are.
 
         No need for multiple servlets → all requests go through the single DispatcherServlet.
