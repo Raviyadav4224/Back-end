@@ -241,7 +241,6 @@
             @ConfigurationProperties. This way, Spring Boot can intelligently configure your application with 
             minimal explicit setup.
 
-
 8. How do you EXCLUDE or OVERRIDE a specific auto-configuration class?
 
     * We can OVERRIDE the auto configuration class by providing our own bean of same type. So Springboot 
@@ -278,4 +277,38 @@
 
 9. How do you write a custom AutoConfiguration class?
 
-    * It is used for creating shared configurations like Logging, Cloud setup, authentication etc
+    * Usecase - It is used for creating shared configurations like Logging, Cloud setup, authentication etc
+
+    * We can create custom class like 
+
+        @Configuration
+        @ConditionalOnClass(CommonLogger.class)
+        @ConditionalOnProperty(name = "common.logger.enabled", havingValue = "true", matchIfMissing = true)
+        public class CommonLoggerAutoConfiguration {
+
+            @Bean
+            public CommonLogger commonLogger() {
+                return new CommonLogger();
+            }
+        }
+        
+    * Create src/main/resources/META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports
+      file and add the fully qualified class name 
+      example - com.app.autoConfigure.CommonLoggerAutoConfiguration where this is a class which has Beans defined
+
+    * Add spring-boot-autoconfigure package which tells spring that this is used to create custom auto
+      config class
+    
+    * Build the project using mvn clean install, it builds and installs the jar in .m2 folder locally
+
+    * Include the package in project where this package is to be used by including it in the dependency
+       
+       Example -
+
+        <dependency>
+			<groupId>com.ravi</groupId>
+			<artifactId>SPRINBOOT_AUTO_CONFIG</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+
+
