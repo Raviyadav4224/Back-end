@@ -154,3 +154,74 @@
     
         @Query("SELECT u FROM User u JOIN FETCH u.userProfile") // ✅ single query
         List<User> findAllUsersWithProfile()
+
+10. Scenario's where Transactional Applies -
+
+    1. Spring marks a transaction for rollback when the exception is thrown and not caught within the
+       same transaction boundary.
+
+        Example - 
+
+            1.   @Transactional
+                public String transferMoney() {
+                    try {
+                        if (fromUser.getBalance() <= 0) {
+                            throw new RuntimeException("Run time exceptoin");
+                        }
+                    } catch (Exception e) {
+                        System.out.println("Handling runtime exception, and checking rollback happens or not");
+                        TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+                    }
+                
+                ** Here Exception is handled, so spring transaction doesnot marks it for Rollback
+
+            2.   @Transactional
+                public String transferMoney() {
+                        if (fromUser.getBalance() <= 0) {
+                            throw new RuntimeException("Run time exceptoin");
+                        }
+                    }
+
+                ** Here Exception is not handled, so spring transaction marks it for Rollback and when Exception 
+                is thrown Rollback happens
+    
+    2. Internal method calls for the same class, Spring Transactional doesnot apply , since Spring’s 
+       transaction management relies on proxy-based interception, which is bypassed in such cases.
+
+        Example 
+          class user.java
+            @Transactional
+            public void outer() {
+                inner();  // @Transactional on inner() won't work here!
+            }
+
+            @Transactional(propagation = Propagation.REQUIRES_NEW)
+            public void inner() {
+                throw new RuntimeException("Rollback?");
+            }
+        
+        ** Here inner will throw RuntimeException and Since same class method is called, Spring's proxy
+           based mechanism won't create new Transaction and works within the same one
+           Even if propagation = REQUIRES_NEW is used then also it wont work
+
+    3. @Transactional(readOnly = true) is mainly used to:
+
+        Ensure consistency across multiple reads.
+
+        Improve performance by skipping dirty-checking and flushing.
+
+        Potentially enable database-level optimizations for read-only workloads.
+
+    | Scenario                                | Works / Doesn’t work   | Why?                             |
+    | --------------------------------------- | --------------------   | -------------------------------- |
+    | Public method, called from outside      | ✅ Works              | Proxy applies                    |
+    | Private method                          | ❌ Doesn’t work       | Proxies don’t intercept          |
+    | Self-invocation                         | ❌ Doesn’t work       | Bypasses proxy                   |
+    | Class-level annotation                  | ✅ Works              | All public methods intercepted   |
+    | Runtime exception                       | ✅ Rolls back         | Default behavior                 |
+    | Checked exception without config        | ❌ Doesn’t roll back  | Not considered unless configured |
+    | No transaction manager configured       | ❌ Doesn’t work       | Spring can't manage transaction  |
+    | Final class/method                      | ❌ Doesn’t work       | Proxy can't wrap it              |
+    | Non-Spring bean                         | ❌ Doesn’t work       | No proxy, no interception        |
+    | Read-only queries                       | ✅ Works              | Optimized behavior               |
+    | Using jakarta.transaction.Transactional | ❌ May not work       | Requires JTA or container config |
