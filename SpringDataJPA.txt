@@ -152,7 +152,7 @@
 
     * Instead use FETCH JOIN which solves This
     
-        @Query("SELECT u FROM User u JOIN FETCH u.userProfile") // ✅ single query
+        @Query("SELECT u FROM User u JOIN FETCH u.userProfile") // single query
         List<User> findAllUsersWithProfile()
 
 10. Scenario's where Transactional Applies -
@@ -212,16 +212,34 @@
 
         Potentially enable database-level optimizations for read-only workloads.
 
-    | Scenario                                | Works / Doesn’t work   | Why?                             |
-    | --------------------------------------- | --------------------   | -------------------------------- |
-    | Public method, called from outside      | ✅ Works              | Proxy applies                    |
-    | Private method                          | ❌ Doesn’t work       | Proxies don’t intercept          |
-    | Self-invocation                         | ❌ Doesn’t work       | Bypasses proxy                   |
-    | Class-level annotation                  | ✅ Works              | All public methods intercepted   |
-    | Runtime exception                       | ✅ Rolls back         | Default behavior                 |
-    | Checked exception without config        | ❌ Doesn’t roll back  | Not considered unless configured |
-    | No transaction manager configured       | ❌ Doesn’t work       | Spring can't manage transaction  |
-    | Final class/method                      | ❌ Doesn’t work       | Proxy can't wrap it              |
-    | Non-Spring bean                         | ❌ Doesn’t work       | No proxy, no interception        |
-    | Read-only queries                       | ✅ Works              | Optimized behavior               |
-    | Using jakarta.transaction.Transactional | ❌ May not work       | Requires JTA or container config |
+     Same-Class Method Calls
+
+    4. Private Methods -
+
+        Spring proxies can’t intercept private methods.
+        Fix: Keep transactional methods public.
+
+    5. Final or Static Methods -
+
+        final and static methods can’t be proxied.
+        Fix: Avoid marking transactional methods as final or static.
+
+    6. Exceptions Caught Internally -
+
+        Rollback only happens on unchecked exceptions. If you catch exceptions, Spring won’t see them.
+        Fix: Re-throw exceptions or use rollbackFor in @Transactional.
+
+    7. Calls Inside Constructors -
+
+        Transactions aren’t active during bean construction.
+        Fix: Don’t call transactional methods from constructors.
+
+    8. Wrong Transaction Manager -
+
+        With multiple datasources, the wrong transaction manager may be used.
+        Fix: Specify the correct one in @Transactional("transactionManagerName").
+
+    9. Non-Spring Managed Beans -
+
+        If you call methods on a new object (not Spring-managed), no proxy → no transaction.
+        Fix: Always call through Spring beans.
