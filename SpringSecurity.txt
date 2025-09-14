@@ -136,7 +136,7 @@
 
 4. @PreAuthorize, @PostAuthorize, @Secured ( Used at Method level ) -
 
-    Secured - 
+    @Secured - 
 
         Used for simple role check
         @Secured("ROLE_ADMIN")
@@ -182,30 +182,3 @@
 
     * In production, Prometheus is commonly used with Actuator + Micrometer to collect and monitor metrics 
       from Spring Boot applications
-
-7. Micro-services in Spring boot -
-
-    * Key Components of Microservices - 
-
-        1. Service Discovery - Helps Microservices to find each other ( example using Eureka Server )
-        2. API Gateway - Entry point for all Client Requests ( example Spring Cloud Gateway )
-        3. Configuration Server - Central point to manage all Configuration ( example Spring Cloud config)
-        4. Inter Service Communication - Services talk using RestTemplate  ( example using Feign Client )
-        5. Load Balancing - Evenly distributes the Requests
-        6. Resillence - Circuit Breakers, retires and timeout
-        8. Security - JWTs and centralized authentication
-        7. Monitoring - Health Check using Actuator  
-        9. Logging - centralized log management
-
-    * Interaction between one microservice and another microservice -
-
-        | Type         | Example                    | Description                                             |
-        | ------------ | -------------------------- | ------------------------------------------------------- |
-        | Synchronous  | Feign Client, RestTemplate | Real-time communication; waits for a response.          |
-        | Asynchronous | Kafka, RabbitMQ            | Decoupled communication; doesn’t wait. Used for events. |
-
-    * API Gateway -
-
-        API Gateway acts as a single entry point for all client requests in a microservices architecture.
-        Handles routing, authentication, rate limiting, logging, and load balancing.
-        In Spring ecosystem, we use Spring Cloud Gateway 
