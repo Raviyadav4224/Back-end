@@ -651,12 +651,12 @@
 
             ArrayList uses DYNAMIC ARRAY and is great for random access i.e get/set by index 
             takes O(1) time but slower for insert/remove in middle as it takes O(n) time and NOT
-            thread safe
+            THREAD SAFE
 
             Whereas LinkedList uses DOUBLY LINKED LIST and is great for frequent insertion/deletion O(1)
-            but slow for random access O(n) and not thread safe
+            but slow for random access O(n) and NOT THREAD SAFE
 
-            Vector is similar to ArrayList but it is Thread safe but slower than ArrayList due to 
+            Vector is similar to ArrayList but it is THREAD SAFE but slower than ArrayList due to 
             synchronization
             
     Map - 
@@ -1433,12 +1433,12 @@
     of() - 
 
         Create Optional with non-null value 
-        It is used when we know that the value cannot be NULL
+        It is used when we know that the value cannot be NULL and throws NullPointerException
 
     ofNullable() - 
 
         Create Optional with null-safe value
-        It is used when we know that value can be NULL
+        It is used when we know that value can be NULL and doesn't throws NullPointerException
 
     empty() - 
 
@@ -1483,7 +1483,7 @@
 
         Keep value only if it matches condition
 
-    🔹 Production Use Case (API) -
+    * Production Use Case (API) -
 
         Spring Boot REST API to fetch user by ID:
 
@@ -1598,8 +1598,24 @@
             }
 
         * Fail-fast behavior applies only when using an iterator (directly or via for-each loop)
+
           Iterator + remove() → safe
+
+            Iterator<String> itr = fruits.iterator();
+                while (itr.hasNext()) {
+                    if (itr.next().equals("banana")) {
+                        itr.remove();  // ✅ safe, no ConcurrentModificationException
+                    }
+            }
+
           Iterator + list.remove() → unsafe
+
+            Iterator<String> itr = fruits.iterator();
+                while (itr.hasNext()) {
+                    if (itr.next().equals("banana")) {
+                        fruits.remove("banana");  //  Unsafe,  ConcurrentModificationException
+                    }
+                }
 
         * Adding/removing keys while iterating → Causes ConcurrentModificationException.
 
