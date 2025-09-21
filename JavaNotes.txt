@@ -909,7 +909,7 @@
 
                 executor.shutdown();
 
-        * Example for using callable - Fetching user data from multiple services (DB, API, Cache) 
+        * Example of using callable - Fetching user data from multiple services (DB, API, Cache) 
           in parallel, and then combining results.
 
         * Thread Life cycle -
@@ -992,9 +992,11 @@
           such as map, filter, reduce
         
         * Intermediate operations - (lazy, return a stream)
+
           Examples: map, filter, sorted, distinct, limit, skip, flatMap.
 
           Terminal operations - (consume the stream, return non-stream result)
+
           Examples: collect, reduce, forEach, count, findFirst, findAny, toArray.
           Once a terminal operation is called, the stream cannot be reused.
         
