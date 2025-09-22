@@ -993,12 +993,12 @@
         
         * Intermediate operations - (lazy, return a stream)
 
-          Examples: map, filter, sorted, distinct, limit, skip, flatMap.
+            Examples: map, filter, sorted, distinct, limit, skip, flatMap.
 
           Terminal operations - (consume the stream, return non-stream result)
 
-          Examples: collect, reduce, forEach, count, findFirst, findAny, toArray.
-          Once a terminal operation is called, the stream cannot be reused.
+            Examples: collect, reduce, forEach, count, findFirst, findAny, toArray.
+            Once a terminal operation is called, the stream cannot be reused.
         
         * numbers.stream().map().toList() - Creates Im-mutable List
 
@@ -1763,3 +1763,171 @@
         Collisions → list (old) or tree (new).
 
         Resize → bigger locker room at 75% full.
+
+43. How would you design a class whose objects cannot be modified after creation ?
+
+    * Make class final so that its subclass cannot modify and override it.
+
+    * Declare all fields as private and final.
+
+    * Initialize fields using Constructors and do not provide setters functions.
+
+    ** For mutable fields (like Date(java.util.Date), List, Map) whose reference can be changed, 
+       always return a defensive copy in getters instead of the actual reference.
+       Also, store a copy in the constructor instead of the original reference.
+
+        Example  -
+
+            public Person(String name, Date dob, List<Integer> prices) {
+                    this.name = name;
+                    // defensive copy to protect internal state
+                    this.dob = new Date(dob.getTime());
+                    this.prices= new ArrayList<>(prices);
+                }
+
+44*. How will you make a shared counter thread-safe when accessed by multiple threads ? 
+
+    * Using synchronized blocks or methods  
+
+        Example -
+
+            public class UserAccount {
+            private int balance;
+            -----SYNCHRONIZED BLCOKS-----------------
+            public void increment() {
+                synchronized (this) {
+                    this.balance += 1;
+                }
+            }
+            public int getBalance() {
+                synchronized (this) {
+                    return this.balance;
+                }
+            }
+            ---------- synchronized methods
+            public synchronized void increment() {
+                this.balance += 1;
+            }
+
+            public synchronized int getBalance() {
+                return this.balance;
+            }
+         }
+
+    * Using ReentrantLock which provides more control 
+
+        Example -
+
+            public class UserAccount {
+
+            private int balance;
+
+            private final ReentrantLock lock = new ReentrantLock();
+
+            public void increment() {
+                lock.lock();
+
+                try {
+                    this.balance += 1;
+                } finally {
+                    lock.unlock();
+                }
+            }
+
+            public int getBalance() {
+                lock.lock();
+
+                try {
+                    return this.balance;
+                } finally {
+                    lock.unlock();
+                }
+            }
+            }
+
+    * Using AtomicInteger for tasks like SharedCounter, User account balance, Item quantity changes
+
+        Example -
+
+            public class UserAccount {
+
+                private final AtomicInteger balance= new AtomicInteger(0);
+
+                public void increment() {
+                    balance.incrementAndGet();
+                }
+
+                public int getBalance() {
+                    return balance.get();
+                }
+                }
+
+45. How do you compare two objects for logical equality in Java ?
+
+    * To compare two objects of logically we need to OVEERIDE the equals() method.
+
+    * When overriding equals(), always override hashCode() method, since collections like HashMap, HashSet
+      internally uses hashCode() to find buckets then equals() to check if they already exist or not
+
+    * Example - 
+
+        public class Person {
+
+            private int age;
+            private String name;
+
+            public Person(int age, String name) {
+                super();
+                this.age = age;
+                this.name = name;
+            }
+          
+            @Override
+            public boolean equals(Object obj) {
+
+                if (this == obj) // same reference
+                    return true;
+
+                if (obj == null || getClass() != obj.getClass()) {
+                    return false;
+                }
+                Person newPerson = (Person) obj;
+
+                return newPerson.age == age && newPerson.name.equals(name);
+
+            }
+
+            @Override
+            public int hashCode() {
+                return Objects.hash(age, name);
+            }
+
+            }
+
+46. How can you ensure visibility of a shared variable between threads without using locks ?
+
+    * When multiple threads access a shared variable, each thread may have its own CPU cache, so
+      updates made by one thread may not be visible to the other threads.
+
+    * Using synchronized solves this but it uses locks to achieve this. Updates made are reflected
+      immediately to the other threads .
+
+    * volatile keyword is used to ensure that all threads sees the latest value w/o using locks.
+
+        Example - 
+
+            class SharedData {
+                private volatile int counter = 0;
+
+                public void update() {
+                    counter = 5; // any thread reading counter sees 5 immediately
+                }
+            }
+
+47. What precautions would you take when using objects as keys in a HashMap ?
+
+    * Using immutable object, since mutable objects can change after putting them into map which can
+      break the map
+
+48. 
+
