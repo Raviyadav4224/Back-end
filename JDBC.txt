@@ -1,4 +1,4 @@
-1.JDBC (Java Database Connectivity) -
+1. JDBC (Java Database Connectivity) -
 
     JDBC is an API in Java that is used to connect Java applications to Relational Databases
     to execute SQL queries
@@ -7,7 +7,7 @@
         Connect to Database
         Perform CRUD Operations
 
-    *JDBC acts as a Bridge between Java Application and Database
+    * JDBC acts as a Bridge between Java Application and Database
 
 2. Setting JDBC in Java Application -
 
@@ -105,8 +105,45 @@
 
     Connection Pooling is a technique of reusing database connections so that new connections aren't 
     created for every single request.
+    
     * By default, JDBC does not provide connection pooling.
+
     * To enable pooling, we need to use external libraries like:
         HikariCP (default in Spring Boot)
         Apache DBCP
         C3P0
+    
+    * Example - 
+
+        HikariConfig config = new HikariConfig();
+
+		String username = "ravi", url = "jdbc:mysql://127.0.0.1:3307/practice", password = "ravi123";
+
+		config.setJdbcUrl(url);
+		config.setUsername(username);
+		config.setPassword(password);
+
+		config.setMaximumPoolSize(10);
+		config.setMinimumIdle(2);
+		config.setIdleTimeout(30000); // 30s
+		config.setMaxLifetime(180000); // 30min
+
+		HikariDataSource datasource = new HikariDataSource(config);
+
+		try (Connection conn = datasource.getConnection()) {
+
+			PreparedStatement pstmt = conn.prepareStatement("Select * from user where id=?");
+
+			pstmt.setInt(1, 1);
+			ResultSet result = pstmt.executeQuery();
+			while (result.next()) {
+
+				System.out.println("ID - " + result.getInt("id") + " " + " Balance - " + result.getInt("balance")
+						+ " username -" + result.getString("username"));
+			}
+		} catch (Exception e) {
+		}
+
+		datasource.close();
+    
+    * Here datasource.getConnection() uses Pool to get a connection and doesn't creates new connection. 
