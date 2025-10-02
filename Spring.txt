@@ -51,8 +51,6 @@
 
     * Not all Java objects are Beans, only those that Spring manages and instantiates
 
-    Bean Lifecycle
-
 4. Dependency Injection (DI) -
 
     It is a Design pattern where Spring injects required dependencies into a class instead of the class
@@ -274,7 +272,7 @@
             * It is used to manually create a bean when you don't control the source code or want to
               pass constructor arguments
 
-                Suppose you have  third-party class that you cannot annotate with @Component, 
+                Suppose you have third-party class that you cannot annotate with @Component, 
                 for example:
 
                     public class EmailService {
@@ -731,9 +729,10 @@
 
 9. Exception Handling in Spring MVC - 
         
-        @ControllerAdvice is used to create Global exception handler
-        @ExceptionHandler(SomeException.class) will catch that exception whenever it’s thrown in any 
-        controller 
+    * @ControllerAdvice is used to create Global exception handler
+
+    * @ExceptionHandler(SomeException.class) will catch that exception whenever it’s thrown in any 
+      controller 
 
 10. Json Web Token's ( JWT's ) -
 
