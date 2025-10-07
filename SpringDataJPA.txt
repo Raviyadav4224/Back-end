@@ -172,6 +172,7 @@
                         System.out.println("Handling runtime exception, and checking rollback happens or not");
                         TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
                     }
+                }
                 
                 ** Here Exception is handled, so spring transaction doesnot marks it for Rollback
 
