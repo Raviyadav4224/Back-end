@@ -1929,5 +1929,74 @@
     * Using immutable object, since mutable objects can change after putting them into map which can
       break the map
 
-48. 
+48. How will you implement a thread-safe Singleton class in Java?
 
+49. How would you implement an efficient Producer-Consumer system in Java ?
+
+50. List<String> list = new ArrayList<>(); vs List<String> cars= Arrays.asList("BMW","Honda");
+
+51. Arrays.asList vs List.of -
+
+    Both creates immutable list
+    but with Arrays.asList we can modify the exisiting values, but cannot add new values
+
+52. System.out.println() - What is does under the hood & Why use Logging Frameworks in applications -
+
+    System - 
+        
+        * java.lang package, FINAL CLASS System
+
+    System.out - 
+
+        public static final PrintStream out
+
+        * STATIC object from PrintStream class from java.io package
+        * It handles printing text to the output stream by default the console
+    
+    println() - 
+
+        * Used to write text to the PrintStream, automatically adds new line (\n)
+        * It internally calls print() or write() depending upon system OS
+
+    * System.out.println() is SYNHRONOUS in nature and slow and cannot REDIRECT to file, so we have to
+      use Logging Frameworks such as SLF4J
+    
+    * Logging levels hierarchy -    
+
+        TRACE -> DEBUG -> INFO -> WARN -> ERROR -> FATAL -> OFF
+
+        * If logging.level.root="INFO" , then all INFO, WARN, ERROR logs are shown; 
+          DEBUG and TRACE are hidden.
+
+    * SLF4J provides API's for Logging and doesn't do the logging itself
+
+    * It is implemented by Logback, Log4J2 etc
+
+53. API status codes and their meaning -
+
+    1XX - Informational Responses - Request is received and server is continuing the process
+
+    2XX - Success Response - Everything went fine, the request was successfully received and processed
+
+        200 OK - Request processed - Successful GET or PUT
+        201 CREATED - Resource created
+        202 ACCEPTED - Request accepted but not completed yet, like async jobs
+        204 NO CONTENT - Success but no response body - DELETE or PUT success with no data.
+
+    3XX - Redirectional responses - Client must take additional steps to complete the request (like following a  new url)
+
+        301 Moved Permanently - Resource moved permanently to a new URL.
+
+    4XX - Client Error Responses - Error made by client like wrong request, unauthorized etc
+
+        400 BAD REQUEST - Invalid syntax or bad input - Missing fields, invalid JSON, etc.
+        401 UNAUTHORZED - invalid/missing authentication like jwt or token
+        403 FORBIDDEN - Authenticated but not allowed to access
+        404 NOT FOUND - Resource doesn't exists, Invalid URL or misisng ID
+        405 METHOD NOT ALLOWED - HTTP method not supported for the resource - Using POST instead of GET.
+        429 TOO MANY REQUEST - Client exceeded rate limit - Throttling / API rate limits.
+
+    5XX - Server Error responses - Problem on the server side
+        
+        500 INTERNAL SERVER ERROR - Generic server failure - NullPointerException, unhandled exception
+        503 SEVICE UNAVAILABLE - Server overloaded or under maintenance.
