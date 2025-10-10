@@ -1958,7 +1958,7 @@
         * Used to write text to the PrintStream, automatically adds new line (\n)
         * It internally calls print() or write() depending upon system OS
 
-    * System.out.println() is SYNHRONOUS in nature and slow and cannot REDIRECT to file, so we have to
+    * System.out.println() is SYNCHRONOUS in nature and slow and cannot REDIRECT to file, so we have to
       use Logging Frameworks such as SLF4J
     
     * Logging levels hierarchy -    

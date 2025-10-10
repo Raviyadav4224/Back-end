@@ -56,7 +56,7 @@
         2. Add spring-boot-autoconfigure (To use Spring Boot AutoConfiguration) and add 
            spring-boot-starter (starter for transitive dependencies)
 
-        3. Create LoggerClass and configure it w/o @SpringBootApplication
+        3. Create LoggerClass and configure it W/O @SpringBootApplication
             package com.example.logger;
 
             public class LoggerService {
@@ -311,4 +311,21 @@
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 
+10. Bean life cycle -
 
+    * Beans life cycle is managed by Spring IOC Container
+
+    * Beans Initilization (creates the Bean instance by calling the bean constructor) -> 
+    
+    * Dependency Injection Using @Autowired, @Value 
+
+    * @PostConstruct called immediately after dependencies are injected
+        
+        It is used when we want to run initialization logic after the bean is created and all dependencies 
+        are injected, use case - Initialize data after injection
+
+    * Beans ready to use, the bean can be utilized anywhere
+
+    * @PreDestroy() called just before the spring container shuts down
+
+        used for cleanup and closing resources
