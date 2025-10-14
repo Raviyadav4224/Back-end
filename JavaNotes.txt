@@ -1646,6 +1646,12 @@
           Sweep - Delete objects which are no longer reachable and reclaims memory
           Compact - Reorganize the memory
 
+        * G1GC - 
+
+          Garbage First Garbage Collector, is the default GC in modern JVMs.
+          It divides the heap into small regions and collects those with the most garbage first.
+          It’s designed to give low, predictable pause times, making it ideal for large memory applications.
+
     Memory Leakages -
 
         * Memory leakage occurs when objects which are no longer needed but are still referenced and 
