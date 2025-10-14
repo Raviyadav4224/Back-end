@@ -105,7 +105,6 @@
                         createdAt TIMESTAMP
                         );
             
-
             * ALTER TABLE TABLE_NAME MODIFY COLUMN OLD_COLUMN_NAME TO NEW_COLUMN_NAME
                 example - ALTER table employees modify column createdAt TIMESTAMP default current_timestamp;
 
@@ -412,28 +411,28 @@
 
 11. Joins -
 
-        Joins are used to combine data from multiple tables based on related columns using PRIMARY & FOREIGN key
+    Joins are used to combine data from multiple tables based on related columns using PRIMARY & FOREIGN key
 
-        There are 5 types of joins -
+    There are different types of joins -
 
-            Inner join - Returns matching records from both tables
+        Inner join - Returns matching records from both tables
 
-            Left join - Returns all records from LEFT TABLE and matching records from RIGHT TABLE
+        Left join - Returns all records from LEFT TABLE and matching records from RIGHT TABLE
 
-            Right join - Returns all records from RIGHT TABLE and matching records from LEFT TABLE
+        Right join - Returns all records from RIGHT TABLE and matching records from LEFT TABLE
 
-            Full outer join - Returns all records from both table, not directly supported in MySQL but can 
-            be achieved using LEFT JOIN UNION RIGHT JOIN
+        Full outer join - Returns all records from both table, not directly supported in MySQL but can 
+        be achieved using LEFT JOIN UNION RIGHT JOIN
 
-            Cross join - Returns the Cartesian product of both tables (every row from Table A joins with
-             every row from Table B) i.e ( M * N )
+        Cross join - Returns the Cartesian product of both tables (every row from Table A joins with
+            every row from Table B) i.e ( M * N )
 
-            Self Join - Table is joined with itself 
+        Self Join - Table is joined with itself 
 
-            example -
+        example -
 
-                SELECT E.emp_id,E.emp_name, D.department_name from employees as E
-                LEFT JOIN departments as D ON D.dept_id=E.dept_id;
+            SELECT E.emp_id,E.emp_name, D.department_name from employees as E
+            LEFT JOIN departments as D ON D.dept_id=E.dept_id;
 
 12. Functions -
 
@@ -486,25 +485,25 @@
 
 13. Views -
 
-        Views are virtual table created based on the result of a SELECT query.
+    Views are virtual table created based on the result of a SELECT query.
 
-        It can be used to restrict user from accessing specific columns
+    It can be used to restrict user from accessing specific columns
 
-        Complex queries can be stored as views and can be reused
+    Complex queries can be stored as views and can be reused
+    
+    * Some Views allow INSERT, UPDATE & DELETE if 
+        created using single table
+        It does not contains DISTINCT, GROUP BY, JOINS, AGGREGATE Functions 
+
+    examples -
+
+        select * from employees;
+        select * from employees where emp_salary is not null and dept_id in (1,2);
         
-        * Some Views allow INSERT, UPDATE & DELETE if 
-            created using single table
-            It does not contains DISTINCT, GROUP BY, JOINS, AGGREGATE Functions 
+        CREATE VIEW ValidSalaryUsers AS select * from employees where emp_salary is not null and dept_id in (1,2);
 
-        examples -
-
-            select * from employees;
-            select * from employees where emp_salary is not null and dept_id in (1,2);
-            
-            CREATE VIEW ValidSalaryUsers AS select * from employees where emp_salary is not null and dept_id in (1,2);
-
-            select * from validsalaryusers;
-            update validsalaryusers set emp_salary=1999 ;
+        select * from validsalaryusers;
+        update validsalaryusers set emp_salary=1999 ;
 
 14. Indexes -
 
@@ -532,16 +531,19 @@
 
     DROP INDEX INDEX_NAME
 
-    Clustered Vs Non-Clustered Indexes ->
+    * Clustered Vs Non-Clustered Indexes ->
 
-        A Clustered index determines the Physical order of data rows in a table i.e
-        It sorts the data in a table as per clustered index and MODIFIES the original table (Asc order)
-        * Only one index is allowed per table , generally Primary key is used as Clustered index
+        Clustered Index -
+            
+            A Clustered index determines the Physical order of data rows in a table i.e
+            It sorts the data in a table as per clustered index and MODIFIES the original table (Asc order)
+            * Only one index is allowed per table , generally Primary key is used as Clustered index
 
         Non-Clustered index -
-        It doesnot determines the Physical order of data rows in a table i.e
-        It sorts the data in ASC order but does not modifies the original table
-        * It can have multiple non clustered indexes
+
+            It doesnot determines the Physical order of data rows in a table i.e
+            It sorts the data in ASC order but does not modifies the original table
+            * It can have multiple non clustered indexes
 
 15. Security Vulnerabilities -
 
@@ -729,15 +731,15 @@
 
 21. ACID Properties -
 
-        ACID stands for:
+    ACID stands for:
 
-            Atomicity: Transactions are all or nothing.
+        Atomicity: Transactions are all or nothing.
 
-            Consistency: Data remains consistent after transactions.
+        Consistency: Data remains consistent after transactions.
 
-            Isolation: Transactions don’t interfere with each other.
+        Isolation: Transactions don’t interfere with each other.
 
-            Durability: Once committed, changes persist even after crashes.
+        Durability: Once committed, changes persist even after crashes.
 
 22. Normalization - 
 
