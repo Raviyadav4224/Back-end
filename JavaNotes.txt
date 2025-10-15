@@ -227,6 +227,34 @@
                 But at runtime, it calls Child.doSomething() which throws Exception (a broader checked exception!)
                 Now, the catch block doesn't handle Exception — leading to a runtime error
 
+    * Can we change return type while overriding ?
+
+        Yes we can change the return type while overriding but the return type must be subclass of the 
+        parent return type
+
+        example -
+            class A {}
+            class B extends A {}
+
+            class Parent {
+                A get() { return new A(); }
+            }
+
+            class Child extends Parent {
+                @Override
+                B get() { return new B(); } // ✅ valid: B is a subclass of A
+            }
+        
+    * Can we change access specifiers while overriding ?
+
+        Yes we can change access specifiers but an overridden method can only WIDEN the access level 
+        NOT NARROW it.
+
+        why only WIDEN adn not NARROW it ?
+
+            If parent has a method say public display() and child changes its access level to protected
+            then the method will no longer be accessible using parent's reference
+
 7. Strings vs String Pool - 
 
     * Strings are immutable in Java
