@@ -407,11 +407,12 @@
 
         By default every class in Java extends the Object Class directly or indirectly
         It means every class in Java has access to the Object class methods
+
         * Primitive values doesn't extends the Object class
 
 13. Wrapper class - 
 
-        Primitive values doesn't extends the Object Class
+    * Primitive values doesn't extends the Object Class
         Wrapper class is a way to use Primitive data types as Objects
         Each data type has a corresponding Wrapper class
 
@@ -427,6 +428,7 @@
             boolean	--> Boolean
 
     * Advantage - Collections like ArrayList , HashMap etc requires Object class
+
     * Dis-Advantage - Once created, wrapper objects cannot be modified. Any change creates 
       a new object i.e they are IMMUTABLE
 
@@ -466,6 +468,36 @@
 
         * Abstract class may or may not have abstract methods
 
+    * Abstract vs Interfaces -
+
+        * Abstract class can have constructors, non abstract implemented methods, instance variables,private
+          protected and public access modifiers whereas interfaces cannot have constructors, only public
+          static final instances and can have only public access modifiers
+
+        * Abstract class are used to share common logic btw related classes like 
+            // Common base service
+            abstract class BaseService {
+                protected final Logger logger;
+
+                BaseService() {
+                    this.logger = Logger.getLogger(this.getClass().getSimpleName());
+                    System.out.println("Logger initialized for " + this.getClass().getSimpleName());
+                }
+
+                abstract void process();
+            }
+
+            // Concrete class
+            class UserService extends BaseService {
+                @Override
+                void process() {
+                    logger.info("Processing user data...");
+                }
+            }
+
+            BaseService = abstract class → provides shared logic (logger setup).
+            UserService = extends it → gets logger automatically.
+
 16. Interface -
 
     * Instead of using abstract class we can use interface
@@ -480,7 +512,8 @@
 
     * All variables inside interface are FINAL and STATIC
 
-    * Class can implement multiple interfaces but abstract class can extend only one class
+    * In Java a class whether abstract or concrete can only extend only one class whereas a class can
+      implement multiple interfaces
 
         Class  -> Class (extends)
         Class  -> Interface  (implements)
@@ -496,10 +529,13 @@
             
             Interface having only one method
 
-            @FunctionalInteface annotation can be used
+            @FunctionalInterface annotation can be used
 
             It makes the code more readable, modular, allows using Lambda expressions and
             also used to avoid Anonymous inner class to create object
+
+            * Functional interface has only one abstract method because it represents a single unit 
+              of behavior — a single action or operation.
 
         Marker Interface -> 
 
@@ -528,7 +564,7 @@
         We cannot OVERRIDE static methods in an interface since static methods are resolved at 
         compile time and override happens at run time using dynamic dispatch (polymorphism)
 
-    ** DEFAULT methods in inteface -
+    ** DEFAULT methods in interface -
 
         Before Java 8:
         If you added a new method to an existing interface, all implementing classes would break, 
@@ -777,7 +813,7 @@
         
         * We can create Thread using 
 
-            1. Extending Thread Class ( which internally implements the Runnable inteface )
+            1. Extending Thread Class ( which internally implements the Runnable interface )
             2. Implementing Runnable Interface
         
         * start() vs run() -
@@ -1819,7 +1855,7 @@
                     this.prices= new ArrayList<>(prices);
                 }
 
-44*. How will you make a shared counter thread-safe when accessed by multiple threads ? 
+44. *How will you make a shared counter thread-safe when accessed by multiple threads ? 
 
     * Using synchronized blocks or methods  
 
@@ -1898,7 +1934,7 @@
 
 45. How do you compare two objects for logical equality in Java ?
 
-    * To compare two objects of logically we need to OVEERIDE the equals() method.
+    * To compare two objects of logically we need to OVERRIDE the equals() method.
 
     * When overriding equals(), always override hashCode() method, since collections like HashMap, HashSet
       internally uses hashCode() to find buckets then equals() to check if they already exist or not
@@ -1957,10 +1993,27 @@
                     counter = 5; // any thread reading counter sees 5 immediately
                 }
             }
+    * Volatile -
+        
+        * In Java, each thread has its own working memory (CPU cache) where it stores copies of variables 
+          from main memory.
+
+        * Normally, changes made by one thread may not be visible immediately to other threads, because 
+          they are reading from their local cache.
+
+        * When you declare a variable volatile:
+            
+            It tells the JVM: “Always read this variable from main memory (RAM), not from thread-local 
+            cache.”
+
+            Every write to a volatile variable is immediately flushed to main memory, and every read 
+            comes from main memory.
+            
+            This ensures visibility across threads, but it does not make operations atomic.
 
 47. What precautions would you take when using objects as keys in a HashMap ?
 
-    * Using immutable object, since mutable objects can change after putting them into map which can
+    * Using IMMUTABLE object, since MUTABLE objects can change after putting them into map which can
       break the map
 
 48. How will you implement a thread-safe Singleton class in Java?
