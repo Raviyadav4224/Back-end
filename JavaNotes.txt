@@ -2087,3 +2087,75 @@
         
         500 INTERNAL SERVER ERROR - Generic server failure - NullPointerException, unhandled exception
         503 SEVICE UNAVAILABLE - Server overloaded or under maintenance.
+
+54. Java Memory Model ( JMM ) -
+
+    * The Java Memory Model (JMM) defines how threads interact through memory and how changes made by 
+      one thread become visible to others.
+
+    * Key concepts -
+
+        * Main Memory (RAM)
+
+            Shared memory accessible by all threads. All variables ultimately reside here.
+
+        * Working Memory (Thread-local cache)
+
+            Each thread can have a local copy of variables in CPU cache or registers.Threads may not 
+            immediately see updates made by other threads.
+
+        * Volatile and Synchronization
+
+            volatile ensures that reads/writes bypass thread-local caches and go directly to main memory.
+            synchronized ensures mutual exclusion and memory visibility.
+            Entering a synchronized block flushes working memory to main memory.
+            Exiting flushes updates from main memory to working memory.
+
+    * Java Memory Areas -
+
+        * Heap Memory
+
+            Stores all objects and instance variables.
+            Shared across all threads.
+            Managed by Garbage Collector (GC).
+
+        * Stack Memory
+
+            Stores METHOD CALLS , local primitives, and object references.
+            Each thread has its own stack.
+            LIFO: memory freed automatically when method exits.
+
+        * Method Area (PermGen / Metaspace)
+
+            Stores class metadata, METHODS as bytecode, STATIC variables, and constants.
+            Shared across threads.
+
+        * PC Register (Program Counter)
+
+            Each thread has its own PC register, tracks next instruction.
+
+        * Native Method Stack
+
+            For executing native (non-Java) code.
+
+    * Visibility & Atomicity -
+
+        Visibility problem:
+        Changes made by Thread A might not be visible to Thread B because B could read cached value.
+
+        Atomicity problem:
+        Operations like count++ are not atomic (read + increment + write).
+
+        How JMM helps:
+        volatile ensures visibility across threads.
+        synchronized ensures atomicity + visibility.
+    
+    * JMM also defines ‘happens-before’ relationships to guarantee consistent thread behavior.
+
+    * Interview ready answer -
+
+        The Java Memory Model defines how threads interact through memory, especially how updates to 
+        shared variables are propagated. Each thread may have a local cache, so changes by one thread 
+        may not be immediately visible to others. Using volatile ensures visibility, synchronized ensures
+        visibility and atomicity, and the JVM manages memory through Heap, Stack, and Method Area. 
+        JMM also defines ‘happens-before’ relationships to guarantee consistent thread behavior
