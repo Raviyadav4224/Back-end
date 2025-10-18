@@ -1059,7 +1059,7 @@
 
             Examples: map, filter, sorted, distinct, limit, skip, flatMap.
 
-          Terminal operations - (consume the stream, return non-stream result)
+    * Terminal operations - (consume the stream, return non-stream result)
 
             Examples: collect, reduce, forEach, count, findFirst, findAny, toArray.
             Once a terminal operation is called, the stream cannot be reused.
@@ -1208,15 +1208,19 @@
 
 26. Date,Time & DateTime API - 
 
-        Introduced in Java 8 in the java.time package.
+    * Introduced in Java 8 in the java.time package.
         * All classes inside java.time are IMMUTABLE and THREAD SAFE
 
         * It has TimeZones support
 
-        classes - LocalDate, LocalTime, LocalDateTime, ZonedDateTime, DateTimeFormatter
+    * classes - LocalDate, LocalTime, LocalDateTime, ZonedDateTime, DateTimeFormatter
+
         * LocalDate date = LocalDate.now();
+
         * DateTimeFormatter formatter= DateTimeFormatter.ofPattern("MM/dd/yyyy");
+
         * String currentDate=LocalDateTime.now().format(formatter);
+
         * LocalDate date=LocalDate.parse(birthday,formatter);
 
         ** UTC ( Co-ordinated Universal Time ) is global reference clock not tied to any country or 
@@ -1532,10 +1536,6 @@
     orElseThrow() - 
 
         Throw exception if empty
-
-    ifPresent() - 
-
-        Run code if value present
 
     map() - 
 
@@ -2159,3 +2159,19 @@
         may not be immediately visible to others. Using volatile ensures visibility, synchronized ensures
         visibility and atomicity, and the JVM manages memory through Heap, Stack, and Method Area. 
         JMM also defines ‘happens-before’ relationships to guarantee consistent thread behavior
+
+    * Emp emp1 = new Emp("ravi")
+      public int static final count=0;
+
+        emp1 -> Stack , object reference
+        new Emp("ravi") - Heap since Object
+        count -> Method Area
+
+    * String name = new String("ravi");
+
+      "ravi" → String literal → Stored in String Pool (in Method Area / PermGen/Metaspace).
+
+      new String("ravi") → Creates a new String object → Stored in Heap.
+
+      name → Local reference to the object → Stored in Stack of main() thread.
+
