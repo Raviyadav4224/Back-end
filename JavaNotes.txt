@@ -1993,6 +1993,7 @@
                     counter = 5; // any thread reading counter sees 5 immediately
                 }
             }
+
     * Volatile -
         
         * In Java, each thread has its own working memory (CPU cache) where it stores copies of variables 
@@ -2020,14 +2021,15 @@
 
 49. How would you implement an efficient Producer-Consumer system in Java ?
 
-50. List<String> list = new ArrayList<>(); vs List<String> cars= Arrays.asList("BMW","Honda");
+50. List<String> list = new ArrayList<>() vs Arrays.asList vs List.of -
 
-51. Arrays.asList vs List.of -
+    new ArrayList<>() → Fully mutable & resizable list. You can add, remove, update elements.
 
-    Both creates immutable list
-    but with Arrays.asList we can modify the exisiting values, but cannot add new values
+    Arrays.asList() → Fixed-size list. You can update elements, but cannot add/remove.
 
-52. System.out.println() - What is does under the hood & Why use Logging Frameworks in applications -
+    List.of() → Immutable list. No add, remove, or update allowed.
+
+51. System.out.println() - What it does under the hood & Why use Logging Frameworks in applications -
 
     System - 
         
@@ -2059,7 +2061,7 @@
 
     * It is implemented by Logback, Log4J2 etc
 
-53. API status codes and their meaning -
+52. API status codes and their meaning -
 
     1XX - Informational Responses - Request is received and server is continuing the process
 
@@ -2086,9 +2088,9 @@
     5XX - Server Error responses - Problem on the server side
         
         500 INTERNAL SERVER ERROR - Generic server failure - NullPointerException, unhandled exception
-        503 SEVICE UNAVAILABLE - Server overloaded or under maintenance.
+        503 SERVICE UNAVAILABLE - Server overloaded or under maintenance.
 
-54. Java Memory Model ( JMM ) -
+53. Java Memory Model ( JMM ) -
 
     * The Java Memory Model (JMM) defines how threads interact through memory and how changes made by 
       one thread become visible to others.
@@ -2174,4 +2176,225 @@
       new String("ravi") → Creates a new String object → Stored in Heap.
 
       name → Local reference to the object → Stored in Stack of main() thread.
+
+54. Java 8 vs 17 vs 21 -
+
+    1. Data Classes (Records and Record Patterns) -
+
+        * Before Java 14/17, creating simple immutable data classes (like Point, User, etc.) required 
+          a lot of boilerplate:
+
+            public class Point {
+                private final int x;
+                private final int y;
+
+                public Point(int x, int y) {
+                    this.x = x;
+                    this.y = y;
+                }
+
+                public int getX() { return x; }
+                public int getY() { return y; }
+
+                @Override
+                public boolean equals(Object o) { ... }
+                @Override
+                public int hashCode() { ... }
+                @Override
+                public String toString() { ... }
+            }
+
+
+            * This is verbose. Easy to make mistakes in equals, hashCode, or getters. Reduces readability 
+            and maintainability.
+
+        * Java 17 Solution : Records
+
+        * Records automatically generate: Private final fields, Constructor, Getters (with field name),
+          equals, hashCode, toString
+
+          Example:
+
+            public record Point(int x, int y) {}
+            Point p = new Point(1, 2);
+            System.out.println(p.x());  // 1
+            System.out.println(p);      // Point[x=1, y=2]
+
+
+          Advantages:
+
+            Immutable by default
+
+            Reduces boilerplate
+
+            Clear intent: class is a simple data carrier
+
+        * Java 21 Enhancement : Record Patterns
+
+            * Record patterns allow destructuring a record directly in code, especially with instanceof or switch.
+
+              Example:
+
+                Object obj = new Point(3, 4);
+
+                if (obj instanceof Point(int x, int y)) {
+                    System.out.println("X: " + x + ", Y: " + y);
+                }
+
+
+            No need to call getters (obj.x(), obj.y()) separately.
+            Works with nested records for complex structured data.
+
+    2. Multi-line Strings and String Templates -
+
+        Before Java 17 -
+
+            Writing multi line string was hectic 
+            
+            Example  String userAddress="House No 121\n" + "Street 268 \n"
+
+        Java 17 Solution -  Multi-line Strings with triple quotes
+
+            Example String customer_name = """
+                    Good Morning {dummyName}
+                    """;
+
+        Java 21 Enhancement - interpolated variables directly inside string like ${} in javascript
+
+            Example - 
+            
+                    String name = "Ravi";
+                    String greeting = STR."Hello, \{name}";
+                    System.out.println(greeting); // Hello, Ravi
+
+    3. Switch Statements and Pattern Matching -
+
+        Java 17 - Pattern matching for instanceof
+
+           Issue -
+
+            Object obj = "Hello";
+                if (obj instanceof String) {
+                    String s = (String) obj; // manual cast
+                    System.out.println(s.toUpperCase());
+                }
+
+            Solution -
+                
+                Object obj = "Hello";
+                if (obj instanceof String greet) {
+                    System.out.println(greet.toUpperCase());
+                }
+
+        Java 21 - Switch expressions now support type patterns and record patterns:
+
+            Example -
+            
+                Object obj = new Point(5, 6);
+
+                switch (obj) {
+                    case String s -> System.out.println(s.toUpperCase());
+                    case Point(int x, int y) -> System.out.println("Point: " + x + ", " + y);
+                    default -> System.out.println("Unknown type");
+                }
+
+    4. Sealed class in Java 17 -
+
+        * Java 17 introduced sealed classes, which allow the parent class to explicitly declare which 
+          classes are allowed to extend it.
+
+        * public sealed class Shape permits Circle, Rectangle, Square {}
+          Now only Circle, Rectangle, and Square can extend Shape.
+
+        * After extending a sealed class, subclasses must use one of three modifiers:
+
+            Modifier	Meaning
+            final	    no one can extend it further
+            sealed	    it also restricts its child classes
+            non-sealed	makes it open again (any class can extend it)
+
+        * Examples -
+
+            public sealed class Shape permits Circle, Rectangle, Square {}
+            public final class Circle extends Shape {}
+            public non-sealed class Rectangle extends Shape {}
+            public sealed class Square extends Shape permits FilledSquare {}
+            public final class FilledSquare extends Square {}
+
+    5. Virtual Threads in Java 21 -    
+
+        * Platform Threads -
+
+            * Traditional Java threads (Platform Threads) are OS threads, each consuming ~1 MB stack.
+
+            * Platform Threads = Java Threads + OS Threads ( 1:1 mapping )
+
+            * Here OS runs and manages the Threads and JVM just acts like a wrapper and requires OS 
+              to run it
+
+            * The OS decides CPU time, scheduling, context switching, etc
+
+            * Example -
+                
+                ExecutorService executor = Executors.newFixedThreadPool(200);
+
+                for (int i = 0; i < 10000; i++) {
+                        executor.submit(() -> {
+                            try {
+                                Thread.sleep(1000); // simulate I/O
+                                System.out.println(Thread.currentThread().getName());
+                            } catch (InterruptedException e) { }
+                        });
+                    }
+                    executor.shutdown();
+                    executor.awaitTermination(5, TimeUnit.SECONDS);
+                
+                * Only 200 tasks run simultaneously → others wait in queue
+                * High latency under high load
+
+        * Virtual Threads -
+
+            * Java Threads but not tied to OS Thread by 1:1 mapping
+
+            * JVM manages and schedules new Threads
+
+            * Platform Threads = One Person One Car
+              Virtual Threads = 50 persons One Bus
+
+            * Stack memory is heap-based, dynamically grown, ~10–50 KB per thread.
+
+            * Example -
+                
+                ExecutorService executor = Executors.newVirtualThreadPerTaskExecutor();
+
+                for (int i = 0; i < 10000; i++) {
+                    executor.submit(() -> {
+                        try {
+                            Thread.sleep(1000); // simulate I/O
+                            System.out.println(Thread.currentThread().getName());
+                        } catch (InterruptedException e) { }
+                    });
+                }
+
+                executor.shutdown();
+                executor.awaitTermination(5, TimeUnit.SECONDS);
+
+                * All tasks start immediately
+                * Minimal memory usage → can handle 100k+ requests
+                * Threads park during I/O → CPU efficiently used
+
+        * Virtual Threads in Springboot -
+
+            @Configuration
+            public class VirtualThreadConfig {
+
+                @Bean
+                public WebServerFactoryCustomizer<TomcatServletWebServerFactory> tomcatCustomizer() {
+                    return factory -> factory.setProtocolHandlerCustomizer(protocolHandler -> {
+                        protocolHandler.setExecutor(
+                            Executors.newVirtualThreadPerTaskExecutor()
+                        );
+                    });
+                }
+            }
 
