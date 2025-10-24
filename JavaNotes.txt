@@ -394,27 +394,27 @@
 
 11. Inheritance -
 
-        * In Java MULTIPLE Inheritance is NOT supported
-        
-        * Inheritance is done using the keyword extends
+    * In Java MULTIPLE Inheritance is NOT supported
+    
+    * Inheritance is done using the keyword extends
 
-        * For Multiple Inheritance - Multiple class can have same methods which creates an ambiguity i.e 
-          JVM cannot decide which method to call, so Multiple inheritance is not supported
+    * For Multiple Inheritance - Multiple class can have same methods which creates an ambiguity i.e 
+        JVM cannot decide which method to call, so Multiple inheritance is not supported
 
-        * For Inheritance you only need .class file 
+    * For Inheritance you only need .class file 
 
 12. Object class -
 
-        By default every class in Java extends the Object Class directly or indirectly
-        It means every class in Java has access to the Object class methods
+    By default every class in Java extends the Object Class directly or indirectly
+    It means every class in Java has access to the Object class methods
 
-        * Primitive values doesn't extends the Object class
+    * Primitive values doesn't extends the Object class
 
 13. Wrapper class - 
 
     * Primitive values doesn't extends the Object Class
-        Wrapper class is a way to use Primitive data types as Objects
-        Each data type has a corresponding Wrapper class
+      Wrapper class is a way to use Primitive data types as Objects
+      Each data type has a corresponding Wrapper class
 
         For example -
 
@@ -458,15 +458,15 @@
 
 15. Abstract class -
         
-        Abstract means just the idea and not its implementation
+    Abstract means just the idea and not its implementation
 
-        * Abstract methods can only belong to Abstract class
+    * Abstract methods can only belong to Abstract class
 
-        * When a class extends the Abstract class it must implement the abstract  methods
+    * When a class extends the Abstract class it must implement the abstract  methods
 
-        * You cannot create an object of Abstract class only reference of that class can be created
+    * You cannot create an object of Abstract class only reference of that class can be created
 
-        * Abstract class may or may not have abstract methods
+    * Abstract class may or may not have abstract methods
 
     * Abstract vs Interfaces -
 
@@ -536,7 +536,7 @@
 
             * Functional interface has only one abstract method because it represents a single unit 
               of behavior — a single action or operation.
-
+              
         Marker Interface -> 
 
             Interface having NO METHODS (used in serialization)
@@ -580,7 +580,7 @@
 
 17. Lambda expression -
 
-        It is applicable only for Functional interfaces i.e interface having only one method
+    It is applicable only for Functional interfaces i.e interface having only one method
 
 18. Exception Handling -
     
@@ -1047,151 +1047,151 @@
 
 23. Stream API ->
 
-        * Introduced in Java 8, it provides ways to process pipeline(series) of operations to the elements
-          of a collection or other data source in a functional and declarative programming style
+    * Introduced in Java 8, it provides ways to process pipeline(series) of operations to the elements
+        of a collection or other data source in a functional and declarative programming style
 
-        * It processes series of elements one at a time
+    * It processes series of elements one at a time
 
-        * stream() is used to create a stream and it provides various methods to be applied on the stream 
-          such as map, filter, reduce
-        
-        * Intermediate operations - (lazy, return a stream)
+    * stream() is used to create a stream and it provides various methods to be applied on the stream 
+        such as map, filter, reduce
+    
+    * Intermediate operations - (lazy, return a stream)
 
-            Examples: map, filter, sorted, distinct, limit, skip, flatMap.
+        Examples: map, filter, sorted, distinct, limit, skip, flatMap.
 
     * Terminal operations - (consume the stream, return non-stream result)
 
-            Examples: collect, reduce, forEach, count, findFirst, findAny, toArray.
-            Once a terminal operation is called, the stream cannot be reused.
-        
-        * numbers.stream().map().toList() - Creates Im-mutable List
+        Examples: collect, reduce, forEach, count, findFirst, findAny, toArray.
+        Once a terminal operation is called, the stream cannot be reused.
+    
+    * numbers.stream().map().toList() - Creates Im-mutable List
 
-        * numbers.stream().map().collect(Collectors.toList()) - Creates Mutable List
+    * numbers.stream().map().collect(Collectors.toList()) - Creates Mutable List
 
-        * Collectors.toMap(Key,Value,if duplicate then what)
+    * Collectors.toMap(Key,Value,if duplicate then what)
 
-        * Collectors.groupingBy((e)->e.getDept(),Collectors.toList()) expects a classifier function (how to group elements)
-          and optionally a downstream collector (like Collectors.toList() or Collectors.toSet())
+    * Collectors.groupingBy((e)->e.getDept(),Collectors.toList()) expects a classifier function (how to group elements)
+        and optionally a downstream collector (like Collectors.toList() or Collectors.toSet())
 
-        * numbers.stream().flatMap()
+    * numbers.stream().flatMap()
 
-        * Comparator.comparing(Employee::getSalary) - Compares using comparator
+    * Comparator.comparing(Employee::getSalary) - Compares using comparator
 
-        * collect() is used to terminate the stream and convert the stream back into specific data types
+    * collect() is used to terminate the stream and convert the stream back into specific data types
 
-        * .collect(Collectors.summingInt(Employee::getSalary));
+    * .collect(Collectors.summingInt(Employee::getSalary));
 
-        * To handle infinite streams of data we can use any of the terminations operations like findfirst(),
-            findAny(), anyMatch(), limit() etc
+    * To handle infinite streams of data we can use any of the terminations operations like findfirst(),
+        findAny(), anyMatch(), limit() etc
 
-                for example - 
+            for example - 
 
-                    numbers.stream().limit(10).forEach(System.out::println);
-                    Random random=new Random();
-                    Stream.generate(random::nextInt).limit(5).forEach(System.out::println);
-                    
-        * Group by - employees
-                    .stream()
-                    .collect(Collectors
-                    .groupingBy(Employee::getDepartment, Collectors.maxBy(Comparator.comparing(Employee::getSalary))))
+                numbers.stream().limit(10).forEach(System.out::println);
+                Random random=new Random();
+                Stream.generate(random::nextInt).limit(5).forEach(System.out::println);
+                
+    * Group by - employees
+                .stream()
+                .collect(Collectors
+                .groupingBy(Employee::getDepartment, Collectors.maxBy(Comparator.comparing(Employee::getSalary))))
 
 24. StringBuilder vs StringBuffer -
 
-        StringBuilder and StringBuffer are MUTABLE classes in java used for manipulating strings
-        They provide methods to modify strings WITHOUT CREATING new strings
+    StringBuilder and StringBuffer are MUTABLE classes in java used for manipulating strings
+    They provide methods to modify strings WITHOUT CREATING new strings
 
-        StringBuilder - 
+    StringBuilder - 
 
-            It is not synchronized so it is not safe in a multi-threaded environment
-            It performs faster operations comapared to StringBuffer in single threaded environments
+        It is not synchronized so it is not safe in a multi-threaded environment
+        It performs faster operations comapared to StringBuffer in single threaded environments
 
-        StringBuffer -
-        
-            It is synchronized and Thread safe
-            Slower due to synchronization
-        
-        example -
-                StringBuilder sb = new StringBuilder(""); // Not Thread Safe since StringBuilder,use StringBuffer for thread safe
-                Runnable task = () -> {
-                    for (int i = 1; i < 50; i++) {
-                        sb.append(i+" ");
-                    }
-                    System.out.println(sb);
-                };
+    StringBuffer -
+    
+        It is synchronized and Thread safe
+        Slower due to synchronization
+    
+    example -
+            StringBuilder sb = new StringBuilder(""); // Not Thread Safe since StringBuilder,use StringBuffer for thread safe
+            Runnable task = () -> {
+                for (int i = 1; i < 50; i++) {
+                    sb.append(i+" ");
+                }
+                System.out.println(sb);
+            };
 
-                Thread t1 = new Thread(task);
-                Thread t2 = new Thread(task);
+            Thread t1 = new Thread(task);
+            Thread t2 = new Thread(task);
 
-                t1.start();
-                t2.start();
+            t1.start();
+            t2.start();
 
 25. Generics - 
 
-        * Generics in Java provides a way to create Classes, Interfaces and methods with Type parameters.
+    * Generics in Java provides a way to create Classes, Interfaces and methods with Type parameters.
 
-        * It allows you to write code with type safety
+    * It allows you to write code with type safety
 
-        * It enhances code reusability since single classes, interfaces and methods can be used with different types
-          ensuring compile time type safety
+    * It enhances code reusability since single classes, interfaces and methods can be used with different types
+        ensuring compile time type safety
 
-        * Basic syntax -
-            class Box<T> {
-                private T value;
-                public T getValue() { return value;}
-                public void setValue(T value) { this.value = value;}
+    * Basic syntax -
+        class Box<T> {
+            private T value;
+            public T getValue() { return value;}
+            public void setValue(T value) { this.value = value;}
+        }
+
+    * Generics can be used with Classes , Methods and interfaces
+
+        Method - 
+            public static <T> void printArray(T[] array) {
+                for (T element : array) {
+                    System.out.println(element);
+                }
             }
 
-        * Generics can be used with Classes , Methods and interfaces
+    * Bounding (Extending) a Class -
 
-            Method - 
-                public static <T> void printArray(T[] array) {
-                    for (T element : array) {
-                        System.out.println(element);
-                    }
+        Lower Bound -
+
+            * We can restrict the type that can be used with Generics
+
+            * class Box<T extends Number> - means Type T can be Number or its sub-classes
+
+            ** extends is for upper bounds — usable in class and method declarations
+
+        Upper Bound -
+        
+            * class Box<T super Number> - means any Type T can be super class of Number
+
+            ** super is for lower bounds — only usable in wildcards (<?>)
+
+    * WildCards (?)-
+
+        WildCards are used for unknown types
+
+            public static void printList(List<?> list) {
+                for (Object obj : list) {
+                    System.out.println(obj);
                 }
-
-        * Bounding (Extending) a Class -
-
-            Lower Bound -
-
-                * We can restrict the type that can be used with Generics
-
-                * class Box<T extends Number> - means Type T can be Number or its sub-classes
-
-                ** extends is for upper bounds — usable in class and method declarations
-
-            Upper Bound -
-            
-                * class Box<T super Number> - means any Type T can be super class of Number
-
-                ** super is for lower bounds — only usable in wildcards (<?>)
-
-        * WildCards (?)-
-
-            WildCards are used for unknown types
-
-                public static void printList(List<?> list) {
-                    for (Object obj : list) {
-                        System.out.println(obj);
-                    }
-                }
-                (? extends T): Represents any type that is a subtype of T
-                (? super T): Represents any type that is a supertype of T
-
-            * ? extends T (upper bound) → read-only producer.
-
-            * ? super T (lower bound) → write-only consumer.
-
-        * Generic Interfaces -
-
-            interface Pair<K, V> {
-                K getKey();
-                V getValue();
             }
+            (? extends T): Represents any type that is a subtype of T
+            (? super T): Represents any type that is a supertype of T
 
-        * Generics with Collection -
+        * ? extends T (upper bound) → read-only producer.
 
-            List<Integers> num=new ArrayList<>();
+        * ? super T (lower bound) → write-only consumer.
+
+    * Generic Interfaces -
+
+        interface Pair<K, V> {
+            K getKey();
+            V getValue();
+        }
+
+    * Generics with Collection -
+
+        List<Integers> num=new ArrayList<>();
 
     * Wildcards (super, extends) only allowed in method parameters, not in class type parameters.
 
@@ -1209,94 +1209,94 @@
 26. Date,Time & DateTime API - 
 
     * Introduced in Java 8 in the java.time package.
-        * All classes inside java.time are IMMUTABLE and THREAD SAFE
+    * All classes inside java.time are IMMUTABLE and THREAD SAFE
 
-        * It has TimeZones support
+    * It has TimeZones support
 
     * classes - LocalDate, LocalTime, LocalDateTime, ZonedDateTime, DateTimeFormatter
 
-        * LocalDate date = LocalDate.now();
+    * LocalDate date = LocalDate.now();
 
-        * DateTimeFormatter formatter= DateTimeFormatter.ofPattern("MM/dd/yyyy");
+    * DateTimeFormatter formatter= DateTimeFormatter.ofPattern("MM/dd/yyyy");
 
-        * String currentDate=LocalDateTime.now().format(formatter);
+    * String currentDate=LocalDateTime.now().format(formatter);
 
-        * LocalDate date=LocalDate.parse(birthday,formatter);
+    * LocalDate date=LocalDate.parse(birthday,formatter);
 
-        ** UTC ( Co-ordinated Universal Time ) is global reference clock not tied to any country or 
-           time zone .It is always written with a Z i.e Zulu time 
+    ** UTC ( Co-ordinated Universal Time ) is global reference clock not tied to any country or 
+        time zone .It is always written with a Z i.e Zulu time 
 
-        ** ISO is just a format of writing time, it can include Date, Date+Time, Date+Time+Time zone offset 
-           or UTC 
+    ** ISO is just a format of writing time, it can include Date, Date+Time, Date+Time+Time zone offset 
+        or UTC 
 
-        * We generally store UTC in DB's and convert them back to ISO format with local date time when 
-          showing to user
-        
-        ** It has Time zone support and doesn't requires manual handling of offsets
-           Example -
-            Instant utc = Instant.now();
-            ZonedDateTime ist = utc.atZone(ZoneId.of("Asia/Kolkata"));
-            ZonedDateTime nyc = utc.atZone(ZoneId.of("America/New_York"));
+    * We generally store UTC in DB's and convert them back to ISO format with local date time when 
+        showing to user
+    
+    ** It has Time zone support and doesn't requires manual handling of offsets
+        Example -
+        Instant utc = Instant.now();
+        ZonedDateTime ist = utc.atZone(ZoneId.of("Asia/Kolkata"));
+        ZonedDateTime nyc = utc.atZone(ZoneId.of("America/New_York"));
 
-        * Example -
+    * Example -
 
-            Instant ist= Instant.now() - Gives LocalDateTime in UTC
-            String localdatetime = LocalDateTime.ofInstant(Instant.now(),ZoneId.systemDefault()) -- Converts LocalDateTime into ISO
-            .format(DateTimeFormatter.ofPattern("dd-MMM-yyyy hh:mm a"));
+        Instant ist= Instant.now() - Gives LocalDateTime in UTC
+        String localdatetime = LocalDateTime.ofInstant(Instant.now(),ZoneId.systemDefault()) -- Converts LocalDateTime into ISO
+        .format(DateTimeFormatter.ofPattern("dd-MMM-yyyy hh:mm a"));
 
 27. File Handling -
 
-        * Paths, Path and Files are used to work with Files and Paths in java, available in java.nio.* package
+    * Paths, Path and Files are used to work with Files and Paths in java, available in java.nio.* package
 
-        * Path — 
-            
-            Represents a file/directory path
+    * Path — 
         
-            Path path = Paths.get("data/file.txt");  // relative path
+        Represents a file/directory path
+    
+        Path path = Paths.get("data/file.txt");  // relative path
 
-        * Paths — 
-            
-            Factory class to create Path objects
+    * Paths — 
+        
+        Factory class to create Path objects
 
-            Think of it as: A helper class to get Path instances
+        Think of it as: A helper class to get Path instances
 
-        * Files -
-            
-            Performs operations on files/directories
-            It allows you to Read, Write, Update & Delete a file in Java
-            Path path = Paths.get("file.txt");
+    * Files -
+        
+        Performs operations on files/directories
+        It allows you to Read, Write, Update & Delete a file in Java
+        Path path = Paths.get("file.txt");
 
-            Reading -
+        Reading -
 
-                String content = Files.readString(path);
-                List<String> lines = Files.readAllLines(path);
-                Stream<String> stream = Files.lines(path);
+            String content = Files.readString(path);
+            List<String> lines = Files.readAllLines(path);
+            Stream<String> stream = Files.lines(path);
 
-            Writing -
+        Writing -
 
-                Files.writeString(path, "Hello");
-                Files.write(path, List.of("Line 1", "Line 2"));
+            Files.writeString(path, "Hello");
+            Files.write(path, List.of("Line 1", "Line 2"));
 
-            Checking -
+        Checking -
 
-                Files.exists(path);
-                Files.isDirectory(path);
+            Files.exists(path);
+            Files.isDirectory(path);
 
-            Directory ops -
+        Directory ops -
 
-                Files.list(path);
-                Files.createDirectories(path);
+            Files.list(path);
+            Files.createDirectories(path);
 
-            File ops -
+        File ops -
 
-                Files.copy(src, dest, StandardCopyOption.REPLACE_EXISTING);
-                Files.move(oldPath, newPath);
-                Files.deleteIfExists(path);
+            Files.copy(src, dest, StandardCopyOption.REPLACE_EXISTING);
+            Files.move(oldPath, newPath);
+            Files.deleteIfExists(path);
 
-            Binary -
+        Binary -
 
-                byte[] data = Files.readAllBytes(path);
-                Files.write(path, byteArray);
+            byte[] data = Files.readAllBytes(path);
+            Files.write(path, byteArray);
 
     * BufferedReader & BufferedWriter -
 
@@ -1326,54 +1326,54 @@
 
 28. Serialization, De-serialization ,transient & serialVersionUID-
 
-        Serialization is the process of converting object's state into byte stream such that it can be 
-        stored in a database or a file
+    Serialization is the process of converting object's state into byte stream such that it can be 
+    stored in a database or a file
 
-        De-serialization is the reverse process where object is converted back into original state
+    De-serialization is the reverse process where object is converted back into original state
 
-        For Serialization (Writing into a File) -
+    For Serialization (Writing into a File) -
 
-            1. Opens file using the path -
+        1. Opens file using the path -
 
-                OutputStream fileOut = Files.newOutputStream(filePath);
+            OutputStream fileOut = Files.newOutputStream(filePath);
 
-            2. Creates Buffer - 
+        2. Creates Buffer - 
 
-                BufferedOutputStream bos=new BufferedOutputStream(fos);
+            BufferedOutputStream bos=new BufferedOutputStream(fos);
 
-            3. Converts Java objects into byte stream -
+        3. Converts Java objects into byte stream -
 
-                ObjectOutputStream oos=new ObjectOutputStream(bos); 
-                OR
-                ObjectOutputStream oos=new ObjectOutputStream(fileOut); 
+            ObjectOutputStream oos=new ObjectOutputStream(bos); 
+            OR
+            ObjectOutputStream oos=new ObjectOutputStream(fileOut); 
 
-            4. Writes the object -
-                oos.writeObject(Person)
+        4. Writes the object -
+            oos.writeObject(Person)
 
-        For De-Serialization -
+    For De-Serialization -
 
-            InputStream fileIn = Files.newInputStream(filePath);
-            BufferedInputStream bis=new BufferedInputStream(fileIn);
+        InputStream fileIn = Files.newInputStream(filePath);
+        BufferedInputStream bis=new BufferedInputStream(fileIn);
 
-            ObjectInputStream ois=new ObjectInputStream(bis);
-            OR 
-            ObjectInputStream ois=new ObjectInputStream(fileIn);
-            
-            ois.readObject();
+        ObjectInputStream ois=new ObjectInputStream(bis);
+        OR 
+        ObjectInputStream ois=new ObjectInputStream(fileIn);
+        
+        ois.readObject();
 
-        * Transient keyword is used to indicate that the field should not be serialized
+    * Transient keyword is used to indicate that the field should not be serialized
 
-        * SerialVersionUID - 
+    * SerialVersionUID - 
 
-            * It is a unique identifier used during de-serialization process to verify 
-              that the sender and receiver of serialized object have compatible classes
+        * It is a unique identifier used during de-serialization process to verify 
+            that the sender and receiver of serialized object have compatible classes
 
-            * It must be STATIC FINAL LONG
-              private static final long serialVersionUID=1234L;
+        * It must be STATIC FINAL LONG
+            private static final long serialVersionUID=1234L;
 
-        * STATIC and TRANSIENT data members are not stored during serialization
+    * STATIC and TRANSIENT data members are not stored during serialization
 
-        * Constructor of Object is not called during de-serialization of the object
+    * Constructor of Object is not called during de-serialization of the object
 
 29. Autoboxing -
 
@@ -2218,24 +2218,24 @@
 
         * Java 17 Solution : Records
 
-        * Records automatically generate: Private final fields, Constructor, Getters (with field name),
-          equals, hashCode, toString
+            * Records automatically generate: Private final fields, Constructor, Getters (with field name),
+            equals, hashCode, toString
 
-          Example:
+            Example:
 
-            public record Point(int x, int y) {}
-            Point p = new Point(1, 2);
-            System.out.println(p.x());  // 1
-            System.out.println(p);      // Point[x=1, y=2]
+                public record Point(int x, int y) {}
+                Point p = new Point(1, 2);
+                System.out.println(p.x());  // 1
+                System.out.println(p);      // Point[x=1, y=2]
 
 
-          Advantages:
+            Advantages:
 
-            Immutable by default
+                Immutable by default
 
-            Reduces boilerplate
+                Reduces boilerplate
 
-            Clear intent: class is a simple data carrier
+                Clear intent: class is a simple data carrier
 
         * Java 21 Enhancement : Record Patterns
 
@@ -2405,4 +2405,93 @@
                     });
                 }
             }
+
+55. Design Patterns -
+
+    Singleton -
+
+        * Only one instance of that Class exist and is accessible Globally
+
+        * Example - 
+        
+            DbConnection -
+
+                public class Database {
+                    private static Database instance;
+
+                    private Database() {
+                        System.out.println("Connected to DB");
+                    }
+
+                    public static Database getInstance() {
+                        if (instance == null) {
+                            instance = new Database();
+                        }
+                        return instance;
+                    }
+            }
+
+            Database db1 = Database.getInstance();
+            Database db2 = Database.getInstance();
+
+            System.out.println(db1 == db2); // true
+
+    Factory -
+
+        * Factory centralizes object creation.
+
+        * If you are creating objects like:
+
+            Animal a = new Dog();
+            Animal b = new Cat();
+
+            Later if you add Tiger, Lion, etc. — you must modify code everywhere
+
+        * Animal a = AnimalFactory.getAnimal("dog");
+
+          Now adding a new animal needs changes only in one place.
+
+          class AnimalFactory {
+                public static Animal getAnimal(String type) {
+                    return switch (type) {
+                        case "dog" -> new Dog();
+                        case "cat" -> new Cat();
+                        default -> null;
+                    };
+                }
+            }
+
+    Strategy -
+
+        * Strategy allows switching algorithms at runtime without modifying main logic.
+
+        * Example -
+
+            interface PaymentStrategy {
+                void pay(int amount);
+            }
+
+            class UpiPayment implements PaymentStrategy {
+                public void pay(int amount) { System.out.println("Paid via UPI: " + amount); }
+            }
+
+            class CardPayment implements PaymentStrategy {
+                public void pay(int amount) { System.out.println("Paid via CARD: " + amount); }
+            }
+
+            class PaymentContext {
+                private PaymentStrategy strategy;
+                public PaymentContext(PaymentStrategy strategy) { this.strategy = strategy; }
+                public void checkout(int amount) { strategy.pay(amount); }
+            }
+
+            PaymentContext context = new PaymentContext(new UpiPayment());
+            context.checkout(500);
+
+    Observer -
+
+        * Let's say many parts of your system need updates when an event happens (like order status
+          update). If you call each one manually → tightly coupled, unmaintainable.
+
+        * Observer lets Subscribers auto-get notifications when Publisher triggers an event.
 
