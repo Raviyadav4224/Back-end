@@ -1824,15 +1824,23 @@
 
     Simple Summary for Interview
 
-        HashMap = locker room (array of buckets).
+        HashMap stores data in the form of key–value pairs. Internally, it uses an array of buckets, 
+        where each bucket acts like a locker. The default number of buckets is 16. 
+        
+        When we call put(key, value), HashMap first computes the hash of the key and applies an index 
+        calculation (like hash & (n-1)) to decide which bucket to use.
 
-        Put: Compute hash → find locker → place item.
+        If the bucket is empty, the entry is stored there. If the bucket already has entries, that 
+        situation is called a collision. 
+        
+        HashMap handles collision using a Linked List (and from Java 8 onwards, if the list grows beyond 
+        8 elements, it converts it to a Red-Black Tree for faster lookup).
 
-        Get: Compute hash → open locker → search item.
+        When we call get(key), HashMap again calculates the bucket index using the hash. Then inside that 
+        bucket, it compares keys using the equals() method to find the correct entry and return the value.
 
-        Collisions → list (old) or tree (new).
-
-        Resize → bigger locker room at 75% full.
+        So in summary: hashCode() is used to identify the correct bucket, and equals() is used to identify 
+        the correct key inside that bucket.
 
 43. How would you design a class whose objects cannot be modified after creation ?
 
