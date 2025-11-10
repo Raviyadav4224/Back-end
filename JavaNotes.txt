@@ -2219,7 +2219,7 @@
         * Java 17 Solution : Records
 
             * Records automatically generate: Private final fields, Constructor, Getters (with field name),
-            equals, hashCode, toString
+              equals, hashCode, toString
 
             Example:
 
@@ -2419,7 +2419,7 @@
                 public class Database {
                     private static Database instance;
 
-                    private Database() {
+                    public Database() {
                         System.out.println("Connected to DB");
                     }
 
