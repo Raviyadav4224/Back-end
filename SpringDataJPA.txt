@@ -136,7 +136,7 @@
     Native SQL Query - Based on actual DB Table and Column Name
         @Query(value = "SELECT * FROM users WHERE username = :username", nativeQuery = true)
 
-9. N+1 Problem - 
+9. N + 1 Problem - 
 
     List<User> users = userRepository.findAll();
 

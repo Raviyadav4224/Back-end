@@ -259,6 +259,7 @@
 9. Aggregate Functions -
 
     COUNT(expression) - 
+
         Used to calculate No. of rows or Non-NULL values in a table
         ** COUNT() only counts non-null values
         ** To Count conditionally we can use -
@@ -266,29 +267,35 @@
             count( case when rating >3 then 1 else 0) - this will count all values since 0 is not null
         
     SUM(expression) -
+
         Used to calculate SUM of a Column 
         It ignores Null values
 
     AVG(expression) -
+
         Used to calculate SUM of a Column 
         It ignores Null values
     
     MAX & MIN -
+
         MAX() returns the highest value in a column.
         MIN() returns the lowest value in a column.
     
     COALESCE(value1,value2,...) -
+
         It is used to return first NON-NULL value from a list of expressions, if all values are NULL 
         it returns NULL
         It is used to handle Null values by replacing with default value
 
         examples -
+
             select count(coalesce(salary,0)) from employees;
             select count(*) from employees;
             select sum(salary) from employees;
             select avg(coalesce(salary,0)) from employees;
     
     REPLACE(string, from_string, new_string) -
+
         Replaces a given string from main string
         example -
             SELECT REPLACE("XYZ FGH XYZ", "X", "M");
@@ -323,6 +330,7 @@
 10. Data Constraints -
 
     NOT NULL -
+
         Values in a column cannot be Null
         example -
             Add Constraint -
@@ -332,6 +340,7 @@
                  ALTER table employees modify column emp_name varchar(30) null;
 
     UNIQUE -
+
         Values in a column or a group of columns must be unique i.e distinct from one other
         example -
             Add Constraint -
@@ -346,6 +355,7 @@
         * SHOW INDEXES from employees;
 
     PRIMARY KEY -
+
         Primary key is used to identify each record in a table uniquely
         It cannot have NULL or Duplicate values
         One table can have only ONE PRIMARY KEY but it can be composed of multiple columns known as COMPOSITE KEY
@@ -363,6 +373,7 @@
                 ALTER TABLE Employees Drop Index emp_id;
 
     FOREIGN KEY -
+
         Foreign  key is a field or column in a table which refers to primary key of another table
         It is used to create relation between one or more than one table
         
@@ -386,6 +397,7 @@
                 SHOW CREATE TABLE TABLE_NAME;
 
     COMPOSITE KEY -
+
         One table can have only ONE PRIMARY KEY but it can be composed of multiple columns known as COMPOSITE KEY
         It is used to uniquely identify a table when single column is not unique
 
@@ -397,6 +409,7 @@
                 )
 
     DEFAULT KEY -
+    
         Default key is used to specify the default value of the column when no value is explicitly provided
 
         example -
@@ -727,7 +740,7 @@
         It stores data is CSV files, rarely used
 
     * We can define engine while creating table 
-         Create table Employees ( emp_id int not null) ENGINE=InnoDB;
+      Create table Employees ( emp_id int not null) ENGINE=InnoDB;
 
 21. ACID Properties -
 

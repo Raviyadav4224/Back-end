@@ -355,7 +355,7 @@
             Activates a bean only in specific environments
             @Profile lets you define environment-specific beans
 
-            spring.profiles.active=dev // in application.properties
+            spring.profiles.active = dev // in application.properties
             @Profile("prod") or  @Profile("dev")
 
         @Scope	
@@ -579,153 +579,153 @@
 
 8. * Spring Web MVC -
 
-        Traditional Servlet Development (with Tomcat)
+    Traditional Servlet Development (with Tomcat)
 
-            In this case, you’re working directly with Jakarta Servlet API.
+        In this case, you’re working directly with Jakarta Servlet API.
 
-            Typical steps:
-            
-                Use @WebServlet("/hello") to map a URL.
-                Create a class extending HttpServlet.
-                Override methods like doGet() or doPost().
+        Typical steps:
+        
+            Use @WebServlet("/hello") to map a URL.
+            Create a class extending HttpServlet.
+            Override methods like doGet() or doPost().
 
-            example -
+        example -
 
-                @WebServlet("/hello")
-                public class HelloServlet extends HttpServlet {
-                    @Override
-                    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-                        resp.getWriter().write("Hello from Servlet");
+            @WebServlet("/hello")
+            public class HelloServlet extends HttpServlet {
+                @Override
+                protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+                    resp.getWriter().write("Hello from Servlet");
+                }
+            }
+
+    Spring Core with Servlet API (Without Spring Boot)
+
+        Spring doesn't use @WebServlet directly (unless you're doing very low-level integration).
+        Instead, it uses:
+        A configuration class like WebConfig
+        A DispatcherServlet (core part of Spring MVC)
+        Mappings like @RequestMapping instead of doGet() or doPost()
+
+        example -
+
+        public class WebAppInitializer implements WebApplicationInitializer {
+            @Override
+            public void onStartup(ServletContext servletContext) throws ServletException {
+                // Create Spring application context
+                AnnotationConfigWebApplicationContext context = new AnnotationConfigWebApplicationContext();
+                context.register(WebConfig.class); // Register config class
+                
+                // Create and register DispatcherServlet
+                DispatcherServlet dispatcherServlet = new DispatcherServlet(context);
+                ServletRegistration.Dynamic registration = servletContext.addServlet("dispatcher", dispatcherServlet);
+                
+                registration.setLoadOnStartup(1); // Load servlet on app startup
+                registration.addMapping("/");     // Map to root URL
                     }
                 }
 
-        Spring Core with Servlet API (Without Spring Boot)
+    ** What WebApplicationInitializer does 
+        
+        Create Spring application context
+        Register config class
+        Create and register DispatcherServlet
+        Load servlet on app startup
+        Map to root URL
 
-            Spring doesn't use @WebServlet directly (unless you're doing very low-level integration).
-            Instead, it uses:
-            A configuration class like WebConfig
-            A DispatcherServlet (core part of Spring MVC)
-            Mappings like @RequestMapping instead of doGet() or doPost()
+    What WebConfig does:
 
-            example -
+        DispatcherServlet is registered via WebApplicationInitializer (or Boot).
+        DispatcherServlet intercepts all HTTP requests → forwards to controllers.
+        WebConfig (with @EnableWebMvc and @ComponentScan) tells Spring where to find controllers, services, etc.
+        WebConfig customizes MVC infrastructure → ViewResolvers, HandlerMappings, Formatters, Interceptors, etc.
+        So it can detect your @Controller, @Service, etc.
+        Adds ViewResolvers, HandlerMappings, and other MVC infrastructure.
 
-            public class WebAppInitializer implements WebApplicationInitializer {
-                @Override
-                public void onStartup(ServletContext servletContext) throws ServletException {
-                    // Create Spring application context
-                    AnnotationConfigWebApplicationContext context = new AnnotationConfigWebApplicationContext();
-                    context.register(WebConfig.class); // Register config class
-                    
-                    // Create and register DispatcherServlet
-                    DispatcherServlet dispatcherServlet = new DispatcherServlet(context);
-                    ServletRegistration.Dynamic registration = servletContext.addServlet("dispatcher", dispatcherServlet);
-                    
-                    registration.setLoadOnStartup(1); // Load servlet on app startup
-                    registration.addMapping("/");     // Map to root URL
-                        }
-                    }
+    * DispatcherServlet replaces the need for @WebServlet.
 
-        ** What WebApplicationInitializer does 
-            
-            Create Spring application context
-            Register config class
-            Create and register DispatcherServlet
-            Load servlet on app startup
-            Map to root URL
+    * Spring handles request routing based on annotations like @RequestMapping, @GetMapping, etc.
 
-        What WebConfig does:
+    * The WebAppInitializer + WebConfig combo plays the role of both the web.xml and servlet mapping 
+        config.
 
-            DispatcherServlet is registered via WebApplicationInitializer (or Boot).
-            DispatcherServlet intercepts all HTTP requests → forwards to controllers.
-            WebConfig (with @EnableWebMvc and @ComponentScan) tells Spring where to find controllers, services, etc.
-            WebConfig customizes MVC infrastructure → ViewResolvers, HandlerMappings, Formatters, Interceptors, etc.
-            So it can detect your @Controller, @Service, etc.
-            Adds ViewResolvers, HandlerMappings, and other MVC infrastructure.
+    ** DispatcherServlet processes all the incoming HTTP Requests and forwards it to correct 
+        controller/method
+        It is like Receptionist
+        In Spring MVC we have only one servlet which handles everything i.e DispatcherServlet
 
-        * DispatcherServlet replaces the need for @WebServlet.
+    * In tradional servlets application where we were using Tomcat and @webservlet(path)
+        here we have to create multiple servlets to serve different urls say /products /users etc 
+        but with Spring MVC we can do it in one servlet using @Requestmapping and single Dispatcher 
+        Servlet is used
 
-        * Spring handles request routing based on annotations like @RequestMapping, @GetMapping, etc.
+    * Filters - 
 
-        * The WebAppInitializer + WebConfig combo plays the role of both the web.xml and servlet mapping 
-          config.
+        Filters are Java Classes that implements javax.servlet.Filter interface
 
-        ** DispatcherServlet processes all the incoming HTTP Requests and forwards it to correct 
-           controller/method
-           It is like Receptionist
-           In Spring MVC we have only one servlet which handles everything i.e DispatcherServlet
+        They are executed before the request reaches DispatcherServlet
 
-        * In tradional servlets application where we were using Tomcat and @webservlet(path)
-          here we have to create multiple servlets to serve different urls say /products /users etc 
-          but with Spring MVC we can do it in one servlet using @Requestmapping and single Dispatcher 
-          Servlet is used
+        Client -> Filter(s) -> DispatcherServlet -> Controller -> View
 
-        * Filters - 
+        FilterRegistration.Dynamic filterRegistration = servletContext.addFilter("myLoggingFilter", new LoggingFilter());
+        filterRegistration.addMappingForUrlPatterns(null, false, "/*");
 
-            Filters are Java Classes that implements javax.servlet.Filter interface
+    * Serving JSP -
 
-            They are executed before the request reaches DispatcherServlet
+        For serving JSP files we need to configure JSP resolver in WebConfig file
+        ** Need to use @Controller instead of @RestController, 
+            For @RestController = @Controller + @ResponseBody i.e return value is treated as Response body
+            and not view name resolver
+        
+    * WebApplicationInitializer vs @WebFilter -
+        
+        * When we create filter in Spring MVC it is managed by the Tomcat and not by Spring
+            Since A Servlet Filter is created by the servlet container (Tomcat, Jetty, etc.), not by Spring.
+            So when we try to use 
+            public class MyFilter implements Filter {
+                @Autowired
+                private UserService user_service;
 
-            Client -> Filter(s) -> DispatcherServlet -> Controller -> View
+            }   
 
-            FilterRegistration.Dynamic filterRegistration = servletContext.addFilter("myLoggingFilter", new LoggingFilter());
-		    filterRegistration.addMappingForUrlPatterns(null, false, "/*");
+            Here user_service is always null since it not managed by Spring
+        
+            So we use DelegatingFilterProxy which calls Tomcat proxy, proxy looks for spring managed bean
+            then it delegates that request to that bean which is fully managed by Spring
 
-        * Serving JSP -
+        For core Spring MVC we register servlet by implementing WebApplicationInitializer
 
-            For serving JSP files we need to configure JSP resolver in WebConfig file
-            ** Need to use @Controller instead of @RestController, 
-               For @RestController = @Controller + @ResponseBody i.e return value is treated as Response body
-               and not view name resolver
-            
-        * WebApplicationInitializer vs @WebFilter -
-          
-           * When we create filter in Spring MVC it is managed by the Tomcat and not by Spring
-             Since A Servlet Filter is created by the servlet container (Tomcat, Jetty, etc.), not by Spring.
-             So when we try to use 
-                public class MyFilter implements Filter {
-                    @Autowired
-                    private UserService user_service;
+        * This is managed by Servlet and not by Spring context so we cannot use @Autowired here
 
-                }   
+        * To bridge the gap between Servlet and Spring context we can use 
 
-                Here user_service is always null since it not managed by Spring
-            
-                So we use DelegatingFilterProxy which calls Tomcat proxy, proxy looks for spring managed bean
-                then it delegates that request to that bean which is fully managed by Spring
+            // Register filter that delegates to Spring bean
+            FilterRegistration.Dynamic filter = servletContext.addFilter("myFilter",
+            new DelegatingFilterProxy("myFilter")); // matches @Component name 
 
-            For core Spring MVC we register servlet by implementing WebApplicationInitializer
+        ** @WebFilter is a servlet-standard way to register filters outside of Spring.
+            Use it only in Spring Boot with @ServletComponentScan, or in plain servlet apps.
+            In Spring MVC (non-Boot), use DelegatingFilterProxy to get full Spring support (@Autowired, etc.).
 
-            * This is managed by Servlet and not by Spring context so we cannot use @Autowired here
+    * Request Flow in Spring MVC -
 
-            * To bridge the gap between Servlet and Spring context we can use 
-
-                // Register filter that delegates to Spring bean
-                FilterRegistration.Dynamic filter = servletContext.addFilter("myFilter",
-                new DelegatingFilterProxy("myFilter")); // matches @Component name 
-
-            ** @WebFilter is a servlet-standard way to register filters outside of Spring.
-                Use it only in Spring Boot with @ServletComponentScan, or in plain servlet apps.
-                In Spring MVC (non-Boot), use DelegatingFilterProxy to get full Spring support (@Autowired, etc.).
-
-        * Request Flow in Spring MVC -
-
-            Browser (HTTP Request)
-            ↓
-            Servlet Container (Tomcat / Jetty / etc.)
-                    ↓
-            [1] Filters (e.g. Auth, Logging, CORS)
-                    ↓
-            [2] DispatcherServlet (Spring’s Front Controller)
-                    ↓
-            [3] HandlerMapping (Which controller to call?)
-                    ↓
-            [4] Controller (Your @RestController or @Controller)
-                    ↓
-            [5] Return response → ViewResolver or ResponseBody
-                    ↓
-            Back through Filters
-                    ↓
-            Back to Client
+        Browser (HTTP Request)
+        ↓
+        Servlet Container (Tomcat / Jetty / etc.)
+                ↓
+        [1] Filters (e.g. Auth, Logging, CORS)
+                ↓
+        [2] DispatcherServlet (Spring’s Front Controller)
+                ↓
+        [3] HandlerMapping (Which controller to call?)
+                ↓
+        [4] Controller (Your @RestController or @Controller)
+                ↓
+        [5] Return response → ViewResolver or ResponseBody
+                ↓
+        Back through Filters
+                ↓
+        Back to Client
 
 9. Exception Handling in Spring MVC - 
         
@@ -736,61 +736,61 @@
 
 10. Json Web Token's ( JWT's ) -
 
-        * Spring package used - java-jwt
+    * Spring package used - java-jwt
 
-        * JWT -  <Header>.<Payload>.<Signature>
+    * JWT -  <Header>.<Payload>.<Signature>
 
-                Header: Algorithm and token type.
+            Header: Algorithm and token type.
 
-                Payload: Claims (data like userId, role, etc.).
+            Payload: Claims (data like userId, role, etc.).
 
-                Signature: HMACSHA256(base64UrlEncode(header) + "." + base64UrlEncode(payload), secret)
+            Signature: HMACSHA256(base64UrlEncode(header) + "." + base64UrlEncode(payload), secret)
 
-        * public class JwtUtils {
+    * public class JwtUtils {
 
-            private final static String secret_key = "my_secret_key";
+        private final static String secret_key = "my_secret_key";
 
-            public static String generateJwtToken(String username) {
+        public static String generateJwtToken(String username) {
 
-                return JWT.create().withSubject(username).withIssuedAt(new Date())
-                        .withExpiresAt(new Date(System.currentTimeMillis() + 10 * 60 * 1000)) // 10 minutes
-                        .sign(Algorithm.HMAC256(secret_key));
+            return JWT.create().withSubject(username).withIssuedAt(new Date())
+                    .withExpiresAt(new Date(System.currentTimeMillis() + 10 * 60 * 1000)) // 10 minutes
+                    .sign(Algorithm.HMAC256(secret_key));
 
-            }
-
-            public static String validateToken(String token) {
-
-                try {
-                    DecodedJWT jwt = JWT.require(Algorithm.HMAC256(secret_key)).build().verify(token);
-
-                    return jwt.getSubject();
-                } catch (JWTVerificationException e) {
-                    System.out.println(e.getMessage());
-                    return null;
-                }
-            }
         }
 
-        * Register the JWTFilter in ApplicationInitializer just like DispatcherServlet,
-            inside JWTFilter check and validate the token using JwtUtils.valdiateToken
+        public static String validateToken(String token) {
+
+            try {
+                DecodedJWT jwt = JWT.require(Algorithm.HMAC256(secret_key)).build().verify(token);
+
+                return jwt.getSubject();
+            } catch (JWTVerificationException e) {
+                System.out.println(e.getMessage());
+                return null;
+            }
+        }
+    }
+
+    * Register the JWTFilter in ApplicationInitializer just like DispatcherServlet,
+        inside JWTFilter check and validate the token using JwtUtils.valdiateToken
         
 11. Response Entity Object - 
     
-        * ResponseEntity - 
-            
-            It is used to return response with more control
-            ResponseEntity<String> response = new ResponseEntity<>(body, headers, status);
+    * ResponseEntity - 
+        
+        It is used to return response with more control
+        ResponseEntity<String> response = new ResponseEntity<>(body, headers, status);
 
-            * We can have custom Response entity with predefined DTO as well 
+        * We can have custom Response entity with predefined DTO as well 
 
-                ResponseEntity<ResponseMap<String>> response = new ResponseEntity<>(body, headers, status);
-                where ResponseMap<T> is itself a class 
-                    class ResponseMap<T>{
-                        private boolean success;
-                        private boolean error;
-                        private String message;
-                        private T data; 
-                    }
+            ResponseEntity<ResponseMap<String>> response = new ResponseEntity<>(body, headers, status);
+            where ResponseMap<T> is itself a class 
+                class ResponseMap<T>{
+                    private boolean success;
+                    private boolean error;
+                    private String message;
+                    private T data; 
+                }
 
 12. Summary of Servlets & Spring Web MVC -
 
