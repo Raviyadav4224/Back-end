@@ -328,10 +328,10 @@
 
         * Class.forName("Person") - Loads the class
 
-        *   Person p1=new Person()
+        *   Person p1 = new Person()
             Here p1 is the reference variable of type Person
             new Person() creates an Object of type Person
-            Person p1=new Person()
+            Person p1 = new Person()
             The reference variable stores the reference of object created in Heap memory
 
 9. Final keyword - 
@@ -462,7 +462,7 @@
 
     * Abstract methods can only belong to Abstract class
 
-    * When a class extends the Abstract class it must implement the abstract  methods
+    * When a class extends the Abstract class it must implement the abstract methods
 
     * You cannot create an object of Abstract class only reference of that class can be created
 
@@ -807,243 +807,243 @@
 
 22. Threads ,Runnable vs Callable ,Deadlock ->
 
-        * Threading is the ability of CPU to run different tasks parallelly on different CPU cores
+    * Threading is the ability of CPU to run different tasks parallelly on different CPU cores
 
-        * Smallest unit with which we can work is called a Thread
+    * Smallest unit with which we can work is called a Thread
+    
+    * We can create Thread using 
+
+        1. Extending Thread Class ( which internally implements the Runnable interface )
+        2. Implementing Runnable Interface
+    
+    * start() vs run() -
+
+        start() creates a NEW THREAD and internally calls run() method inside the new thread
+
+        run() - directly runs in the CURRENT THREAD
+
+    * join() -
+    
+        When you call t1.join() on a thread t1, the current thread (e.g., main thread) pauses and 
+        waits for t1 to complete before continuing further.
+
+    * Thread.sleep() -  
+
+        Pauses the current execution and continues after the specified time
+        It doesn't releases the lock on the Object
+    
+    * wait(), notify(), notifyAll()  -
+
+        * These methods are used for inter-thread communication and they belong to the Object class, 
+            not Thread.
         
-        * We can create Thread using 
+        * Used inside a synchronized block.
 
-            1. Extending Thread Class ( which internally implements the Runnable interface )
-            2. Implementing Runnable Interface
-        
-        * start() vs run() -
+        * wait() - Releases the lock on the object and makes the thread wait until some other thread 
+            calls notify() or notifyAll() on the same object.
 
-            start() creates a NEW THREAD and internally calls run() method inside the new thread
+        * notify() - Wakes up one waiting thread (chosen arbitrarily by JVM) that is waiting on the 
+            same object’s monitor.
 
-            run() - directly runs in the CURRENT THREAD
+        * notifyAll() - Wakes up all waiting threads on the same object.
 
-        * join() -
-        
-            When you call t1.join() on a thread t1, the current thread (e.g., main thread) pauses and 
-            waits for t1 to complete before continuing further.
+        * wait() releases the lock, sleep() does not.
 
-        * Thread.sleep() -  
+        * wait() requires synchronization, sleep() doesn’t.
 
-            Pauses the current execution and continues after the specified time
-            It doesn't releases the lock on the Object
-        
-        * wait(), notify(), notifyAll()  -
+    * What happens when you call wait()?
 
-            * These methods are used for inter-thread communication and they belong to the Object class, 
-              not Thread.
-            
-            * Used inside a synchronized block.
+        The current thread must hold the monitor lock (i.e., must be inside a synchronized block
+        or method).
 
-            * wait() - Releases the lock on the object and makes the thread wait until some other thread 
-              calls notify() or notifyAll() on the same object.
+        The thread enters the WAITING state.
 
-            * notify() - Wakes up one waiting thread (chosen arbitrarily by JVM) that is waiting on the 
-              same object’s monitor.
+        The thread releases the lock (so others can proceed).
 
-            * notifyAll() - Wakes up all waiting threads on the same object.
+        The thread stays paused until it is Woken up using notify() or notifyAll() from another thread.
 
-            * wait() releases the lock, sleep() does not.
+        When resumed, it reacquires the lock before continuing.
+    
+    * Example of Runnable with wait() and notify() -
 
-            * wait() requires synchronization, sleep() doesn’t.
+        class SharedResource {
+            private int data;
+            private boolean hasData = false;
 
-        * What happens when you call wait()?
-
-            The current thread must hold the monitor lock (i.e., must be inside a synchronized block
-            or method).
-
-            The thread enters the WAITING state.
-
-            The thread releases the lock (so others can proceed).
-
-            The thread stays paused until it is Woken up using notify() or notifyAll() from another thread.
-
-            When resumed, it reacquires the lock before continuing.
-        
-        * Example of Runnable with wait() and notify() -
-
-            class SharedResource {
-                private int data;
-                private boolean hasData = false;
-
-                public synchronized void produce(int value) {
-                    while (hasData) { // if data already present, wait
-                        try { wait(); } catch (InterruptedException e) { }
-                    }
-                    data = value;
-                    hasData = true;
-                    System.out.println("Produced: " + value);
-                    notify(); // wake up consumer
+            public synchronized void produce(int value) {
+                while (hasData) { // if data already present, wait
+                    try { wait(); } catch (InterruptedException e) { }
                 }
-
-                public synchronized void consume() {
-                    while (!hasData) { // if no data, wait
-                        try { wait(); } catch (InterruptedException e) { }
-                    }
-                    System.out.println("Consumed: " + data);
-                    hasData = false;
-                    notify(); // wake up producer
-                }
+                data = value;
+                hasData = true;
+                System.out.println("Produced: " + value);
+                notify(); // wake up consumer
             }
 
-            public class WaitNotifyExample {
-                public static void main(String[] args) {
-                    SharedResource resource = new SharedResource();
-
-                    Thread producer = new Thread(() -> {
-                        for (int i = 1; i <= 5; i++) {
-                            resource.produce(i);
-                            try { Thread.sleep(500); } catch (InterruptedException e) { }
-                        }
-                    });
-
-                    Thread consumer = new Thread(() -> {
-                        for (int i = 1; i <= 5; i++) {
-                            resource.consume();
-                            try { Thread.sleep(1000); } catch (InterruptedException e) { }
-                        }
-                    });
-
-                    producer.start();
-                    consumer.start();
+            public synchronized void consume() {
+                while (!hasData) { // if no data, wait
+                    try { wait(); } catch (InterruptedException e) { }
                 }
+                System.out.println("Consumed: " + data);
+                hasData = false;
+                notify(); // wake up producer
             }
-        
-        * Runnable -
+        }
 
-            * We can create a Thread by implementing the Runnable interface
+        public class WaitNotifyExample {
+            public static void main(String[] args) {
+                SharedResource resource = new SharedResource();
 
-            * But here we have to create a Thread object to have start() method
-            
-                Thread t1=new Thread(obj1);
-                using Lambda expression -> 
-                    Runnable obj1 = ()->{
-                        for (int i = 0; i < 10; i++) {
-                            System.out.println("Hi");
-                            try {
-                                Thread.sleep(10);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    };  
-            
-            * Thread safe means only one method can work with Thread at one time
-
-            * using SYNCHRONIZED both threads does not goes to the same block/method at the same time, 
-              and prevents Race Condition
-
-                public synchronized void increment() {
-                    this.count++;
-                }
-
-        * Runnable vs Callable -
-
-            * Runnable limitations is that it cannot return a Result (void run()) and is more like 
-              run and forget, it doesn't throws Checked exceptions as well
-
-            * Whereas Callable<V> return result of type V and can throw Checked exceptions 
-
-            * Callable is used with ExecutorService which creates Threads, which is not managed by 
-              the developer and then the task created using callable is submitted to submit method which 
-              return a future result which can be used to get result of callable 
-            
-            * Executors.newSingleThreadExecutor - creates a single thread 
-              Executors.newCachedThreadPool - creates unlimited no of new threads 
-              Executors.newFixedThreadPool(n) - Creates n no of Threads 
-            
-            * Here we dont use wait(), join(), notify() since we are not managing creation of Threads and 
-              starting of them
-                
-            * Example -
-            
-              ExecutorService executor = Executors.newSingleThreadExecutor();
-
-                Callable<String> task = () -> {
-                    System.out.println("Running in: " + Thread.currentThread().getName());
-                    return "Callable result";
-                };
-
-                Future<String> future = executor.submit(task);
-                System.out.println("Result: " + future.get());
-
-                executor.shutdown();
-
-        * Example of using callable - Fetching user data from multiple services (DB, API, Cache) 
-          in parallel, and then combining results.
-
-        * Thread Life cycle -
-
-            Java threads go through 6 states:
-
-                NEW  - Thread created but not started
-
-                RUNNABLE - Thread is ready to Run
-
-                RUNNING - Thread is currently running
-
-                BLOCKED - Waiting for a lock
-
-                WAITING - Waiting indefinitely ( eg join, wait)
-
-                TIMED_WAITING - Waiting with timeout ( eg sleep() )
-
-                TERMINATED - Thread has finished
-
-        * obj.getPriority() gives the priority of Thread , we can also set the priority of the Thread using
-            obj.setPriority(10)
-            
-            0 --> Least priority
-            5 --> Normal priority
-            10 --> Highest priority
-
-        * Deadlock -
-
-            * Deadlock occurs when two or more threads wait forever for resources locked by each other.
-
-            * Example -
-
-                final Resource resource1 = new Resource("Resource1");
-                final Resource resource2 = new Resource("Resource2");
-
-                // Thread 1 tries to lock resource1 first, then resource2
-                Thread t1 = new Thread(() -> {
-                    synchronized (resource1) {
-                        System.out.println("Thread 1 locked " + resource1.getName());
-
-                        try { Thread.sleep(100); } catch (InterruptedException e) {}
-
-                        synchronized (resource2) {
-                            System.out.println("Thread 1 locked " + resource2.getName());
-                        }
+                Thread producer = new Thread(() -> {
+                    for (int i = 1; i <= 5; i++) {
+                        resource.produce(i);
+                        try { Thread.sleep(500); } catch (InterruptedException e) { }
                     }
                 });
 
-                // Thread 2 tries to lock resource2 first, then resource1
-                Thread t2 = new Thread(() -> {
+                Thread consumer = new Thread(() -> {
+                    for (int i = 1; i <= 5; i++) {
+                        resource.consume();
+                        try { Thread.sleep(1000); } catch (InterruptedException e) { }
+                    }
+                });
+
+                producer.start();
+                consumer.start();
+            }
+        }
+    
+    * Runnable -
+
+        * We can create a Thread by implementing the Runnable interface
+
+        * But here we have to create a Thread object to have start() method
+        
+            Thread t1=new Thread(obj1);
+            using Lambda expression -> 
+                Runnable obj1 = ()->{
+                    for (int i = 0; i < 10; i++) {
+                        System.out.println("Hi");
+                        try {
+                            Thread.sleep(10);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                };  
+        
+        * Thread safe means only one method can work with Thread at one time
+
+        * using SYNCHRONIZED both threads does not goes to the same block/method at the same time, 
+            and prevents Race Condition
+
+            public synchronized void increment() {
+                this.count++;
+            }
+
+    * Runnable vs Callable -
+
+        * Runnable limitations is that it cannot return a Result (void run()) and is more like 
+            run and forget, it doesn't throws Checked exceptions as well
+
+        * Whereas Callable<V> return result of type V and can throw Checked exceptions 
+
+        * Callable is used with ExecutorService which creates Threads, which is not managed by 
+            the developer and then the task created using callable is submitted to submit method which 
+            return a future result which can be used to get result of callable 
+        
+        *   Executors.newSingleThreadExecutor - creates a single thread 
+            Executors.newCachedThreadPool - creates unlimited no of new threads 
+            Executors.newFixedThreadPool(n) - Creates n no of Threads 
+        
+        * Here we dont use wait(), join(), notify() since we are not managing creation of Threads and 
+          starting of them
+            
+        * Example -
+        
+            ExecutorService executor = Executors.newSingleThreadExecutor();
+
+            Callable<String> task = () -> {
+                System.out.println("Running in: " + Thread.currentThread().getName());
+                return "Callable result";
+            };
+
+            Future<String> future = executor.submit(task);
+            System.out.println("Result: " + future.get());
+
+            executor.shutdown();
+
+    * Example of using callable - Fetching user data from multiple services (DB, API, Cache) 
+      in parallel, and then combining results.
+
+    * Thread Life cycle -
+
+        Java threads go through 6 states:
+
+            NEW  - Thread created but not started
+
+            RUNNABLE - Thread is ready to Run
+
+            RUNNING - Thread is currently running
+
+            BLOCKED - Waiting for a lock
+
+            WAITING - Waiting indefinitely ( eg join, wait)
+
+            TIMED_WAITING - Waiting with timeout ( eg sleep() )
+
+            TERMINATED - Thread has finished
+
+    * obj.getPriority() gives the priority of Thread , we can also set the priority of the Thread using
+        obj.setPriority(10)
+        
+        0 --> Least priority
+        5 --> Normal priority
+        10 --> Highest priority
+
+    * Deadlock -
+
+        * Deadlock occurs when two or more threads wait forever for resources locked by each other.
+
+        * Example -
+
+            final Resource resource1 = new Resource("Resource1");
+            final Resource resource2 = new Resource("Resource2");
+
+            // Thread 1 tries to lock resource1 first, then resource2
+            Thread t1 = new Thread(() -> {
+                synchronized (resource1) {
+                    System.out.println("Thread 1 locked " + resource1.getName());
+
+                    try { Thread.sleep(100); } catch (InterruptedException e) {}
+
                     synchronized (resource2) {
-                        System.out.println("Thread 2 locked " + resource2.getName());
-
-                        try { Thread.sleep(100); } catch (InterruptedException e) {}
-
-                        synchronized (resource1) {
-                            System.out.println("Thread 2 locked " + resource1.getName());
-                        }
+                        System.out.println("Thread 1 locked " + resource2.getName());
                     }
-                });
+                }
+            });
 
-                t1.start();
-                t2.start();
+            // Thread 2 tries to lock resource2 first, then resource1
+            Thread t2 = new Thread(() -> {
+                synchronized (resource2) {
+                    System.out.println("Thread 2 locked " + resource2.getName());
 
-                * Thread 1 locks resource1.
-                * Thread 2 locks resource2.
-                * Thread 1 now wants resource2, but it’s already locked by Thread 2 → so Thread 1 waits.
-                * Thread 2 now wants resource1, but it’s already locked by Thread 1 → so Thread 2 waits.
-                * Neither can proceed → Deadlock.
+                    try { Thread.sleep(100); } catch (InterruptedException e) {}
+
+                    synchronized (resource1) {
+                        System.out.println("Thread 2 locked " + resource1.getName());
+                    }
+                }
+            });
+
+            t1.start();
+            t2.start();
+
+            * Thread 1 locks resource1.
+            * Thread 2 locks resource2.
+            * Thread 1 now wants resource2, but it’s already locked by Thread 2 → so Thread 1 waits.
+            * Thread 2 now wants resource1, but it’s already locked by Thread 1 → so Thread 2 waits.
+            * Neither can proceed → Deadlock.
 
 23. Stream API ->
 
@@ -1071,7 +1071,7 @@
     * Collectors.toMap(Key,Value,if duplicate then what)
 
     * Collectors.groupingBy((e)->e.getDept(),Collectors.toList()) expects a classifier function (how to group elements)
-        and optionally a downstream collector (like Collectors.toList() or Collectors.toSet())
+      and optionally a downstream collector (like Collectors.toList() or Collectors.toSet())
 
     * numbers.stream().flatMap()
 
@@ -1209,6 +1209,7 @@
 26. Date,Time & DateTime API - 
 
     * Introduced in Java 8 in the java.time package.
+
     * All classes inside java.time are IMMUTABLE and THREAD SAFE
 
     * It has TimeZones support
@@ -1366,10 +1367,10 @@
     * SerialVersionUID - 
 
         * It is a unique identifier used during de-serialization process to verify 
-            that the sender and receiver of serialized object have compatible classes
+          that the sender and receiver of serialized object have compatible classes
 
         * It must be STATIC FINAL LONG
-            private static final long serialVersionUID=1234L;
+          private static final long serialVersionUID=1234L;
 
     * STATIC and TRANSIENT data members are not stored during serialization
 
@@ -1379,9 +1380,9 @@
 
     Autoboxing in Java is conversion of primitive data types into the corresponding Wrapper class Objects
     example -
-        Integer a=new Integer();
-        int num=10;
-        a=num; // Here num is primitive which is being converted to Integer class object
+        Integer a = new Integer();
+        int num = 10;
+        a = num; // Here num is primitive which is being converted to Integer class object
 
         * Behind the scene Java uses Integer.valueOf(num) to convert into corresponding Wrapper class object
     
@@ -1393,11 +1394,11 @@
         to the same value , but when the created object is out of range of cache it creates a new object    
 
         for example - 
-            Integer a=100;
-            Integer b=100;
-             if(a==b)  // TRUE since in same range
-            Integer a=200;
-            Integer b=200;
+            Integer a = 100;
+            Integer b = 100;
+             if(a == b)  // TRUE since in same range
+            Integer a = 200;
+            Integer b = 200;
              if(a==b)  // FALSE since out of range  
         
         * For Double and Float - No Caching is implemented
@@ -1729,6 +1730,7 @@
                     cache.add(data); // static list keeps growing, never released
                 }
             }
+
         * Unclosed resources 
         
         * To prevent memory leak we can use, try with resources which closes the resources , weak references,
@@ -2494,4 +2496,17 @@
           update). If you call each one manually → tightly coupled, unmaintainable.
 
         * Observer lets Subscribers auto-get notifications when Publisher triggers an event.
+
+56. GET vs POST vs PUT vs PATCH -
+
+    * These are set of rules but totally depends upon how each method is implemented
+    
+    * Idempotent - means sending same data multiple times keeps state same
+
+    | Method    | Purpose          | Request Body | Idempotent | Safe | Typical Response             |
+    | --------- | ---------------- | ------------ | ---------- | ---- | ---------------------------- |
+    | **GET**   | Read data        | ❌            | ✅          | ✅    | `200 OK`                     |
+    | **POST**  | Create new       | ✅            | ❌          | ❌    | `201 Created`                |
+    | **PUT**   | Replace existing | ✅            | ✅          | ❌    | `200 OK` or `204 No Content` |
+    | **PATCH** | Update partially | ✅            | ⚠️ Usually  | ❌    | `200 OK` or `204 No Content` |
 

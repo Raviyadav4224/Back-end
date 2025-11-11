@@ -26,7 +26,7 @@
     Spring Data JPA is an abstraction of Hibernate and JPA and eliminates boiler plate code and allows 
     developers to focus more on business logic
 
-3. JpaRepository, CrudRepository, PagingAndSortingRepository
+3. JpaRepository, PagingAndSortingRepository, CrudRepository 
 
     CrudRepository -
 
@@ -148,7 +148,7 @@
     2nd - For all the users it fetches its userprofile 
 
     So for say N users , first it runs once then for every user it runs once
-    i.e Total: 1 (initial) + N (extra queries) = N+1 queries
+    i.e Total: 1 (initial) + N (extra queries) = N + 1 queries
 
     * Instead use FETCH JOIN which solves This
     

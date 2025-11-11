@@ -275,7 +275,7 @@
     Level 1 Caching -
 
         By default implemented in Hibernate
-        It caches objects within CURRENT SESSION only, if session is closed cache is cleared
+        It caches objects within CURRENT SESSION only, if session is closed the cache is cleared
         If same object is requested multiple times, it will not hit the DB again and again 
         example -
 
