@@ -255,7 +255,7 @@
             If parent has a method say public display() and child changes its access level to protected
             then the method will no longer be accessible using parent's reference
 
-7. Strings vs String Pool - 
+7. Strings vs String Pool vs Why Strings are immutable ? - 
 
     * Strings are immutable in Java
 
@@ -285,6 +285,27 @@
             System.out.println(str4 == str3); // FALSE Since creates new value everytime
 
     * Use equals() for string value comparison and == for reference comparison
+
+    * Why Strings are immutable - 
+
+        * SECURITY - 
+
+            Strings are heavily used in places like File Paths, DataBase connections url's, Network
+            connections , Class loading and many more
+            
+            So if strings were mutable someone could change the value after they are created which creates
+            a security risk
+
+        * HashCode -
+
+            Strings are used as keys in Hash based collections
+            If strings were mutable thier content would change and key would be lost in map
+            Since strings are mutable once hashCode is created they can be cached for faster look up
+        
+        * Thread Safety -
+
+            Strings are naturally Thread Safe, their values don’t change after they are created
+            Multiple threads can use the same String w/o synchronization
 
 8. Static Keyword -
 
@@ -2510,3 +2531,14 @@
     | **PUT**   | Replace existing | ✅            | ✅          | ❌    | `200 OK` or `204 No Content` |
     | **PATCH** | Update partially | ✅            | ⚠️ Usually  | ❌    | `200 OK` or `204 No Content` |
 
+57. Why Sets doesn’t allows duplciates ? 
+
+    * Sets implements mathematic concept of Sets i.e collection of Unique elements
+
+    * So the main goal of set is uniqueness and not duplication
+
+    * Internal working of HashSet -
+
+        * Internally HashSet uses HashMap, elements are stored as Keys in the map so duplicates are 
+          automatically ignored
+ 
