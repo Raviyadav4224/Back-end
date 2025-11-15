@@ -769,10 +769,34 @@
                 An ORDERED version of HashMap that maintains insertion order of entries using a 
                 doubly-linked list internally.
             
-            ConcurrentHashMap -
+            * ConcurrentHashMap -
 
-                A THREAD-SAFE version of HashMap that allows concurrent read/write operations without 
-                locking the entire map
+                * A THREAD-SAFE version of HashMap that allows concurrent read/write operations without 
+                  locking the entire map
+                
+                * Why ConcurrentHashMap does not allow null keys ?
+
+                    Null breaks the ability to differentiate “key not present” vs “key mapped to null”
+
+                    When you do:
+                    map.get(key)
+
+                    There are two possibilities:
+
+                    Key doesn’t exist → returns null
+                    Key exists but value is null → also returns null
+
+                    In a multi-threaded environment, this is dangerous because:
+                    There’s no way to distinguish between:
+
+                    “another thread removed the key”
+                    “another thread inserted key with null value”
+                    “key never existed”
+
+                    Concurrent code needs clarity. null destroys that clarity
+
+                    Null also creates Race condition - when one thread removes null and another puts it 
+                    back, it leads to wrong logic
 
             TreeMap -
 
@@ -1069,12 +1093,12 @@
 23. Stream API ->
 
     * Introduced in Java 8, it provides ways to process pipeline(series) of operations to the elements
-        of a collection or other data source in a functional and declarative programming style
+      of a collection or other data source in a functional and declarative programming style
 
     * It processes series of elements one at a time
 
     * stream() is used to create a stream and it provides various methods to be applied on the stream 
-        such as map, filter, reduce
+      such as map, filter, reduce
     
     * Intermediate operations - (lazy, return a stream)
 
@@ -1094,7 +1118,10 @@
     * Collectors.groupingBy((e)->e.getDept(),Collectors.toList()) expects a classifier function (how to group elements)
       and optionally a downstream collector (like Collectors.toList() or Collectors.toSet())
 
-    * numbers.stream().flatMap()
+    * numbers.stream().map() vs numbers.stream().flatMap() - 
+
+        map - Takes one element and transforms it into one value
+        flatMap - Takes each element , transforms it into stream and then flattens all those inner streams
 
     * Comparator.comparing(Employee::getSalary) - Compares using comparator
 
@@ -1115,6 +1142,25 @@
                 .stream()
                 .collect(Collectors
                 .groupingBy(Employee::getDepartment, Collectors.maxBy(Comparator.comparing(Employee::getSalary))))
+
+    * Parallel Streams -    
+
+        Parallel streams splits the stream data into multiple chunks and processes them in parallel using
+        ForkJoinPool
+
+        Instead of one thread processing elements sequentially, multiple threads processes them in parallel
+
+        These are generally used to process lrge datasets and when order of processing doesn’t matter
+        example - numbers.parallelStream().map(num -> {
+                    System.out.println("Processing " + num +
+                        " in thread " + Thread.currentThread().getName());
+                    return num * num;
+               })
+
+    *  Why is a Stream in Java consumable only once ?
+
+        Java Stream is built on one-time traversal of its underlying data source. 
+        Once that traversal happens, the pipeline is considered closed and can’t be replayed.
 
 24. StringBuilder vs StringBuffer -
 
@@ -1726,6 +1772,26 @@
         * Garbage collection is not deterministic i.e we cannot force garbage collection but only suggest
           using System.gc(), but JVM decides when to run it.
         
+        * Java uses a heap memory divided into Young Generation, Old Generation, and sometimes Metaspace.
+
+          Objects start in the Young Generation; if they survive multiple GC cycles, they move to the 
+          Old Generation.
+
+          The GC identifies unreachable objects using algorithms like Mark-and-Sweep, Copying, or Compact.
+
+        * Types of Garbage Collectors:
+
+            Serial GC – Simple, single-threaded, best for small apps.
+
+            Parallel GC – Multi-threaded, optimized for throughput.
+
+            G1 GC – Balances latency and throughput for large heaps.
+
+            ZGC & Shenandoah – Ultra-low pause collectors for modern systems.
+
+            Why It’s Important: Efficient GC tuning can reduce latency, improve performance, and 
+            prevent memory leaks.
+
         * It works in three phases i.e Mark - Sweep - Compact 
 
           Mark - mark objects which are still reachable
