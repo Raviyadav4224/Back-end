@@ -2607,4 +2607,47 @@
 
         * Internally HashSet uses HashMap, elements are stored as Keys in the map so duplicates are 
           automatically ignored
- 
+
+58. JVM Tuning -
+
+    * We tune three things in JVM - 
+
+        1. Heap ( Where the objects live )       
+        2. Garbage Collector - Who cleans the heap
+        3. Threading - How the app schedules work
+
+    * Heap -    
+
+        JVM resizes the heap dynamically, this causes CPU spikes. so for stable performance use 
+        Fixed size
+
+        For starting with microservices allot 2-4GB of storage
+
+    * GC -  
+
+        Choosing the right garbage collector is important
+        G1GC - Default GC
+        ZGC - For low latency, favourable for Trading apps
+
+    * Threds -
+
+        Springboot uses Tomcat, AsyncExecutorPool and Scheduler
+
+        Default threads in Tomcat = 200
+
+59. ForkJoinPool -
+
+60. ClassNotFoundException vs NoClassDefFoundError -
+
+    ClassNotFoundException -
+
+        Checked exception
+        Occurs during explicit class loading at Runtime example Class.forName("myclass")
+        Can be handled using try-catch
+    
+    NoClassDefFoundError -
+
+        It is an Unchecked Error
+        Occurs when JVM tries to load a class and the class was present at compile-time but was missing 
+        or unavailable in the runtime classpath (e.g., deleted after compilation, missing JAR file, 
+        version mismatch).
