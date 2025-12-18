@@ -46,9 +46,41 @@
         
 5. API Gateway -
 
-    API Gateway acts as a single entry point for all client requests in a microservices architecture.
-    Handles routing, authentication, rate limiting, logging, and load balancing.
-    In Spring ecosystem, we use Spring Cloud Gateway 
+    * API Gateway acts as a single entry point for all client requests in a microservices architecture.
+      Handles routing, authentication, rate limiting, logging, and load balancing.
+
+    * In Spring ecosystem, we use Spring Cloud Gateway 
+
+    * Spring Cloud Gateway comes in two flavors based on the underlying web stack:
+
+        Reactive Gateway (WebFlux-based)
+        Non-Reactive Gateway (WebMVC / Servlet-based)
+    
+    * Reactive vs Non-Reactive
+    
+    | Feature              | **Reactive Gateway (WebFlux)**       | **Non-Reactive Gateway (WebMVC / Servlet)** |
+    | -------------------- | ------------------------------------ | ------------------------------------------- |
+    | Underlying stack     | Spring **WebFlux**                   | Spring **WebMVC**                           |
+    | Programming model    | Reactive (Mono / Flux)               | Imperative / Blocking                       |
+    | I/O model            | **Non-blocking**                     | **Blocking**                                |
+    | Web server           | **Netty** (event-loop based)         | **Tomcat / Jetty / Undertow**               |
+    | Thread model         | Few threads handle many requests     | One thread per request                      |
+    | Concurrency handling | Very high (thousands of connections) | Limited by thread pool                      |
+    | Resource usage       | Low memory, efficient CPU            | Higher memory under load                    |
+    | Backpressure support | Yes (Reactive Streams)               | No native backpressure                      |
+    | Gateway filters      | `GlobalFilter` (Reactive)            | Servlet filters (`OncePerRequestFilter`)    |
+    | Security filters     | Reactive Security filters            | Servlet Security filters                    |
+    | Debugging difficulty | Harder (async stack traces)          | Easier (traditional stack traces)           |
+    | Learning curve       | Steep                                | Low                                         |
+    | Blocking code impact | Breaks scalability                   | Works naturally                             |
+    | Ecosystem support    | Limited reactive libs                | Very large ecosystem                        |
+    | Best suited for      | API Gateway, edge layer, streaming   | Simple / internal gateways                  |
+    | Typical traffic      | High throughput, I/O heavy           | Moderate traffic                            |
+    | Production adoption  | Selective, mainly gateways           | Widely used                                 |
+    | Startup preference   | Used for gateways only               | Used for most services                      |
+    | Common architecture  | Gateway = Reactive, Services = MVC   | Entire stack MVC                            |
+    | Example use case     | Netflix-style edge gateway           | Internal company gateway                    |
+
     Nginx is used as an API Gateway and it also acts as Reverse Proxy
 
 6. Design Patterns -
