@@ -56,7 +56,7 @@
         Reactive Gateway (WebFlux-based)
         Non-Reactive Gateway (WebMVC / Servlet-based)
     
-    * Reactive vs Non-Reactive
+    * Reactive vs Non-Reactive Gateway -
     
     | Feature              | **Reactive Gateway (WebFlux)**       | **Non-Reactive Gateway (WebMVC / Servlet)** |
     | -------------------- | ------------------------------------ | ------------------------------------------- |
@@ -76,11 +76,25 @@
     | Ecosystem support    | Limited reactive libs                | Very large ecosystem                        |
     | Best suited for      | API Gateway, edge layer, streaming   | Simple / internal gateways                  |
     | Typical traffic      | High throughput, I/O heavy           | Moderate traffic                            |
-    | Production adoption  | Selective, mainly gateways           | Widely used                                 |
-    | Startup preference   | Used for gateways only               | Used for most services                      |
     | Common architecture  | Gateway = Reactive, Services = MVC   | Entire stack MVC                            |
     | Example use case     | Netflix-style edge gateway           | Internal company gateway                    |
 
-    Nginx is used as an API Gateway and it also acts as Reverse Proxy
+    * Nginx vs Spring Cloud Gateway -
+      
+      Nginx is an Infrastructure aware gateway and optimized for traffic control and protection 
+      It acts as a Load balancer and reverse Proxy
+
+      Whereas Spring cloud gateway is an application/service aware gateway best at handling application level
+      logics
+
+    * To Create Reactive Spring Cloud Gateway -
+
+      * packages required - Reactive spring cloud gateway, spring security(For handling security), Oauth2-resolver
+        (for handling JWT's)
+      
+      * spring.cloud.gateway.server.webflux.routes[0].id=test
+        spring.cloud.gateway.server.webflux.routes[0].uri=https://httpbin.org
+        spring.cloud.gateway.server.webflux.routes[0].predicates[0]=Path=/test/**
+        spring.cloud.gateway.server.webflux.routes[0].filters[0]=StripPrefix=1
 
 6. Design Patterns -
