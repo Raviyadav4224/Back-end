@@ -53,31 +53,26 @@
 
     * Spring Cloud Gateway comes in two flavors based on the underlying web stack:
 
-        Reactive Gateway (WebFlux-based)
-        Non-Reactive Gateway (WebMVC / Servlet-based)
+      Reactive Gateway (WebFlux-based)
+      Non-Reactive Gateway (WebMVC / Servlet-based)
     
     * Reactive vs Non-Reactive Gateway -
-    
-    | Feature              | **Reactive Gateway (WebFlux)**       | **Non-Reactive Gateway (WebMVC / Servlet)** |
-    | -------------------- | ------------------------------------ | ------------------------------------------- |
-    | Underlying stack     | Spring **WebFlux**                   | Spring **WebMVC**                           |
-    | Programming model    | Reactive (Mono / Flux)               | Imperative / Blocking                       |
-    | I/O model            | **Non-blocking**                     | **Blocking**                                |
-    | Web server           | **Netty** (event-loop based)         | **Tomcat / Jetty / Undertow**               |
-    | Thread model         | Few threads handle many requests     | One thread per request                      |
-    | Concurrency handling | Very high (thousands of connections) | Limited by thread pool                      |
-    | Resource usage       | Low memory, efficient CPU            | Higher memory under load                    |
-    | Backpressure support | Yes (Reactive Streams)               | No native backpressure                      |
-    | Gateway filters      | `GlobalFilter` (Reactive)            | Servlet filters (`OncePerRequestFilter`)    |
-    | Security filters     | Reactive Security filters            | Servlet Security filters                    |
-    | Debugging difficulty | Harder (async stack traces)          | Easier (traditional stack traces)           |
-    | Learning curve       | Steep                                | Low                                         |
-    | Blocking code impact | Breaks scalability                   | Works naturally                             |
-    | Ecosystem support    | Limited reactive libs                | Very large ecosystem                        |
-    | Best suited for      | API Gateway, edge layer, streaming   | Simple / internal gateways                  |
-    | Typical traffic      | High throughput, I/O heavy           | Moderate traffic                            |
-    | Common architecture  | Gateway = Reactive, Services = MVC   | Entire stack MVC                            |
-    | Example use case     | Netflix-style edge gateway           | Internal company gateway                    |
+      
+      | Feature              | **Reactive Gateway (WebFlux)**       | **Non-Reactive Gateway (WebMVC / Servlet)** |
+      | -------------------- | ------------------------------------ | ------------------------------------------- |
+      | Underlying stack     | Spring **WebFlux**                   | Spring **WebMVC**                           |
+      | Programming model    | Reactive (Mono / Flux)               | Imperative / Blocking                       |
+      | I/O model            | **Non-blocking**                     | **Blocking**                                |
+      | Web server           | **Netty** (event-loop based)         | **Tomcat / Jetty / Undertow**               |
+      | Thread model         | Few threads handle many requests     | One thread per request                      |
+      | Concurrency handling | Very high (thousands of connections) | Limited by thread pool                      |
+      | Resource usage       | Low memory, efficient CPU            | Higher memory under load                    |
+      | Gateway filters      | `GlobalFilter` (Reactive)            | Servlet filters (`OncePerRequestFilter`)    |
+      | Security filters     | Reactive Security filters            | Servlet Security filters                    |
+      | Best suited for      | API Gateway, edge layer, streaming   | Simple / internal gateways                  |
+      | Typical traffic      | High throughput, I/O heavy           | Moderate traffic                            |
+      | Common architecture  | Gateway = Reactive, Services = MVC   | Entire stack MVC                            |
+      | Example use case     | Netflix-style edge gateway           | Internal company gateway                    |
 
     * Nginx vs Spring Cloud Gateway -
       
@@ -91,10 +86,59 @@
 
       * packages required - Reactive spring cloud gateway, spring security(For handling security), Oauth2-resolver
         (for handling JWT's)
+    
+6. Major concerns which API Gateway Handles -
+
+    1. Routing to Microservices -
+
+      *   spring.cloud.gateway.server.webflux.routes[0].id=test
+          spring.cloud.gateway.server.webflux.routes[0].uri=https://httpbin.org
+          spring.cloud.gateway.server.webflux.routes[0].predicates[0]=Path=/test/**
       
-      * spring.cloud.gateway.server.webflux.routes[0].id=test
-        spring.cloud.gateway.server.webflux.routes[0].uri=https://httpbin.org
-        spring.cloud.gateway.server.webflux.routes[0].predicates[0]=Path=/test/**
-        spring.cloud.gateway.server.webflux.routes[0].filters[0]=StripPrefix=1
+          spring.cloud.gateway.server.webflux.routes[0].filters[0]=StripPrefix=1
+
+    2. Handling Authentication and Jwt Validation -
+
+      * Using security config we define rules to allow/disallow request and extract jwt tokens
+
+      * @Configuration
+        @EnableWebFluxSecurity
+        public class SecurityConfig {
+          @Bean
+          SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
+            return http.csrf(ServerHttpSecurity.CsrfSpec::disable)
+                .authorizeExchange(exchange -> exchange
+                    .pathMatchers("/api/v1/users/status", "/api/v1/users/register", "/api/v1/users/login")
+                    .permitAll().anyExchange().authenticated())
+                .oauth2ResourceServer(oauth2 -> oauth2.jwt())
+                .build();
+          }
+        }
+      
+    3. Headers transformation -
+
+      * Removing Authorization Bearer token i.e jwt and sending custom header so that Microservices
+        knows that the request is from Gateway server
+      
+      * .header("X-User-Id", userId)
+        .header("X-Gateway-Auth", "pixxy-gateway").headers(h -> h.remove("Authorization")).build();
+    
+    4. Rate Limiting -
+
+      Rate limiting runs before authentication
+      RequestRateLimiter executes before JWT validation
+      Redis is required to implement Rate Limiting
+
+      * package - spring-boot-starter-data-redis-reactive
+
+    5. Logging -
+
+    6. Global Error Handling -
+
+    7. Circuit Breaker and Resilience -
+
+    8. Transforming Request/Response -
+
+    9. Observability (metrics & tracing) -
 
 6. Design Patterns -
