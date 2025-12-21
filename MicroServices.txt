@@ -125,11 +125,110 @@
     
     4. Rate Limiting -
 
-      Rate limiting runs before authentication
-      RequestRateLimiter executes before JWT validation
-      Redis is required to implement Rate Limiting
+      * Redis is required to implement Rate Limiting
 
       * package - spring-boot-starter-data-redis-reactive
+
+      * Spring Cloud Gateway uses Redis + Lua scripts.
+
+        Token Bucket Algorithm
+        replenishRate → tokens added per second
+        burstCapacity → max tokens
+        requestedTokens → tokens per request
+
+      * Why Redis is required
+
+        In-memory rate limiting won’t scale
+        Multiple Gateway instances need shared state
+
+      * How Request Flows from Client -
+
+        ┌──────────────────────────┐
+        │        Client            │
+        │  (Postman / Browser)     │
+        └─────────────┬────────────┘
+                      │
+                      │  HTTP Request
+                      │  Authorization: Bearer <JWT>
+                      ▼
+        ┌──────────────────────────┐
+        │   Reactor Netty Server   │
+        │  (HTTP entry point)      │
+        └─────────────┬────────────┘
+                      │
+                      ▼
+        ┌──────────────────────────────────────────┐
+        │  Spring Security WebFilterChain          │
+        │  (@EnableWebFluxSecurity)                │
+        │                                          │
+        │  - BearerTokenAuthenticationFilter       │
+        │  - JwtAuthenticationProvider             │
+        │  - Signature verification                │
+        │  - Expiry check                          │
+        │  - Claims decoding                       │
+        │  - JwtAuthenticationToken created        │
+        │  - Stored in ReactiveSecurityContext     │
+        └─────────────┬────────────────────────────┘
+                      │
+                      │  (exchange.getPrincipal() ✔)
+                      ▼
+        ┌──────────────────────────────────────────┐
+        │  Spring Cloud Gateway                    │
+        │  FilteringWebHandler                     │
+        │                                          │
+        │  ┌────────────────────────────────────┐  │
+        │  │   Gateway GlobalFilters            │  │
+        │  │                                    │  │
+        │  │ - RemoveCachedBodyFilter           │  │
+        │  │ - ForwardPathFilter                │  │
+        │  │ - JwtUserContextFilter (custom)    │  │
+        │  │ - Logging / Auditing filters       │  │
+        │  └────────────────────────────────────┘  │
+        └─────────────┬────────────────────────────┘
+                      │
+                      ▼
+        ┌──────────────────────────────────────────┐
+        │  Route-Specific Filters                  │
+        │                                          │
+        │  - StripPrefix                           │
+        │  - RequestRateLimiter (Redis)            │
+        │    • KeyResolver                         │
+        │    • Redis Lua script                    │
+        │    • 429 if limit exceeded               │
+        └─────────────┬────────────────────────────┘
+                      │
+                      ▼
+        ┌──────────────────────────────────────────┐
+        │  Routing Filters                         │
+        │                                          │
+        │  - NettyRoutingFilter                    │
+        │  - WebSocketRoutingFilter                │
+        │                                          │
+        │  → Forwards request to downstream        │
+        └─────────────┬────────────────────────────┘
+                      │
+                      ▼
+        ┌──────────────────────────┐
+        │   Microservice           │
+        │   (file-service, etc.)   │
+        └─────────────┬────────────┘
+                      │
+                      │  HTTP Response
+                      ▼
+        ┌──────────────────────────────────────────┐
+        │  Response flows BACK (reverse order)     │
+        │                                          │
+        │  - Routing Filters                       │
+        │  - Route Filters                         │
+        │  - GlobalFilters                         │
+        │  - Security context cleanup              │
+        └─────────────┬────────────────────────────┘
+                      │
+                      ▼
+        ┌──────────────────────────┐
+        │        Client            │
+        │     (HTTP Response)      │
+        └──────────────────────────┘
 
     5. Logging -
 
