@@ -230,7 +230,83 @@
         │     (HTTP Response)      │
         └──────────────────────────┘
 
-    5. Logging -
+    5. Centralized Logging -
+
+      * Centralized logging in a microservices architecture is achieved by correlating logs belonging 
+        to the same request across multiple services. This is primarily solved using a trace ID, which
+        uniquely identifies a single request as it travels through the system.
+      
+      * When a client sends a request (for example, register or getFiles):
+        The API Gateway creates a new trace.
+        A trace ID (and initial span) is generated.
+        This trace information is propagated downstream via HTTP headers.
+        All downstream microservices reuse the same trace ID, allowing the entire request flow to be correlated.
+        This is what makes centralized logging meaningful
+
+      * In modern Spring Boot applications, Micrometer Tracing + OpenTelemetry is the production-grade solution.
+        
+        * Micrometer Tracing -
+
+            Integrates directly with Spring Boot.
+            Automatically:
+            Creates trace IDs and span IDs.
+            Propagates them across services.
+            Attaches them to logs (traceId, spanId).
+
+        * OpenTelemetry -
+
+            Acts as the standard observability layer.
+            Responsible for:
+            Exporting traces (and optionally logs/metrics).
+            Sending data to backends like Jaeger, Tempo, Zipkin, etc.
+            Each microservice:
+            Has its own logging configuration (logback-spring.xml).
+            Writes logs locally (console or file).
+            Includes traceId and spanId in every request-level log.
+
+      * Reactive vs Non-Reactive API Gateway -
+
+        * Reactive Gateway (Spring WebFlux) -
+
+            Uses a non-blocking, multi-threaded execution model.
+            MDC (ThreadLocal) is not reliable.
+            Production approach:
+            Use Micrometer Tracing + OpenTelemetry.
+            Trace context is stored in the Reactor Context.
+            Logging frameworks read trace information safely from this context.
+            This is the recommended and production-grade approach for WebFlux.
+
+        * Non-Reactive Gateway (Spring Web MVC) -
+            
+            Uses a thread-per-request model.
+            MDC (Mapped Diagnostic Context) works reliably.
+            Trace ID can be:
+            Generated in a filter.
+            Stored in MDC.
+            Automatically added to all logs on that thread.
+            This approach is simpler but only safe in Servlet-based applications.
+
+      * Required Dependencies and Properties -
+
+        * For Tracing  - micrometer-tracing-bridge-otel
+          For Exporting  - opentelemetry-exporter-otlp
+          Required  - spring-boot-starter-actuator
+
+        * spring.application.name=file-service
+          management.tracing.enabled=true
+          management.tracing.sampling.probability=1.0
+          management.endpoints.web.exposure.include=health,info
+
+      * Log File Pattern -
+
+          logging.level.com.pixxy.gateway=DEBUG
+          logging.file.name=logs/${spring.application.name}.log
+          logging.logback.rollingpolicy.file-name-pattern=logs/${spring.application.name}-%d{yyyy-MM-dd}.%i.log
+          logging.logback.rollingpolicy.max-file-size=10MB
+          logging.logback.rollingpolicy.max-history=30
+          logging.pattern.console=%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level traceId=%X{traceId} spanId=%X{spanId} %logger{36} - %msg%n
+          logging.pattern.file=%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level traceId=%X{traceId} spanId=%X{spanId} %logger{36} - %msg%n
+
 
     6. Global Error Handling -
 
