@@ -2590,8 +2590,8 @@
     
     * Idempotent - means sending same data multiple times keeps state same
 
-    | Method    | Purpose          | Request Body | Idempotent | Safe | Typical Response             |
-    | --------- | ---------------- | ------------ | ---------- | ---- | ---------------------------- |
+    | Method    | Purpose          | Request Body | Idempotent    | Safe   | Typical Response             |
+    | --------- | ---------------- | ------------ | ----------    | ----   | ---------------------------- |
     | **GET**   | Read data        | ❌            | ✅          | ✅    | `200 OK`                     |
     | **POST**  | Create new       | ✅            | ❌          | ❌    | `201 Created`                |
     | **PUT**   | Replace existing | ✅            | ✅          | ❌    | `200 OK` or `204 No Content` |
