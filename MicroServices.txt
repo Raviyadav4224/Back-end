@@ -79,8 +79,8 @@
       Nginx is an Infrastructure aware gateway and optimized for traffic control and protection 
       It acts as a Load balancer and reverse Proxy
 
-      Whereas Spring cloud gateway is an application/service aware gateway best at handling application level
-      logics
+      Whereas Spring cloud gateway is an application/service aware gateway best at handling application 
+      level logics
 
     * To Create Reactive Spring Cloud Gateway -
 
@@ -91,11 +91,11 @@
 
     1. Routing to Microservices -
 
-      *   spring.cloud.gateway.server.webflux.routes[0].id=test
-          spring.cloud.gateway.server.webflux.routes[0].uri=https://httpbin.org
-          spring.cloud.gateway.server.webflux.routes[0].predicates[0]=Path=/test/**
+      * spring.cloud.gateway.server.webflux.routes[0].id=test
+        spring.cloud.gateway.server.webflux.routes[0].uri=https://httpbin.org
+        spring.cloud.gateway.server.webflux.routes[0].predicates[0]=Path=/test/**
       
-          spring.cloud.gateway.server.webflux.routes[0].filters[0]=StripPrefix=1
+        spring.cloud.gateway.server.webflux.routes[0].filters[0]=StripPrefix=1
 
     2. Handling Authentication and Jwt Validation -
 
@@ -307,6 +307,27 @@
           logging.pattern.console=%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level traceId=%X{traceId} spanId=%X{spanId} %logger{36} - %msg%n
           logging.pattern.file=%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level traceId=%X{traceId} spanId=%X{spanId} %logger{36} - %msg%n
 
+      * Architecture Patterns for Logging -
+
+        * Micrometer tracing is used to add traceId and spanId, opentelemetry is used to export traces to
+          backend services like Tempo etc
+
+        * Loki + Tempo + Promtail + Grafana 
+
+            Loki - Stores Logs 
+            Promtail - Reads logs and sends to Loki
+            Tempo - Stores traces via OpenTelemetry
+            Grafana - Visualization tool to analyse logs
+
+        * AWS CloudWatch -
+
+            It is used to store logs and can be visualized using Grafana
+
+        * Elastic Search + Logback + Kibana -
+
+            Elastic Search - Stores logs as JSON documents and provides full text search
+            Logback - Collects and pareses logs and converts the logs into JSON format 
+            Kibana - Visualization tool to analyse logs
 
     6. Global Error Handling -
 
