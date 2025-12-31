@@ -326,7 +326,7 @@
         * Elastic Search + Logback + Kibana -
 
             Elastic Search - Stores logs as JSON documents and provides full text search
-            Logback - Collects and pareses logs and converts the logs into JSON format 
+            Logback - Collects and parses logs and converts the logs into JSON format 
             Kibana - Visualization tool to analyse logs
 
     6. Global Error Handling -
