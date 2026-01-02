@@ -331,6 +331,147 @@
 
     6. Global Error Handling -
 
+      * In a microservices architecture error handling works differently -
+          API Gateway handles - security, routing, and infrastructure errors
+          Microservices - handles business and domain errors
+          Error response format - a common format is use which is mandatory across all layers
+
+      * Global Error Response Object - 
+
+        It includes typical fields such as 
+          timestamp
+          traceId
+          path
+          status
+          message
+          errors (optional / list)
+
+      * Reactive Gateway -
+
+        * For security related errors -
+
+          We implement ServerAuthenticationEntryPoint(401), ServerAccessDeniedHandler(403) class
+          example -
+            public class GatewayAccessDeniedError implements ServerAccessDeniedHandler {
+
+              private final ObjectMapper mapper;
+
+              public GatewayAccessDeniedError(ObjectMapper mapper) {
+                this.mapper = mapper;
+              }
+
+              @Override
+              public Mono<Void> handle(ServerWebExchange exchange, AccessDeniedException ex) {
+                ServerHttpResponse response = exchange.getResponse();
+                response.setStatusCode(HttpStatus.FORBIDDEN);
+                response.getHeaders().setContentType(MediaType.APPLICATION_JSON);
+
+                GlobalErrorResponse body = new GlobalErrorResponse(Instant.now(), HttpStatus.FORBIDDEN.value(), "Access denied",
+                    ex.getMessage(), exchange.getRequest().getPath().value(),
+                    exchange.getRequest().getHeaders().getFirst("traceparent"));
+
+                byte[] bytes;
+                try {
+                  bytes = mapper.writeValueAsBytes(body);
+                } catch (Exception e) {
+                  bytes = new byte[0];
+                }
+
+                DataBuffer buffer = response.bufferFactory().wrap(bytes);
+                return response.writeWith(Mono.just(buffer));
+              }
+              }
+        
+        * For Global Error -
+
+          We implement ErrorWebExceptionHandler class
+          example -
+            public class GatewayGlobalErrorHandler implements ErrorWebExceptionHandler {
+              private final ObjectMapper mapper;
+              private final Tracer tracer;
+
+              public GatewayGlobalErrorHandler(Tracer tracer, ObjectMapper mapper) {
+                this.mapper = mapper;
+                this.tracer = tracer;
+              }
+
+              @Override
+              public Mono<Void> handle(ServerWebExchange exchange, Throwable ex) {
+
+                ServerHttpResponse response = exchange.getResponse();
+                HttpStatus status = getResponseStatus(ex);
+
+                response.setStatusCode(status);
+
+                response.getHeaders().setContentType(MediaType.APPLICATION_JSON);
+
+                GlobalErrorResponse errorResponse = new GlobalErrorResponse(Instant.now(), status.value(),
+                    status.getReasonPhrase(), resolveMessage(ex), exchange.getRequest().getPath().value(), getTraceId());
+
+                byte[] body;
+                try {
+                  body = mapper.writeValueAsBytes(errorResponse);
+                } catch (Exception e) {
+                  body = new byte[0];
+                }
+
+                DataBuffer buffer = response.bufferFactory().wrap(body);
+                return response.writeWith(Mono.just(buffer));
+              }
+
+              public HttpStatus getResponseStatus(Throwable ex) {
+                if (ex instanceof ResponseStatusException rse) {
+                  return HttpStatus.valueOf(rse.getStatusCode().toString());
+                }
+
+                if (ex instanceof TimeoutException) {
+                  return HttpStatus.GATEWAY_TIMEOUT;
+                }
+
+                if (ex instanceof ConnectException || ex instanceof UnknownHostException) {
+                  return HttpStatus.SERVICE_UNAVAILABLE;
+                }
+
+                return HttpStatus.INTERNAL_SERVER_ERROR;
+              }
+
+              private String resolveMessage(Throwable ex) {
+
+                if (ex instanceof ResponseStatusException rse) {
+                  return rse.getReason();
+                }
+
+                if (ex instanceof TimeoutException) {
+                  return "Downstream service timed out";
+                }
+
+                if (ex instanceof ConnectException) {
+                  return "Downstream service unavailable";
+                }
+
+                return "Unexpected gateway error";
+              }
+
+              private String getTraceId() {
+
+                Span span = tracer.currentSpan();
+                return span != null ? span.context().traceId() : UUID.randomUUID().toString();
+              }
+              }
+
+      * TraceId - Generated via micrometer tracing , but if it is missing we generate it manually so that
+        logs can be traced -  UUID.randomUUID().toString()
+      
+      * Gateway never forwards 401/403 to downstream services.
+        Services never try to handle authentication or authorization errors.
+      
+      * Microservices Error Handling -
+
+        * Services handle only business and domain errors
+        * Implemented using @RestControllerAdvice + @ExceptionHandler
+        * Services always return the same GlobalErrorResponse object
+        * Services do NOT handle 401 / 403 / JWT-related errors
+
     7. Circuit Breaker and Resilience -
 
     8. Transforming Request/Response -
