@@ -472,7 +472,7 @@
         * Services always return the same GlobalErrorResponse object
         * Services do NOT handle 401 / 403 / JWT-related errors
 
-    7. Circuit Breaker and Resilience -
+    7. Circuit Breaker and Resilience , Timeout & Retry Handling-
 
     8. Transforming Request/Response -
 
