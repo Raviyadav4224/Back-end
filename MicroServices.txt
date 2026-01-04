@@ -472,7 +472,32 @@
         * Services always return the same GlobalErrorResponse object
         * Services do NOT handle 401 / 403 / JWT-related errors
 
-    7. Circuit Breaker and Resilience , Timeout & Retry Handling-
+    7. Timeout, Retry Handling, Circuit Breaker and Resilience -
+
+      * Timeout -> Retry -> Circuit Breaker -> Feign Client -> Feign Exception Handler -> Controller Response
+
+      * Feign answers - what do I return when it fails?
+        Resilience answers - how do I stop failures from spreading?
+        
+      * It is implemented at API gateway level and at each Microservice level
+      
+      * Timeout -
+
+          Call File Service
+          wait max 2 seconds
+          if no response → FAIL FAST
+
+      * Retry -
+
+          Used when Temporary failures, Network glitches
+          Retry count must be Low
+          Retry decides what count as failures
+
+      * Circuit Breaker -
+
+          Used when dependent service is down
+          Three states - OPEN , CLOSED, HALF OPEN
+          It protects the caller not the callee (i.e it protects UserService if it is calling FileService)
 
     8. Transforming Request/Response -
 
