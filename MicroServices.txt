@@ -481,11 +481,64 @@
         
       * It is implemented at API gateway level and at each Microservice level
       
-      * Timeout -
+      * Timeout (Network Errors) -
 
           Call File Service
           wait max 2 seconds
           if no response → FAIL FAST
+
+        * Timeout errors are network errors
+          connect timeout = connection not established in time
+          read timeout = server did not send data in time although connection was made
+          these are network-level timeouts and not EXECUTION level timeouts
+          execution slow ≠ fail timeout
+          Handled by Feign
+
+        * To handle execution level timeouts we need to use Resilience4j-TimeLimiter
+
+        * #TIMEOUT
+          feign.client.config.default.connect-timeout=2000
+          feign.client.config.default.read-timeout=3000
+
+      * Resilience4j TimeLimiter -
+
+        * It enforces Execution time logic, if request doesn’t completes in X time fail fast
+
+        * It is NOT a network timeout.
+
+        * What problem it solves
+          Downstream service is slow
+          Business logic takes too long
+          Threads keep waiting → system degrades
+          
+        * Works only on async calls
+          CompletableFuture
+          CompletionStage
+          Reactive (Mono, Flux)
+          Does not interrupt threads
+          Cancels the Future, not the method
+        
+        * resilience4j.timelimiter.instances.fileService.timeout-duration=3s
+          resilience4j.timelimiter.instances.fileService.cancel-running-future=true
+
+      * Resilience4j Circuit Breaker -
+
+        * Circuit Breaker prevents repeated calls to a failing service.
+
+        * It counts outcomes and not reasons, means it counts success or failure 
+
+        * resilience4j.circuitbreaker.instances.fileService.sliding-window-size=10
+          resilience4j.circuitbreaker.instances.fileService.failure-rate-threshold=50
+          resilience4j.circuitbreaker.instances.fileService.wait-duration-in-open-state=30s
+
+          sliding-window-size = 10
+          → Look at last 10 calls
+
+          failure-rate-threshold = 50%
+          → If ≥5 failures → open circuit
+
+          wait-duration-in-open-state = 30s
+          → Keep circuit open for 30 seconds
 
       * Retry -
 
