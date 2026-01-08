@@ -523,6 +523,10 @@
 
       * Resilience4j Circuit Breaker -
 
+        * Used when dependent service is down
+          Three states - OPEN , CLOSED, HALF OPEN
+          It protects the caller not the callee (i.e it protects UserService if it is calling FileService)
+
         * Circuit Breaker prevents repeated calls to a failing service.
 
         * It counts outcomes and not reasons, means it counts success or failure 
@@ -540,18 +544,53 @@
           wait-duration-in-open-state = 30s
           → Keep circuit open for 30 seconds
 
-      * Retry -
+      * Resilience4j Retry -
 
-          Used when Temporary failures, Network glitches
-          Retry count must be Low
-          Retry decides what count as failures
+        * Retry is for Transient failures and not Systemic failures
 
-      * Circuit Breaker -
+        * Retry must apply only on -
+          * Specific exception
+          * Must have Max Attempts
+          * Must have backoff i.e nevery retry immediately 
 
-          Used when dependent service is down
-          Three states - OPEN , CLOSED, HALF OPEN
-          It protects the caller not the callee (i.e it protects UserService if it is calling FileService)
+        * If circuitbreaker is Open i.e Service is down - Retry is skipped
 
+        * Retry decides what count as failures
+
+        * Example - 
+
+            @Retry(name = "fileService", fallbackMethod = "fallback")
+            @CircuitBreaker(name = "fileService")
+            @TimeLimiter(name = "fileService")
+            public CompletableFuture<String> getStatusAsync(long ms) {
+              return CompletableFuture.supplyAsync(() -> fileServiceClient.status(ms));
+            }
+
+            public CompletableFuture<String> fallback(Throwable ex) {
+              System.out.println(ex.getMessage());
+              return CompletableFuture.completedFuture("File Service is Down");
+            }
+
+        * # ---------- RETRY ----------
+          resilience4j.retry.instances.fileService.max-attempts=3
+          
+          resilience4j.retry.instances.fileService.wait-duration=1s
+
+          resilience4j.retry.instances.fileService.enable-exponential-backoff=true
+
+          resilience4j.retry.instances.fileService.exponential-backoff-multiplier=2
+
+          resilience4j.retry.instances.fileService.retry-exceptions=\
+          java.io.IOException,\
+          java.net.SocketTimeoutException,\
+          java.util.concurrent.TimeoutException
+
+          resilience4j.retry.instances.fileService.ignore-exceptions=\
+          io.github.resilience4j.circuitbreaker.CallNotPermittedException,\
+          org.springframework.web.client.HttpClientErrorException
+      
+      * Resilience4j Bulkhead -
+      
     8. Transforming Request/Response -
 
     9. Observability (metrics & tracing) -
