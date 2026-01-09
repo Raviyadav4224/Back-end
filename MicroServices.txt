@@ -588,9 +588,46 @@
           resilience4j.retry.instances.fileService.ignore-exceptions=\
           io.github.resilience4j.circuitbreaker.CallNotPermittedException,\
           org.springframework.web.client.HttpClientErrorException
-      
-      * Resilience4j Bulkhead -
-      
+
+        * Retry
+          └── CircuitBreaker
+                └── TimeLimiter
+                    └── Actual call
+          The first fallback that executes absorbs the exception and stops the chain.
+
+      * Resilience4j Bulkhead - 
+
+        * CircuitBreaker protects the Downstream service whereas Bulkhead protects the calling service
+
+        * It limits 
+
+          * The no. of concurrent calls
+          * When limit is hit - bulkheadFullException is thrown and it rejects immediately 
+          * No waiting
+          * No Retry(unless we specify it)
+
+        * Types of BulkHead -
+
+          1. Semaphore Bulkhead
+          2. Threadpool Bulkhead
+
+          | Aspect                         | **Semaphore Bulkhead**    | **ThreadPool Bulkhead**        |
+          | ------------------------------ | ------------------------- | ------------------------------ |
+          | Bulkhead Type                  | Semaphore-based           | Thread-pool-based              |
+          | What it limits                 | **Concurrent executions** | **Threads + queue size**       |
+          | Isolation level                | Medium                    | **Strong**                     |
+          | Works with sync code           | ✅ Yes                    | ❌ No                         |
+          | Works with `CompletableFuture` | ✅ Yes                    | ✅ Yes (required)             |
+          | Thread usage                   | Uses **caller thread**    | Uses **separate thread pool**  |
+          | Queue support                  | ❌ No queue              | ✅ Yes (bounded)               |
+          | When limit is hit              | Immediate rejection       | Queue → then rejection         |
+          | Failure exception              | `BulkheadFullException`   | `BulkheadFullException`        |
+          | Latency behaviour              | Predictable               | Can increase due to queue      |
+          | Risk of thread exhaustion      | Low                       | Very low                       |
+          | Typical max size               | 5–50 concurrent calls     | Small pools (5–20 threads)     |
+          | Best for                       | REST, Feign, DB calls     | Slow / blocking legacy systems |
+          | Production usage               | **Most common**           | Selective / advanced           |
+
     8. Transforming Request/Response -
 
     9. Observability (metrics & tracing) -
