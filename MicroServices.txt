@@ -230,6 +230,41 @@
         │     (HTTP Response)      │
         └──────────────────────────┘
 
+      * Example -
+
+        @Configuration
+        public class RateLimiterConfig {
+          @Bean
+          KeyResolver userKeyResolver() {
+
+            return exchange -> {
+
+              System.out.println("Inside keyResolver"+exchange.getPrincipal());
+              return exchange.getPrincipal().cast(JwtAuthenticationToken.class)
+                  .map(jwt -> jwt.getToken().getClaimAsString("userId")).defaultIfEmpty("anonymous");
+            };
+          }
+
+          @Bean
+          RedisRateLimiter redisRateLimiter() {
+          //		return new RedisRateLimiter(1, 2, 1);
+            return new RedisRateLimiter(100, 200, 1);
+          }
+        }
+
+        spring.cloud.gateway.server.webflux.routes[0].id=user-service
+        spring.cloud.gateway.server.webflux.routes[0].uri=http://localhost:8081
+        spring.cloud.gateway.server.webflux.routes[0].predicates[0]=Path=/api/v1/users/**
+        spring.cloud.gateway.server.webflux.routes[0].filters[0]=StripPrefix=1
+
+        ****** This is added as filter so that rate limiter can act ****** 
+        spring.cloud.gateway.server.webflux.routes[0].filters[1]=RequestRateLimiter
+
+        spring.cloud.gateway.server.webflux.routes[1].id=file-service
+        spring.cloud.gateway.server.webflux.routes[1].uri=http://localhost:8082
+        spring.cloud.gateway.server.webflux.routes[1].predicates[0]=Path=/api/v1/files/**
+        spring.cloud.gateway.server.webflux.routes[1].filters[0]=StripPrefix=1
+        spring.cloud.gateway.server.webflux.routes[1].filters[1]=RequestRateLimiter
     5. Centralized Logging -
 
       * Centralized logging in a microservices architecture is achieved by correlating logs belonging 
@@ -627,6 +662,23 @@
           | Typical max size               | 5–50 concurrent calls     | Small pools (5–20 threads)     |
           | Best for                       | REST, Feign, DB calls     | Slow / blocking legacy systems |
           | Production usage               | **Most common**           | Selective / advanced           |
+
+        * Example -
+
+          	@Retry(name = "fileService", fallbackMethod = "fallbackRetry")
+            @CircuitBreaker(name = "fileService")
+            @TimeLimiter(name = "fileService")
+            @Bulkhead(type = Type.SEMAPHORE, name = "fileService")
+            public CompletableFuture<String> getStatusAsync(long ms) {
+              ExecutorService executor = Executors.newFixedThreadPool(20);
+              return CompletableFuture.supplyAsync(() -> fileServiceClient.status(ms), executor);
+            }
+
+            # ---------- BULKHEAD ----------
+            resilience4j.bulkhead.instances.fileService.max-concurrent-calls=10
+            resilience4j.bulkhead.instances.fileService.max-wait-duration=0
+
+            Allows max 10 concurrent calls at once else throws error and goes to fallback method
 
     8. Transforming Request/Response -
 
