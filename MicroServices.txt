@@ -265,6 +265,7 @@
         spring.cloud.gateway.server.webflux.routes[1].predicates[0]=Path=/api/v1/files/**
         spring.cloud.gateway.server.webflux.routes[1].filters[0]=StripPrefix=1
         spring.cloud.gateway.server.webflux.routes[1].filters[1]=RequestRateLimiter
+        
     5. Centralized Logging -
 
       * Centralized logging in a microservices architecture is achieved by correlating logs belonging 
