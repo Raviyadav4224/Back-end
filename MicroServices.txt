@@ -508,7 +508,7 @@
         * Services always return the same GlobalErrorResponse object
         * Services do NOT handle 401 / 403 / JWT-related errors
 
-    7. Timeout, Retry Handling, Circuit Breaker and Resilience -
+    7. Network Timeout, Retry Handling, Circuit Breaker and Bulkhead using Resilience4j -
 
       * Timeout -> Retry -> Circuit Breaker -> Feign Client -> Feign Exception Handler -> Controller Response
 
@@ -683,6 +683,41 @@
 
     8. Transforming Request/Response -
 
-    9. Observability (metrics & tracing) -
+      * In microservices, the API Gateway owns the external API contract. Even if backend services return
+        raw or inconsistent responses, the gateway transforms them into a standard JSON structure using 
+        response filters, ensuring consistency, loose coupling, and backward compatibility.
+      
+      * It is done at API Gateway level ensuring response consistency, and it is typically implemented
+        at the route level because global transformation quickly becomes complex and difficult to manage.
 
-6. Design Patterns -
+    9. Observability (metrics & tracing) -
+    
+    10. Database/Transactions Handling in Microservices -
+
+        * In microservices, database transactions are handled using SAGA patterns — 
+          either orchestration or event-driven choreography — where each service commits locally and
+          failures are handled via compensation, ensuring eventual consistency instead of distributed
+          ACID transactions.
+
+          example -
+
+            User Service (create user) → File Service
+                    ↓ failure
+            Compensation (delete / revert user)
+
+    11. Caching -
+
+    12. Testing -
+
+    13. Configuration Management & Discovery Server ( Kubernetes ) -
+
+      * Configuration management in microservices is handled either via Kubernetes ConfigMaps and Secrets
+        during deployment, or through Spring Cloud Config for centralized, Git-backed configuration—chosen
+        based on whether the system is containerized or not.
+
+      * For most of the systems which are now containerized Kubernetes based approach is used
+
+      * In Kubernetes-based microservices, service discovery is handled natively using Services and DNS,
+        making tools like Eureka unnecessary.
+
+7. Design Patterns -
