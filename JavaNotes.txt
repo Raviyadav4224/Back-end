@@ -852,113 +852,115 @@
 
 22. Threads ,Runnable vs Callable ,Deadlock ->
 
-    * Threading is the ability of CPU to run different tasks parallelly on different CPU cores
+    Threads -
 
-    * Smallest unit with which we can work is called a Thread
-    
-    * We can create Thread using 
+        * Threading is the ability of CPU to run different tasks parallelly on different CPU cores
 
-        1. Extending Thread Class ( which internally implements the Runnable interface )
-        2. Implementing Runnable Interface
-    
-    * start() vs run() -
-
-        start() creates a NEW THREAD and internally calls run() method inside the new thread
-
-        run() - directly runs in the CURRENT THREAD
-
-    * join() -
-    
-        When you call t1.join() on a thread t1, the current thread (e.g., main thread) pauses and 
-        waits for t1 to complete before continuing further.
-
-    * Thread.sleep() -  
-
-        Pauses the current execution and continues after the specified time
-        It doesn't releases the lock on the Object
-    
-    * wait(), notify(), notifyAll()  -
-
-        * These methods are used for inter-thread communication and they belong to the Object class, 
-            not Thread.
+        * Smallest unit with which we can work is called a Thread
         
-        * Used inside a synchronized block.
+        * We can create Thread using 
 
-        * wait() - Releases the lock on the object and makes the thread wait until some other thread 
+            1. Extending Thread Class ( which internally implements the Runnable interface )
+            2. Implementing Runnable Interface
+        
+        * start() vs run() -
+
+            start() creates a NEW THREAD and internally calls run() method inside the new thread
+
+            run() - directly runs in the CURRENT THREAD
+
+        * join() -
+        
+            When you call t1.join() on a thread t1, the current thread (e.g., main thread) pauses and 
+            waits for t1 to complete before continuing further.
+
+        * Thread.sleep() -  
+
+            Pauses the current execution and continues after the specified time
+            It doesn't releases the lock on the Object
+        
+        * wait(), notify(), notifyAll()  -
+
+            * These methods are used for inter-thread communication and they belong to the Object class, 
+            not Thread.
+            
+            * Used inside a synchronized block.
+
+            * wait() - Releases the lock on the object and makes the thread wait until some other thread 
             calls notify() or notifyAll() on the same object.
 
-        * notify() - Wakes up one waiting thread (chosen arbitrarily by JVM) that is waiting on the 
+            * notify() - Wakes up one waiting thread (chosen arbitrarily by JVM) that is waiting on the 
             same object’s monitor.
 
-        * notifyAll() - Wakes up all waiting threads on the same object.
+            * notifyAll() - Wakes up all waiting threads on the same object.
 
-        * wait() releases the lock, sleep() does not.
+            * wait() releases the lock, sleep() does not.
 
-        * wait() requires synchronization, sleep() doesn’t.
+            * wait() requires synchronization, sleep() doesn’t.
 
-    * What happens when you call wait()?
+        * What happens when you call wait()?
 
-        The current thread must hold the monitor lock (i.e., must be inside a synchronized block
-        or method).
+            The current thread must hold the monitor lock (i.e., must be inside a synchronized block
+            or method).
 
-        The thread enters the WAITING state.
+            The thread enters the WAITING state.
 
-        The thread releases the lock (so others can proceed).
+            The thread releases the lock (so others can proceed).
 
-        The thread stays paused until it is Woken up using notify() or notifyAll() from another thread.
+            The thread stays paused until it is Woken up using notify() or notifyAll() from another thread.
 
-        When resumed, it reacquires the lock before continuing.
-    
-    * Example of Runnable with wait() and notify() -
+            When resumed, it reacquires the lock before continuing.
+        
+        * Example of Runnable with wait() and notify() -
 
-        class SharedResource {
-            private int data;
-            private boolean hasData = false;
+            class SharedResource {
+                private int data;
+                private boolean hasData = false;
 
-            public synchronized void produce(int value) {
-                while (hasData) { // if data already present, wait
-                    try { wait(); } catch (InterruptedException e) { }
-                }
-                data = value;
-                hasData = true;
-                System.out.println("Produced: " + value);
-                notify(); // wake up consumer
-            }
-
-            public synchronized void consume() {
-                while (!hasData) { // if no data, wait
-                    try { wait(); } catch (InterruptedException e) { }
-                }
-                System.out.println("Consumed: " + data);
-                hasData = false;
-                notify(); // wake up producer
-            }
-        }
-
-        public class WaitNotifyExample {
-            public static void main(String[] args) {
-                SharedResource resource = new SharedResource();
-
-                Thread producer = new Thread(() -> {
-                    for (int i = 1; i <= 5; i++) {
-                        resource.produce(i);
-                        try { Thread.sleep(500); } catch (InterruptedException e) { }
+                public synchronized void produce(int value) {
+                    while (hasData) { // if data already present, wait
+                        try { wait(); } catch (InterruptedException e) { }
                     }
-                });
+                    data = value;
+                    hasData = true;
+                    System.out.println("Produced: " + value);
+                    notify(); // wake up consumer
+                }
 
-                Thread consumer = new Thread(() -> {
-                    for (int i = 1; i <= 5; i++) {
-                        resource.consume();
-                        try { Thread.sleep(1000); } catch (InterruptedException e) { }
+                public synchronized void consume() {
+                    while (!hasData) { // if no data, wait
+                        try { wait(); } catch (InterruptedException e) { }
                     }
-                });
-
-                producer.start();
-                consumer.start();
+                    System.out.println("Consumed: " + data);
+                    hasData = false;
+                    notify(); // wake up producer
+                }
             }
-        }
-    
-    * Runnable -
+
+            public class WaitNotifyExample {
+                public static void main(String[] args) {
+                    SharedResource resource = new SharedResource();
+
+                    Thread producer = new Thread(() -> {
+                        for (int i = 1; i <= 5; i++) {
+                            resource.produce(i);
+                            try { Thread.sleep(500); } catch (InterruptedException e) { }
+                        }
+                    });
+
+                    Thread consumer = new Thread(() -> {
+                        for (int i = 1; i <= 5; i++) {
+                            resource.consume();
+                            try { Thread.sleep(1000); } catch (InterruptedException e) { }
+                        }
+                    });
+
+                    producer.start();
+                    consumer.start();
+                }
+            }
+        
+    Runnable -
 
         * We can create a Thread by implementing the Runnable interface
 
@@ -986,20 +988,20 @@
                 this.count++;
             }
 
-    * Runnable vs Callable -
+    Runnable vs Callable -
 
         * Runnable limitations is that it cannot return a Result (void run()) and is more like 
-            run and forget, it doesn't throws Checked exceptions as well
+          run and forget, it doesn't throws Checked exceptions as well
 
         * Whereas Callable<V> return result of type V and can throw Checked exceptions 
 
         * Callable is used with ExecutorService which creates Threads, which is not managed by 
-            the developer and then the task created using callable is submitted to submit method which 
-            return a future result which can be used to get result of callable 
+          the developer and then the task created using callable is submitted to submit method which 
+          return a future result which can be used to get result of callable 
         
-        *   Executors.newSingleThreadExecutor - creates a single thread 
-            Executors.newCachedThreadPool - creates unlimited no of new threads 
-            Executors.newFixedThreadPool(n) - Creates n no of Threads 
+        * Executors.newSingleThreadExecutor - creates a single thread 
+          Executors.newCachedThreadPool - creates unlimited no of new threads 
+          Executors.newFixedThreadPool(n) - Creates n no of Threads 
         
         * Here we dont use wait(), join(), notify() since we are not managing creation of Threads and 
           starting of them
@@ -1018,10 +1020,10 @@
 
             executor.shutdown();
 
-    * Example of using callable - Fetching user data from multiple services (DB, API, Cache) 
-      in parallel, and then combining results.
+        * Example of using callable - Fetching user data from multiple services (DB, API, Cache) 
+        in parallel, and then combining results.
 
-    * Thread Life cycle -
+    Thread Life cycle -
 
         Java threads go through 6 states:
 
@@ -1038,6 +1040,81 @@
             TIMED_WAITING - Waiting with timeout ( eg sleep() )
 
             TERMINATED - Thread has finished
+
+    ExecutorService and ThreadPool -
+
+        ExecutorService - 
+
+            * It is a high level abstraction for creating and managing Asynchronous tasks without the need
+              of manually creating Threads and managing them. Instead of creating/managing Threads you 
+              submit the tasks to the ExecutorService and it handles everything
+            
+            * submit()     // returns Future
+              execute()    // fire-and-forget
+              shutdown()   // graceful shutdown
+              shutdownNow() // force shutdown
+
+        ThreadPool -
+
+            It is a collection of reusable Worker Threads managed by ExecutorService
+
+            | Pool                   | When to use             |
+            | ---------------------- | ----------------------- |
+            | `FixedThreadPool`      | CPU / limited tasks     |
+            | `CachedThreadPool`     | Short-lived async tasks |
+            | `SingleThreadExecutor` | Ordered execution       |
+            | `ScheduledThreadPool`  | Delayed / periodic jobs |
+
+    Future (Async Result Holder) -
+
+        * It represents the result of Asynchronous computation that may not have computated yet.
+
+        * Task runs asynchronously, but result retrieval is blocking via get().
+
+        * It can check if a Task is done, get Result or Cancel it
+
+        * It cannot chain tasks or combine tasks
+
+        * Example -
+
+            ExecutorService executors = Executors.newFixedThreadPool(3);
+
+            Future<Double> futureResult = executors.submit(() -> {
+                System.out.println("Inside Thread");
+                Thread.sleep(3000);
+                return 99.9;
+            });
+
+            System.out.println("Thinking........");
+
+            Double result = futureResult.get(); // BLOCKS
+            System.out.println(result);
+
+            executors.shutdown();
+
+    CompletableFuture -
+
+        * Task runs asynchronously and the next action is triggered automatically when it completes —
+          no waiting thread.
+
+        * Common mehtods of CompletableFuture -
+            
+            | Method            | Purpose (1-liner)                 | Returns                     | When to Use                   | Interview Tip                    |
+            | ----------------- | --------------------------------- | --------------------------- | ----------------------------- | -------------------------------- |
+            | `supplyAsync()`   | Run async task **with result**    | `CompletableFuture<T>`      | Async service / DB / API call | Uses `ForkJoinPool.commonPool()` |
+            | `runAsync()`      | Run async task **without result** | `CompletableFuture<Void>`   | Logging, side effects         | Fire-and-forget                  |
+            | `thenApply()`     | Transform result                  | `CompletableFuture<U>`      | Map / convert data            | Like `map()`                     |
+            | `thenAccept()`    | Consume result                    | `CompletableFuture<Void>`   | Print, save, send             | No return                        |
+            | `thenRun()`       | Run after completion              | `CompletableFuture<Void>`   | Cleanup / notify              | Ignores result                   |
+            | `thenCompose()`   | Chain async calls                 | `CompletableFuture<U>`      | Avoid nested futures          | Like `flatMap()`                 |
+            | `thenCombine()`   | Combine 2 futures                 | `CompletableFuture<V>`      | Parallel service calls        | Both must finish                 |
+            | `allOf()`         | Wait for all futures              | `CompletableFuture<Void>`   | Fan-out / fan-in              | No direct result                 |
+            | `anyOf()`         | First completed wins              | `CompletableFuture<Object>` | Fastest response              | Racing APIs                      |
+            | `exceptionally()` | Handle exception                  | `CompletableFuture<T>`      | Fallback logic                | Like `catch`                     |
+            | `handle()`        | Handle success + error            | `CompletableFuture<U>`      | Central error logic           | Gets `(result, ex)`              |
+            | `whenComplete()`  | Side-effect on completion         | `CompletableFuture<T>`      | Logging / metrics             | Cannot modify result             |
+            | `get()`           | Block & get result                | `T`                         | Legacy / last resort          | Avoid in async                   |
+            | `join()`          | Block & get result                | `T`                         | Cleaner than get              | Unchecked exception              |
 
     * obj.getPriority() gives the priority of Thread , we can also set the priority of the Thread using
         obj.setPriority(10)
