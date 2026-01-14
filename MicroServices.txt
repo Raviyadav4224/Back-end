@@ -350,10 +350,10 @@
 
         * Loki + Tempo + Promtail + Grafana 
 
-            Loki - Stores Logs 
-            Promtail - Reads logs and sends to Loki
-            Tempo - Stores traces via OpenTelemetry
-            Grafana - Visualization tool to analyse logs
+          Loki - Stores Logs 
+          Promtail - Reads logs and sends to Loki
+          Tempo - Stores traces via OpenTelemetry
+          Grafana - Visualization tool to analyse logs
 
         * AWS CloudWatch -
 
