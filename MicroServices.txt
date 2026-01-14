@@ -361,9 +361,9 @@
 
         * Elastic Search + Logback + Kibana -
 
-            Elastic Search - Stores logs as JSON documents and provides full text search
-            Logback - Collects and parses logs and converts the logs into JSON format 
-            Kibana - Visualization tool to analyse logs
+          Elastic Search - Stores logs as JSON documents and provides full text search
+          Logback - Collects and parses logs and converts the logs into JSON format 
+          Kibana - Visualization tool to analyse logs
 
     6. Global Error Handling -
 
@@ -694,16 +694,16 @@
     
     10. Database/Transactions Handling in Microservices -
 
-        * In microservices, database transactions are handled using SAGA patterns — 
-          either orchestration or event-driven choreography — where each service commits locally and
-          failures are handled via compensation, ensuring eventual consistency instead of distributed
-          ACID transactions.
+      * In microservices, database transactions are handled using SAGA patterns — 
+        either orchestration or event-driven choreography — where each service commits locally and
+        failures are handled via compensation, ensuring eventual consistency instead of distributed
+        ACID transactions.
 
-          example -
+        example -
 
-            User Service (create user) → File Service
-                    ↓ failure
-            Compensation (delete / revert user)
+          User Service (create user) → File Service
+                  ↓ failure
+          Compensation (delete / revert user)
 
     11. Caching -
 
