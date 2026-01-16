@@ -1071,9 +1071,12 @@
 
         * Task runs asynchronously, but result retrieval is blocking via get().
 
-        * It can check if a Task is done, get Result or Cancel it
+        * It can check if a Task is done, get Result or Cancel it.
 
-        * It cannot chain tasks or combine tasks
+        * It cannot chain tasks or combine tasks.
+
+        * We need to submit the task to ExecutorService which controls execution and Future is used to
+          handle the Result.
 
         * Example -
 
@@ -1096,7 +1099,18 @@
 
         * Task runs asynchronously and the next action is triggered automatically when it completes —
           no waiting thread.
+        
+        * It uses Event-loop model , Thread is not blocked, callback is registered and executed when task
+          is completed.
+        
+        * It is NON-BLOCKING in nature.
 
+        * We do not submit the task to ExecutorService , CompletableFuture starts the execution internally
+          and submits the task to a Thread pool
+
+        * We have to provide ExecutorService to a Future but CompletableFuture handles the execution itslef, 
+          optionally it uses the ExecutorService provided else it uses ForkJoinPool.commonPool()
+          
         * Common mehtods of CompletableFuture -
             
             | Method            | Purpose (1-liner)                 | Returns                     | When to Use                   | Interview Tip                    |
@@ -1116,6 +1130,8 @@
             | `get()`           | Block & get result                | `T`                         | Legacy / last resort          | Avoid in async                   |
             | `join()`          | Block & get result                | `T`                         | Cleaner than get              | Unchecked exception              |
 
+    ForkJoinPool -
+    
     * obj.getPriority() gives the priority of Thread , we can also set the priority of the Thread using
         obj.setPriority(10)
         
