@@ -1131,7 +1131,48 @@
             | `join()`          | Block & get result                | `T`                         | Cleaner than get              | Unchecked exception              |
 
     ForkJoinPool -
-    
+
+        * Fork - split a big task into smaller sub tasks and execute them asynchronously
+          Join - wait for sub-tasks to finish and combine their results
+
+        * It is a specialized implementation of ExecutorService designed to efficiently execute 
+          recursive, CPU bound, divide and conquer tasks using work-stealing algorithm.
+        
+        * Each worker thread has its own deque (double-ended queue)
+          Thread pushes and pops tasks from its own deque
+          If a thread becomes idle:
+          It steals tasks from the tail of another thread’s deque
+        
+        * ForkJoinPool - 
+
+            It is a pool of Worker Threads
+            No of Worker Threads = No of CPU cores - 1
+            Each Worker has its own DEQUE
+            
+            Common methods - 
+
+                ForkJoinPool.commonPool()	Shared global pool
+                invoke(task)	Submit & wait for result
+                execute(task)	Fire-and-forget
+                submit(task)	Returns ForkJoinTask
+
+        * ForkJoinTask -
+
+            It is of two types 
+
+                RecursiveTask<V> - Returns a result
+                RecursiveAction - Returns no result
+        
+            * Common methods -
+                
+                fork()	Queues task in current worker’s deque
+                compute()	Executes task immediately in current thread
+                join()	Waits for result (cooperatively blocking)
+            
+        * Fork one task, compute the other, then join.
+
+        * ForkJoinPool.commonPool() is Used by default by: CompletableFuture.supplyAsync(),parallelStream()
+
     * obj.getPriority() gives the priority of Thread , we can also set the priority of the Thread using
         obj.setPriority(10)
         
@@ -1239,11 +1280,11 @@
     * Parallel Streams -    
 
         Parallel streams splits the stream data into multiple chunks and processes them in parallel using
-        ForkJoinPool
+        ForkJoinPool.commonPool()
 
         Instead of one thread processing elements sequentially, multiple threads processes them in parallel
 
-        These are generally used to process lrge datasets and when order of processing doesn’t matter
+        These are generally used to process large datasets and when order of processing doesn’t matter
         example - numbers.parallelStream().map(num -> {
                     System.out.println("Processing " + num +
                         " in thread " + Thread.currentThread().getName());
@@ -2728,9 +2769,7 @@
 
         Default threads in Tomcat = 200
 
-59. ForkJoinPool -
-
-60. ClassNotFoundException vs NoClassDefFoundError -
+59. ClassNotFoundException vs NoClassDefFoundError -
 
     ClassNotFoundException -
 
