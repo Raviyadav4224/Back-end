@@ -1,0 +1,148 @@
+1. What is Kafka -
+
+    * It is a distributed, DISK-BASED, APPEND ONLY commit log system used for high throughput, 
+      fault tolerance and event streaming.
+
+    * It decouples the consumer and producer and allows data REPLAY
+
+    * It uses LONG POLLING and not continuos polling like web sockets
+
+    * Kafka is not a Database , REST service or WebSocket
+
+    * When Kafka is used -  
+
+        Event driven microservices
+        Audit logs and activity tracking
+        Asynchronous processing
+
+2. Topic - 
+
+    * It represents a logical stream of events for example - Order Created, payment-success, User-Regsitered
+        
+    * Topic ≠ Queue ≠ Table
+
+    * Topic is append only
+
+3. Partitions -
+
+    * It is physical division of topics
+
+    * It is done to achieve - Parallelism, Scalability, Throughput
+
+    * Example - 
+
+        Topic: order-notification
+        Partitions: 3
+
+        order-notification-0
+        order-notification-1
+        order-notification-2
+
+4. Offset -
+
+    * Logical position of a Record in a partition
+
+    * It is never re-used, Always increasing, Not User-defined
+
+5. Broker -
+
+    Kafka server that stores the data is called the Broker
+
+6. Storage Model -
+
+    * Kafka stores data on disk using append only log segments and NOT MEMORY
+
+    * Each log segments contains multiple - .log file, .index file etc
+
+    * Each of these .log file stores RECORDS - which contains Offset | TimeStamp | Key | Value | Headers
+
+    * .index file are sparse indexes which stores some offsets byte positions
+
+    * Directory Structure -
+        /kafka-logs/
+        order-notification-1/
+        00000000000000000000.log
+        00000000000000000000.index
+        00000000000000000000.timeindex
+
+7. .log Files - 
+
+    It is append only
+
+    It allows Sequentially writes only
+
+    No Updates or Delete
+
+    It contains Records - [offset][timestamp][key][value][headers]
+
+8. .index files -
+
+    Kafka uses sparse indexes and stores offset byte position, one entry after every few KBs
+
+9. Why kafka is Fast -
+
+    * It is append only writes
+
+    * Sequential disk IO
+
+    * Sparse indexes
+
+    * Batching
+
+    * Zero copy and No random writes
+
+10. Producers & Consumers & Consumer Groups -
+
+    Producers (Writes data) -
+
+        Sends Records to Kafka
+        Uses Key to choose partition
+        kafkaTemplate.send("order-created", orderId, event);
+        Key deteremines partition and guarantees ordering per key
+    
+    Consumers (Reads data) -
+
+        Reads data by parition or offset
+        It doesn’t query Kafka or read by key
+
+        * It uses long polling -
+
+            Consumer sends FetchRequest - Kafka waits until : Data arrives OR Timeout occurs
+    
+11. Consumer Groups -
+
+    * It is a logical name
+
+    * One Partition - One Consumer 
+
+    * Partitions = 3
+      Consumers = 3
+        Consumer-1 → P0
+        Consumer-2 → P1
+        Consumer-3 → P2
+
+    * It is used for Horizontal scaling and Fault tolerance
+
+12. Retention Policy & Replication Factor -
+
+    * Kafka deletes data based on retention policies -
+        Time-based (e.g., 7 days) 
+        Size-based (e.g., 1TB) 
+        Deletion happens at log segment level, not per message.
+
+    * Replication Factor - No. of copies of each partition
+
+13. Revision Example -
+
+    * Example (Order → Notification)
+
+        1. Order Service receives REST request
+        2. Order saved to DB
+        3. OrderCreated event published to Kafka (Producer)
+        4. Kafka stores event on disk
+        5. Notification Service polls Kafka (Consumer)
+        6. Notification sent to user
+        7. Offset committed
+
+    * Topic → Partition → Log Segment → Offset 
+      Producer appends → Kafka stores → Consumer polls → Offset commits
