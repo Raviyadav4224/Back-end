@@ -91,7 +91,7 @@
 
     * Zero copy and No random writes
 
-10. Producers & Consumers & Consumer Groups -
+10. Producers, Consumers & Consumer Groups -
 
     Producers (Writes data) -
 
