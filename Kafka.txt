@@ -91,7 +91,7 @@
 
     * Zero copy and No random writes
 
-10. Producers, Consumers & Consumer Groups -
+10. Producers & Consumers -
 
     Producers (Writes data) -
 
@@ -146,3 +146,7 @@
 
     * Topic → Partition → Log Segment → Offset 
       Producer appends → Kafka stores → Consumer polls → Offset commits
+
+14. Useful Commands -
+
+    * ./Kafka-topics.sh --bootstrap-server localhost:9092 --list -> Lists all the topics
