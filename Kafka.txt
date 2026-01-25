@@ -149,4 +149,136 @@
 
 14. Useful Commands -
 
-    * ./Kafka-topics.sh --bootstrap-server localhost:9092 --list -> Lists all the topics
+    * LIST -
+
+        * ./Kafka-topics.sh --bootstrap-server localhost:9092 --list -> Lists all the topics
+
+        * ./kafka-topics.sh --bootstrap-server localhost:9092 --describe --topic file-uploaded -> describe topics
+
+        * ./kafka-get-offsets.sh  --bootstrap-server localhost:9092 --topic file-uploaded -> Lists the 
+        no of data in the given topic example - file-uploaded:0:5
+    
+    * PRODUCER -
+
+        * ./kafka-console-producer.sh --bootstrap-server localhost:9092 --topic file-uploaded -> Produce message
+            manually , now type data then press CTRL + C
+    
+    * CONSUMER -
+
+        * ./kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic file-uploaded -> Consume from latest
+          offset (Doesn't Commits Offset)
+        
+        * ./kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic file-uploaded --from-beginning ->
+          Consumes from beginning (Doesn't Commits Offset)
+        
+        * /kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic file-uploaded --group notification-service
+          consumes as a group (COMMITS OFFSETS)
+    
+    * RESET -
+    
+        * ./kafka-consumer-groups.sh --bootstrap-server localhost:9092 --describe --group notification-service ->
+        Output shows: CURRENT-OFFSET, LOG-END-OFFSET & LAG 
+        
+        * ./kafka-consumer-groups.sh \
+        --bootstrap-server localhost:9092 \
+        --group notification-service \
+        --topic file-uploaded \
+        --reset-offsets \
+        --to-earliest  ( RESETS TO ZERO )
+        --to-offset 2  ( RESETS TO 2 OFFSET)
+        --by-duration PT1H ( RESETS BY 1HR )
+        \--execute
+
+        This works while the Consumer is not active i.e it must be stopped
+   
+    * DELETE - 
+
+        * ./kafka-topics.sh --bootstrap-server localhost:9092 --topic file-uploaded --delete -> deletes the
+          given topic
+
+15. Spring Boot Kafka Complete Example -
+
+    * Docker Compose File -
+
+        services:
+        kafka:
+            image: apache/kafka:3.7.1
+            container_name: kafka
+            ports:
+                - "9092:9092"
+            environment:
+                # KRaft core
+                KAFKA_PROCESS_ROLES: broker,controller
+                KAFKA_NODE_ID: 1
+                KAFKA_CONTROLLER_QUORUM_VOTERS: 1@localhost:9093
+
+                # Listeners
+                KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093
+                KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+                KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT
+                KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+
+                # Single node fixes
+                KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+                KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+                KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+
+    * Producer Config -
+
+        ##############################  KAFKA  ######################################################
+
+        spring.kafka.bootstrap-servers=localhost:9092
+        spring.kafka.producer.key-serializer=org.apache.kafka.common.serialization.StringSerializer
+        spring.kafka.producer.value-serializer=org.springframework.kafka.support.serializer.JsonSerializer
+
+        # Disable type headers (clean JSON)
+        spring.kafka.producer.properties.spring.json.add.type.headers=false ( So that kafka doesn't sends 
+        class in Header and expect same class to de-serialize it)
+
+        * Producing a Kafka Event -
+
+            CompletableFuture<SendResult<String, FileUploadedEvent>> res = kafkaTemplate.send("file-uploaded",
+                    new FileUploadedEvent(meta.getId().toString(),storageKey,meta.getOriginalFileName(),Instant.now()));
+            res.thenRun(() -> {
+
+                System.out.println("Kafka Completed");
+            });
+            System.out.println("Kafka completed");
+
+    * Consumer Config -
+
+        # ===============================
+        # Kafka - Consumer Configuration
+        # ===============================
+
+        spring.kafka.bootstrap-servers=localhost:9092
+
+        # Group
+        spring.kafka.consumer.group-id=notification-service
+
+        # Consumer deserializers
+        #spring.kafka.consumer.key-deserializer=org.apache.kafka.common.serialization.StringDeserializer
+        #spring.kafka.consumer.value-deserializer=org.springframework.kafka.support.serializer.JsonDeserializer
+
+        # ErrorHandlingDeserializer (MANDATORY)
+        spring.kafka.consumer.key-deserializer=org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+        spring.kafka.consumer.value-deserializer=org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+
+        spring.kafka.consumer.properties.spring.deserializer.key.delegate.class=org.apache.kafka.common.serialization.StringDeserializer
+        spring.kafka.consumer.properties.spring.deserializer.value.delegate.class=org.springframework.kafka.support.serializer.JsonDeserializer
+
+        spring.kafka.consumer.properties.spring.json.trusted.packages=com.pixxy.noti.*
+
+        # Explicit event type (MANDATORY since headers disabled)
+        spring.kafka.consumer.properties.spring.json.value.default.type=com.pixxy.noti.FileUploadedEvent
+
+        spring.kafka.consumer.auto-offset-reset=earliest
+
+        * @Service
+            public class FileUploadedEventConsumer {
+                @KafkaListener(topics = "file-uploaded")
+                public void handle(FileUploadedEvent event) {
+                    System.out.println(event);
+                    System.out.println("Notification triggered for user={} file={}" + event.fileName() + event.fileId());
+                }
+            }
