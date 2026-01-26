@@ -1,0 +1,68 @@
+1. Kubernetes - 
+
+    * It is a container orchestration tool used for managing, scaling and deploying containerized based
+      applications.
+
+2. Pods -
+
+    * It is the smallest deployable unit
+
+    * Runs one container say one microservice
+
+    * It is Ephemeral i.e its IP changes on restart
+
+3. Deployment -
+
+    * Manages the pods, Ensures desired no of replicas and handles Scaling, Restart on Crash, rolling
+      upates etc
+
+4. Service -
+
+    * It sits infront of Deployment i.e One service per deployment
+
+    * It is used to provide stable network endpoint infront of pods
+
+    * It provides DNS name, Load balancing and decouples client from PODs ip's
+
+    * Service Types -
+
+        * ClusterIp (default) -
+
+            Used for internal service communication
+        
+        * NodePort -
+
+            Exposes service on <NodeIP>:port
+        
+        * Load balancer -
+
+            Creates cloud load balancer and Works in cloud only (AWS, GCP etc)
+        
+        * ExternalName -
+
+            Maps services to external DNS
+
+5. Ingress -
+
+    * Entry point into the Cluster
+
+    * Routes HTTP/HTTPS traffics
+
+    * Talks to services and not pods
+
+    * Handles path/host based routing
+
+6. Networking -
+
+7. Service Discovery -
+
+    Kubernetes provides built in service discovery using Sevice and DNS
+
+    It replaces the need of Eureka Server 
+
+8. Config Maps & Secrets -
+
+    These are used to store Application configs and secrets and are injected as environment variables
+    
+
+9.
