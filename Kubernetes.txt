@@ -13,7 +13,7 @@
 
 3. Deployment -
 
-    * Manages the pods, Ensures desired no of replicas, handles Scaling, Restart on Crash, rolling
+    * Manages the pods, Ensures desired no of replicas, handles Scaling, restart on Crash, rolling
       upates etc
 
 4. Service -
@@ -64,5 +64,17 @@
 
     * These are used to store Application configs and secrets and are injected as environment variables
     
+    * Secret.yaml file is encrypted wheareas configmap.yaml is not encrypted
+    
+9. Kubernetes deployment steps -
 
-9.
+
+    * We first create NAMESPACE = Folder inside Kubernetes Cluster
+
+    * To deploy an application using Kubernetes we create four files -
+
+        1. deployment.yaml
+        2. service.yaml
+        3. configmap.yaml
+        4. secret.yaml
+
