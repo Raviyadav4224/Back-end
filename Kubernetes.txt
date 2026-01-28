@@ -73,8 +73,19 @@
 
     * To deploy an application using Kubernetes we create four files -
 
-        1. deployment.yaml
+        1. deployment.yaml 
+
+            Runs your Docker image as Pods (your application)
+            
         2. service.yaml
+
+            Gives network access inside cluster (DNS name)
+           
         3. configmap.yaml
+
+            Stores normal environment variables
+
         4. secret.yaml
+
+            Stores sensitive values (passwords, JWT keys, etc.)
 
