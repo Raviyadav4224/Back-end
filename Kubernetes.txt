@@ -68,7 +68,6 @@
     
 9. Kubernetes deployment steps -
 
-
     * We first create NAMESPACE = Folder inside Kubernetes Cluster
 
     * To deploy an application using Kubernetes we create four files -
@@ -88,4 +87,57 @@
         4. secret.yaml
 
             Stores sensitive values (passwords, JWT keys, etc.)
+
+10. Basic Commands -
+
+    * To apply any deployment, service, configmap or secrets    
+
+        kubectl apply -f filepath
+
+        Examples -
+        
+            kubectl apply -f user-service.yaml
+            kubectl apply -f user-deployment.yaml
+            kubectl apply -f configmap.yaml
+            kubectl apply -f user-secret.yaml
+
+    * Namespace -
+
+        kubectl get ns
+        kubectl create ns my-namespace
+    
+    * Deployments -
+
+        kubectl get deployments
+        kubectl describe deployments deploymentName
+        kubectl scale deployment user-service --replicas=3
+        kubectl delete deployment user-service
+    
+    * Pods -
+
+        kubectl get pods
+        kubectl get pods -o wide
+        kubectl describe pod <pod-name>
+        kubectl logs <pod-name>
+        kubectl logs -f <pod-name>
+        kubectl exec -it <pod-name> -- bash
+
+    * Services -
+
+        kubectl get svc
+        kubectl describe svc user-service
+        kubectl delete svc user-service
+    
+    * Ingress -
+    
+        kubectl get ingress
+        kubectl describe ingress user-ingress
+    
+    * Delete everything -
+
+        * kubectl delete all --all -n pixxy - Deletes services, deployment and pods but NOT configmap & secrets
+
+        * kubectl delete secret/configmap --all -n pixxy - Deletes configmap/secret
+
+        * kubectl delete ns pixxy - deletes entire namespace
 
