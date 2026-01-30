@@ -141,3 +141,12 @@
 
         * kubectl delete ns pixxy - deletes entire namespace
 
+    * General request flow -
+
+        * When NOT using ingress -> Browser ( Client ) → localhost:30080 → Service → Pods
+
+        * When using ingress -> Browser ( Client ) → Ingress Controller → Service → Pods
+
+        * For ingress we need to add route mapping in host file 
+          In windows - C:\Windows\System32\drivers\etc\hosts.ics
+          In Linux - /etc/hosts
