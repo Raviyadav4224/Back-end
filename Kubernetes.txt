@@ -150,3 +150,14 @@
         * For ingress we need to add route mapping in host file 
           In windows - C:\Windows\System32\drivers\etc\hosts.ics
           In Linux - /etc/hosts
+
+
+11. Kubernetes Cluster -
+
+    * A cluster = the whole Kubernetes system.
+        It contains:
+
+        👉 Control Plane (brain)
+        👉 Worker Nodes (machines that run apps)
+
+        It’s ONE logical unit.
