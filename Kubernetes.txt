@@ -151,12 +151,32 @@
           In windows - C:\Windows\System32\drivers\etc\hosts.ics
           In Linux - /etc/hosts
 
+    * Get inside POD -
+
+        kubectl get pods
+
+        kubectl exec -it <pod-name> -- bin/bash or -- /bin/sh
 
 11. Kubernetes Cluster -
 
     * A cluster = the whole Kubernetes system.
         It contains:
 
+    * Control Plane (inside the cluster)
+
+        Responsible for:
+        Accepting kubectl commands
+        Scheduling pods
+        Managing desired state
+        Health checks
+        It does NOT run your application containers.
+
+    * Worker Nodes (inside the same cluster)
+
+        Responsible for:
+        Running Pods
+        Running your containers (user-service, Kafka, MySQL, etc)
+        This is where actual work happens.
         👉 Control Plane (brain)
         👉 Worker Nodes (machines that run apps)
 
