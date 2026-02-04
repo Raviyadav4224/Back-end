@@ -161,6 +161,10 @@
 
     * A cluster = the whole Kubernetes system.
         It contains:
+            Control Plane (brain)
+            Worker Nodes (machines that run apps)
+
+        It’s ONE logical unit.
 
     * Control Plane (inside the cluster)
 
@@ -177,7 +181,6 @@
         Running Pods
         Running your containers (user-service, Kafka, MySQL, etc)
         This is where actual work happens.
-        👉 Control Plane (brain)
-        👉 Worker Nodes (machines that run apps)
-
-        It’s ONE logical unit.
+    
+    * Cluster - Root Or Admin Server
+      Worker Nodes - Different servers which  register themselves with the Control plane
