@@ -157,6 +157,14 @@
 
         kubectl exec -it <pod-name> -- bin/bash or -- /bin/sh
 
+    * Restart Deployment / POD -
+
+        kubectl rollout restart deployment <deploymentName> -n namespace (Kills old pod and creates new one with zero down time)
+        kubectl rollout status deployment <deploymentName> -n namespace
+
+        * Restart for service is not possible, only for deployments when there is change in configs/secrets
+          To re-apply the updated deployment.yaml file it must be deleted and re-applied
+
 11. Kubernetes Cluster -
 
     * A cluster = the whole Kubernetes system.
