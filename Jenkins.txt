@@ -1,0 +1,94 @@
+1. Jenkins Basics -
+
+    * Jenkins is a CI/CD automation tool
+
+    * Automates: Build → Test → Package → Deploy
+
+    * Triggered by:
+
+        Manual run
+        Git push (webhook)
+        Scheduled job
+
+    * Master / Agent (Controller / Node)
+
+        Master
+
+            Jenkins UI
+            Job configs
+            Credentials
+            Schedules builds
+
+        Agent
+
+            Executes pipeline steps
+            Must have tools installed (git, docker, kubectl)
+            agent any - Runs on any available agent
+
+    * Jobs vs Pipelines
+
+        * Job → Generic term
+
+        * Pipeline Job → Defined as code (Jenkinsfile)
+
+2. Jenkins Pipeline -
+
+    * Declarative Pipeline Structure
+
+        pipeline {
+        agent any
+        environment { }
+        stages { }
+        post { }
+        }
+
+    * Environment Variables
+
+        Used to centralize config:
+
+        environment {
+        APP_NAME = 'pixxy-notiservice'
+        APP_DIR = 'NotificationService'
+        }
+
+        * Usage:
+
+            dir(env.APP_DIR)
+            ${APP_NAME}:1.0.${BUILD_NUMBER}
+
+    * sh → shell commands
+
+    * dir() → change working directory
+
+    * withCredentials() → secure secret usage
+
+    * post {
+            always { cleanWs() }
+            failure { echo "Pipeline failed" }
+        }
+
+    * Parallel Stages (Concept)
+
+        parallel {
+        stage('Tests') { }
+        stage('Security Scan') { }
+        }
+
+3. Source Control Integration
+
+    * Git Integration
+
+        stage('Code Checkout') {
+                steps {
+                    echo 'Going through GIT'
+                    git branch: env.GIT_BRANCH,
+                        url: env.GIT_URL,
+                        credentialsId: env.GIT_CREDENTIALS_ID
+                }
+            }
+
+4. Jenkins Maintenance -
+
+    Workspace Cleanup
+    deleteDir()
+    cleanWs()
