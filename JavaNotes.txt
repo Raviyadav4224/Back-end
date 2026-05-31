@@ -2319,7 +2319,9 @@
     5XX - Server Error responses - Problem on the server side
         
         500 INTERNAL SERVER ERROR - Generic server failure - NullPointerException, unhandled exception
-        503 SERVICE UNAVAILABLE - Server overloaded or under maintenance.
+        502 BAD GATEWAY : A server acting as a gateway/proxy received an invalid response from an upstream server
+        503 SERVICE UNAVAILABLE - Server overloaded or under maintenance or not healthy
+        504 GATEWAY TIMEOUT - Occurs when server is not able to send response within given time
 
 53. Java Memory Model ( JMM ) -
 
