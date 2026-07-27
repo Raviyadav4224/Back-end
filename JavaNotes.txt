@@ -141,7 +141,7 @@
             }
         }
         public static void main(){
-            Animal animal=new Dog();
+            Animal animal = new Dog();
             animal.sound(); // Upcasting
 
         }
@@ -159,7 +159,12 @@
       animal.special() - compile time error since Animal does not have special method
       ((Dog).animal).special - Now it works 
       
-      ** Methods execution depends upon Object's type and reference contains that method or not
+      ** Reference and Object - Animal animal = new Dog(); 
+         Reference - Animal animal
+         Object - new Dog();
+         Reference decides at compile time, Object at Runtime
+         Reference decides what methods are visible to the Compiler, Object decides what methods are 
+         overridden at runtime
 
 6. Method Overloading vs Method Over-riding - 
 
