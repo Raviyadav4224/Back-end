@@ -255,7 +255,7 @@
         Yes we can change access specifiers but an overridden method can only WIDEN the access level 
         NOT NARROW it.
 
-        why only WIDEN adn not NARROW it ?
+        why only WIDEN and not NARROW it ?
 
             If parent has a method say public display() and child changes its access level to protected
             then the method will no longer be accessible using parent's reference
@@ -266,9 +266,9 @@
 
     * Each time an operation is performed on string a new object is created
 
-    * String pool is a place in Heap Memory where all the strings defined are stored.
-      Whenever we create a string variable , JVM checks the string pool and if string object is 
-      present then same is returned else new object is created.
+    * String pool is a place in Heap Memory where all the strings defined are stored
+      Whenever we create a string variable, JVM checks the string pool and if string object is 
+      present then same is returned else new object is created
 
         String str1 = "Hello"
         String str2 = "World"
@@ -296,17 +296,29 @@
         * SECURITY - 
 
             Strings are heavily used in places like File Paths, DataBase connections url's, Network
-            connections , Class loading and many more
+            connections, Class loading and many more
             
             So if strings were mutable someone could change the value after they are created which creates
             a security risk
 
         * HashCode -
 
-            Strings are used as keys in Hash based collections
-            If strings were mutable thier content would change and key would be lost in map
-            Since strings are mutable once hashCode is created they can be cached for faster look up
-        
+            Strings are used as keys in Hash based collections such as HashMap and HashSet
+            
+            When a key is inserted, the collection calls hashCode() to generate a hash value
+            Example: int hash = "Ravi".hashCode();   // Suppose the hashCode is 2546878
+            
+            The generated hashCode is used to determine the bucket where the key-value pair will be 
+            stored, enabling fast lookups
+            
+            If Strings were mutable, changing the contents of a key after insertion would change its 
+            hashCode, The object would remain in its original bucket, but future lookups would search a
+            different bucket, making the key effectively unreachable
+                    
+            Because the hashCode is guaranteed to remain the same, Java computes it only once, caches it 
+            inside the String object, and reuses it for subsequent hashCode() calls, improving the 
+            performance of hash-based collections
+            
         * Thread Safety -
 
             Strings are naturally Thread Safe, their values don’t change after they are created
