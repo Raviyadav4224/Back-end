@@ -330,7 +330,7 @@
 
         static String code;
 
-        * Static variable is a variable that is shared across all the instances of a class.
+        * Static variable is a variable that is shared across all the instances of a class
         
         * It belongs to the class rather than any reference meaning only onecopy of variable
           exists in the memory
@@ -343,7 +343,7 @@
     Static methods - 
 
         * Non static variables cannot be used inside static methods, because to use non static variables we need
-          to create object of it.
+          to create object of it
 
         * Indirect access is possible by sending a function parameters
 
@@ -360,7 +360,7 @@
         * If we initialize them in Constructor , Whenever object is created, static variable will be 
           re-initialized
 
-        * Whenever the Class loads static block is executed first and then Constructor method is called.
+        * Whenever the Class loads, static block is executed first and then Constructor method is called
 
         * Class loads only once
 
@@ -437,7 +437,7 @@
     * Inheritance is done using the keyword extends
 
     * For Multiple Inheritance - Multiple class can have same methods which creates an ambiguity i.e 
-        JVM cannot decide which method to call, so Multiple inheritance is not supported
+      JVM cannot decide which method to call, so Multiple inheritance is not supported
 
     * For Inheritance you only need .class file 
 
@@ -467,7 +467,7 @@
 
     * Advantage - Collections like ArrayList , HashMap etc requires Object class
 
-    * Dis-Advantage - Once created, wrapper objects cannot be modified. Any change creates 
+    * Dis-Advantage - Once created, wrapper objects cannot be modified, Any change creates 
       a new object i.e they are IMMUTABLE
 
 14. Anonymous inner class -
@@ -491,8 +491,8 @@
         * Here the sole purpose of class Tata is to implement the abstract method
 
         * Same can be done using Lambda expression for Functional interface
-            Car car=()-> System.out.println("Tata is driving the Car");
-            This is known as Anonymous inner class i.e class without name
+          Car car=()-> System.out.println("Tata is driving the Car");
+          This is known as Anonymous inner class i.e class without name
 
 15. Abstract class -
         
