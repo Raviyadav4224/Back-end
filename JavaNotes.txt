@@ -509,8 +509,8 @@
     * Abstract vs Interfaces -
 
         * Abstract class can have constructors, non abstract implemented methods, instance variables,private
-          protected and public access modifiers whereas interfaces cannot have constructors, only public
-          static final instances and can have only public access modifiers
+          protected and public access modifiers whereas interfaces cannot have constructors, they can have
+          Default, Static and Private methods and all variables inside them are public static and final
 
         * Abstract class are used to share common logic btw related classes like 
             // Common base service
@@ -533,8 +533,8 @@
                 }
             }
 
-            BaseService = abstract class → provides shared logic (logger setup).
-            UserService = extends it → gets logger automatically.
+            BaseService = abstract class => provides shared logic (logger setup).
+            UserService = extends it => gets logger automatically.
 
 16. Interface -
 
@@ -581,9 +581,9 @@
             
             Used to “mark” a class so that JVM gives special behavior
 
-            Serializable → tells JVM this object can be serialized.
+            Serializable => tells JVM this object can be serialized
 
-            Cloneable → tells JVM object can be cloned using clone().
+            Cloneable => tells JVM object can be cloned using clone()
 
     * examples -
 
@@ -593,7 +593,7 @@
 
     * We can create reference of an interface and object of a class
         example -
-            Runnable obj=new A();
+            Runnable obj = new A();
 
     ** STATIC methods in interface - 
         
@@ -604,18 +604,20 @@
 
     ** DEFAULT methods in interface -
 
-        Before Java 8:
+        Before Java 8 -
         If you added a new method to an existing interface, all implementing classes would break, 
-        since they’d be forced to implement the new method.
+        since they’d be forced to implement the new method
 
-        With Java 8+:
-        You can provide a default implementation in the interface → existing classes don’t break.
+        With Java 8+ -
+        You can provide a default implementation in the interface => existing classes don’t break
 
         Default methods can be overridden
 
         If two interfaces provide the same default method, the implementing class must resolve the 
-        conflict by overriding it.
-
+        conflict by overriding it
+    
+    * We can have Default, Static and Private Methods in an interface from Java 9+ but NOT Protected
+      
 17. Lambda expression -
 
     It is applicable only for Functional interfaces i.e interface having only one method
@@ -716,9 +718,9 @@
                     }
             }
 
-20. Collections class vs Collection interface -
+20. Collections Class vs Collection interface vs Map Interface -
 
-    Collections -
+    Collections Class -
     
         It is an utility class in Java that provides various static methods to work with Collection types
         (eg List, Set, Queue)
@@ -735,7 +737,7 @@
 
         * It doesn't implements the Collection interface although it is a part of Java Collections Framework
     
-    Collection -
+    Collection Interface -
 
         It is an interface in Java Collections Framework
 
@@ -761,7 +763,7 @@
             Vector is similar to ArrayList but it is THREAD SAFE but slower than ArrayList due to 
             synchronization
             
-    Map - 
+    Map Interface - 
 
         **Map is not the part of Collection interface, Although it is part of the Java Collections Framework 
           that represents a key-value pair where each key is UNIQUE
