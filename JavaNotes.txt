@@ -508,9 +508,10 @@
 
     * Abstract vs Interfaces -
 
-        * Abstract class can have constructors, non abstract implemented methods, instance variables,private
-          protected and public access modifiers whereas interfaces cannot have constructors, they can have
-          Default, Static and Private methods and all variables inside them are public static and final
+        * Abstract class can have constructors, non abstract implemented methods, instance variables,
+          private, protected and public access modifiers whereas interfaces cannot have constructors, 
+          they can have Default, Static and Private methods NOT Protected and all variables inside them 
+          are public static and final
 
         * Abstract class are used to share common logic btw related classes like 
             // Common base service
@@ -741,21 +742,33 @@
 
         It is an interface in Java Collections Framework
 
-        It is implemented by List, Queue, Set interfaces
+        It is implemented by List, Set and Queue interfaces
 
-        * Classes that implements these interfaces ->
+        * Classes that implements these interfaces =>
 
-            List -> ArrayList, LinkedList, Vector
+            * List => ArrayList, LinkedList, Vector
 
-            Set -> HashSet, LinkedHashSet, TreeSet
+              For Lists - Order is Maintained, Duplicates Allowed
 
-            Queue -> PriorityQueue, LinkedList, ArrayDeque
+            * Set => HashSet, LinkedHashSet, TreeSet
 
+              For Set - Duplicates NOT Allowed, ordering depends upon implementation
+              HashSet => No guaranteed order
+              LinkedHashSet => Insertion order maintained
+              TreeSet => Sorted order
+
+            * Queue => Deque and PriorityQueue, Deque => ArrayDeque and LinkedList
+              
+              For Queue - Duplicates Allowed + order determines which element gets processed/removed next
+              LinkedList / normal Queue => FIFO
+              PriorityQueue => Priority order (smaller value highest priority)
+              Deque => can remove from Both ends
+              
         * ArrayList vs LinkedList vs Vector -
 
-            ArrayList uses DYNAMIC ARRAY and is great for random access i.e get/set by index 
-            takes O(1) time but slower for insert/remove in middle as it takes O(n) time and NOT
-            THREAD SAFE
+            ArrayList uses DYNAMICALLY RESIZABLE ARRAY and is great for random access i.e get/set by 
+            index takes O(1) time but slower for insert/remove in middle as it takes O(n) time and it
+            is NOT THREAD SAFE
 
             Whereas LinkedList uses DOUBLY LINKED LIST and is great for frequent insertion/deletion O(1)
             but slow for random access O(n) and NOT THREAD SAFE
@@ -765,10 +778,11 @@
             
     Map Interface - 
 
-        **Map is not the part of Collection interface, Although it is part of the Java Collections Framework 
-          that represents a key-value pair where each key is UNIQUE
+        ** Map is not the part of Collection interface, Although it is part of the Java Collections Framework 
+           that represents a key-value pair where each key is UNIQUE
 
-        * Map is an interface which is being implemented by classes such as HashMap, TreeMap, LinkedHashMap etc
+        * Map is an interface which is being implemented by classes such as HashMap, LinkedHashMap,
+          TreeMap, HashTable, ConcurrentHashMap
 
         * HashMap stores is unordered format and allows 1 null key and multiple null values and for basic 
           operations such as get, put, it takes O(1) time
@@ -786,7 +800,7 @@
             LinkedHashMap -
 
                 An ORDERED version of HashMap that maintains insertion order of entries using a 
-                doubly-linked list internally.
+                doubly-linked list internally and allows one null key and multiple null values
             
             * ConcurrentHashMap -
 
@@ -797,13 +811,12 @@
 
                     Null breaks the ability to differentiate “key not present” vs “key mapped to null”
 
-                    When you do:
-                    map.get(key)
+                    When you do - map.get(key)
 
-                    There are two possibilities:
+                    There are two possibilities -
 
-                    Key doesn’t exist → returns null
-                    Key exists but value is null → also returns null
+                    Key doesn’t exist => returns null
+                    Key exists but value is null => also returns null
 
                     In a multi-threaded environment, this is dangerous because:
                     There’s no way to distinguish between:
@@ -812,7 +825,7 @@
                     “another thread inserted key with null value”
                     “key never existed”
 
-                    Concurrent code needs clarity. null destroys that clarity
+                    Concurrent code needs clarity and null destroys that clarity
 
                     Null also creates Race condition - when one thread removes null and another puts it 
                     back, it leads to wrong logic
@@ -820,13 +833,21 @@
             TreeMap -
 
                 A sorted map based on Red-Black Tree, which keeps keys in natural order 
-                (or custom comparator) and does not allow null keys.
+                (or custom comparator) and does not allow null keys
+        
+        * Map Interface - HashMap, LinkedHashMap, ConcurrentHashMap, TreeMap Classes
+
+          HashMap - Ordering NOT Maintained, Faster and allows one null key and multiple null values
+          LinkedHashMap -  Ordering Maintained, Faster and allows one null key and multiple null values
+          TreeMap - Keys are stored in Sorted Order
+          ConcurrentHashMap - Thread Safe Map, Ordering NOT guaranteed
 
 21. Comparator vs Comparable ->
 
     Comparator -
 
-        It is an functional interface used to define CUSTOM SORTING order of objects without modifying the class
+        It is an functional interface used to define CUSTOM SORTING order of objects without modifying 
+        the class
 
         It is a part of java.util package
 
@@ -869,7 +890,213 @@
         Collections.sort(students); // Uses compareTo
         students.forEach(System.out::println);
 
-22. Threads ,Runnable vs Callable ,Deadlock ->
+22. equals() vs == - 
+
+    equals() -
+    
+        Use .equals() when you want to check if two objects are logically equal (same data).
+
+    == -
+        
+        Use == when you want to check if two objects are the exact same instance (reference).
+
+    ** Always override .hashCode() when you override .equals() — it ensures correct behavior in 
+       hash-based collections like HashSet or HashMap. 
+
+    ** If two objects are equal according to .equals(), they must return the same hashCode(). 
+       This ensures consistent behavior in hash-based collections like HashMap or HashSet. 
+       However, the reverse isn't true — two different objects can have the same hashCode due to collisions
+
+    examples - 
+
+        Student s1 = new Student(1, "Ravi");
+        Student s2 = new Student(1, "Ravi");
+
+        s1 == s2;           // ❌ false — different memory references
+        s1.equals(s2);      // ✅ true — same content (if equals is overridden)
+        s1.equals(s2);      // ❌ false — same content (if equals is NOT overridden)
+
+23. Fail-fast vs Fail-safe iterators -
+
+    Fail-fast iterators -
+
+        * Fail-fast is found in most of the Java collection Framework like ArrayList, HashMap,HashSet.
+
+        * If we try to modify a collection while iterating through it, it throws ConcurrentModificationException
+          i.e iterators work on Original collections and they check for structural modification(i.e add/remove)
+          by comparing a modCount.
+        
+        * Fail-fast ensures that bugs like Multiple threads modifying the collection unexpectedly are
+          detected earlier.
+
+        * Example -
+
+            List<String> fruits = new ArrayList<>();
+            fruits.add("Apple");
+            fruits.add("Banana");
+            fruits.add("Orange");
+            fruits.add("Grape");
+
+            System.out.println("Original list: " + fruits);
+
+            // Attempting to modify the list while iterating using an enhanced for loop
+            for (String fruit : fruits) {
+                if (fruit.equals("Banana")) {
+                    fruits.remove(fruit); // This line will cause the exception
+                }
+            }
+
+        * Fail-fast behavior applies only when using an iterator (directly or via for-each loop)
+
+          Iterator + remove() => safe
+
+            Iterator<String> itr = fruits.iterator();
+                while (itr.hasNext()) {
+                    if (itr.next().equals("banana")) {
+                        itr.remove();  // ✅ safe, no ConcurrentModificationException
+                    }
+            }
+
+          Iterator + list.remove() => unsafe
+
+            Iterator<String> itr = fruits.iterator();
+                while (itr.hasNext()) {
+                    if (itr.next().equals("banana")) {
+                        fruits.remove("banana");  //  Unsafe,  ConcurrentModificationException
+                    }
+                }
+
+        * Adding/removing keys while iterating => Causes ConcurrentModificationException.
+
+    Fail-safe iterators -
+
+        * These are found in concurrent collections like ConcurrentHashMap
+
+        * These iterators do not throw exception if collection is being modified during iteration
+          since they iterate over a cloned snapshot of collection
+        
+        * Fail-safe is better for multi-threaded applications (safety).
+
+24. Internal working of HashMap -
+
+    Imagine HashMap as a Locker Room
+
+    1. The Locker Room (Array of Buckets)
+
+        Think of a locker room with 16 lockers (default capacity).
+        Each locker = bucket.
+
+    2. The Key (hashCode)
+
+        When you store something, you give the guard your key (hashCode).
+        The guard runs it through a formula to decide which locker to put it in.
+
+    3. Collision (Two keys for same locker)
+
+        Sometimes, two people are told to use the same locker.
+
+        Before Java 8: They kept their things in a linked list inside the locker.
+
+        After Java 8: If the locker got too crowded (>8), the items were organized into a tree 
+        (Red-Black tree) so searching is faster.
+
+    4. Get (Search)
+
+        When you come back, you hand your key.
+        The guard knows which locker to open, and inside he checks equals() to find your exact item.
+
+    5. Resize (Room Expansion)
+
+        If the locker room gets 75% full, they build a bigger room (double the lockers).
+        Then they re-distribute everything into new lockers => rehashing.
+
+    6. Time Taken
+
+        Normally, the guard directly takes you to your locker => O(1).
+
+        If crowded (all in same locker):
+
+        Before Java 8: Check one by one => O(n).
+
+        After Java 8: Tree search => O(log n).
+
+    Simple Summary for Interview
+
+        HashMap stores data in the form of key–value pairs. Internally, it uses an array of buckets, 
+        where each bucket acts like a locker. The default number of buckets is 16. 
+        
+        When we call put(key, value), HashMap first computes the hash of the key and applies an index 
+        calculation (like hash & (n-1)) to decide which bucket to use.
+
+        If the bucket is empty, the entry is stored there. If the bucket already has entries, that 
+        situation is called a collision. 
+        
+        HashMap handles collision using a Linked List (and from Java 8 onwards, if the list grows beyond 
+        8 elements, it converts it to a Red-Black Tree for faster lookup).
+
+        When we call get(key), HashMap again calculates the bucket index using the hash. Then inside that 
+        bucket, it compares keys using the equals() method to find the correct entry and return the value.
+
+        So in summary: hashCode() is used to identify the correct bucket, and equals() is used to identify 
+        the correct key inside that bucket.
+
+25. What precautions would you take when using objects as keys in a HashMap ?
+
+    * Using IMMUTABLE object, since MUTABLE objects can change after putting them into map which can
+      break the map
+
+26. Why Sets doesn’t allows duplciates ? 
+
+    * Sets implements mathematic concept of Sets i.e collection of Unique elements
+
+    * So the main goal of set is uniqueness and not duplication
+
+    * Internal working of HashSet -
+
+        * Internally HashSet uses HashMap, elements are stored as Keys in the map so duplicates are 
+          automatically ignored
+
+27. List<String> list = new ArrayList<>() vs Arrays.asList vs List.of -
+
+    new ArrayList<>() => Fully mutable & resizable list. You can add, remove, update elements.
+
+    Arrays.asList() => Fixed-size list. You can update elements, but cannot add/remove.
+
+    List.of() => Immutable list. No add, remove, or update allowed.
+
+28. System.out.println() - What it does under the hood & Why use Logging Frameworks in applications -
+
+    System - 
+        
+        * java.lang package, FINAL CLASS System
+
+    System.out - 
+
+        public static final PrintStream out
+
+        * STATIC object from PrintStream class from java.io package
+        * It handles printing text to the output stream by default the console
+    
+    println() - 
+
+        * Used to write text to the PrintStream, automatically adds new line (\n)
+        * It internally calls print() or write() depending upon system OS
+
+    * System.out.println() is SYNCHRONOUS in nature and slow and cannot REDIRECT to file, so we have to
+      use Logging Frameworks such as SLF4J
+    
+    * Logging levels hierarchy -    
+
+        TRACE -> DEBUG -> INFO -> WARN -> ERROR -> FATAL -> OFF
+
+        * If logging.level.root="INFO" , then all INFO, WARN, ERROR logs are shown; 
+          DEBUG and TRACE are hidden.
+
+    * SLF4J provides API's for Logging and doesn't do the logging itself
+
+    * It is implemented by Logback, Log4J2 etc
+
+29. Threads, Runnable vs Callable, Deadlock ->
 
     Threads -
 
@@ -1239,426 +1466,11 @@
 
             * Thread 1 locks resource1.
             * Thread 2 locks resource2.
-            * Thread 1 now wants resource2, but it’s already locked by Thread 2 → so Thread 1 waits.
-            * Thread 2 now wants resource1, but it’s already locked by Thread 1 → so Thread 2 waits.
-            * Neither can proceed → Deadlock.
-
-23. Stream API ->
-
-    * Introduced in Java 8, it provides ways to process pipeline(series) of operations to the elements
-      of a collection or other data source in a functional and declarative programming style
-
-    * It processes series of elements one at a time
-
-    * stream() is used to create a stream and it provides various methods to be applied on the stream 
-      such as map, filter, reduce
-    
-    * Intermediate operations - (lazy, return a stream)
-
-        Examples: map, filter, sorted, distinct, limit, skip, flatMap.
-
-    * Terminal operations - (consume the stream, return non-stream result)
-
-        Examples: collect, reduce, forEach, count, findFirst, findAny, toArray.
-        Once a terminal operation is called, the stream cannot be reused.
-    
-    * numbers.stream().map().toList() - Creates Im-mutable List
-
-    * numbers.stream().map().collect(Collectors.toList()) - Creates Mutable List
-
-    * Collectors.toMap(Key,Value,if duplicate then what)
-
-    * Collectors.groupingBy((e)->e.getDept(),Collectors.toList()) expects a classifier function (how to group elements)
-      and optionally a downstream collector (like Collectors.toList() or Collectors.toSet())
-
-    * numbers.stream().map() vs numbers.stream().flatMap() - 
-
-        map - Takes one element and transforms it into one value
-        flatMap - Takes each element , transforms it into stream and then flattens all those inner streams
-
-    * Comparator.comparing(Employee::getSalary) - Compares using comparator
-
-    * collect() is used to terminate the stream and convert the stream back into specific data types
-
-    * .collect(Collectors.summingInt(Employee::getSalary));
-
-    * To handle infinite streams of data we can use any of the terminations operations like findfirst(),
-        findAny(), anyMatch(), limit() etc
-
-            for example - 
-
-                numbers.stream().limit(10).forEach(System.out::println);
-                Random random=new Random();
-                Stream.generate(random::nextInt).limit(5).forEach(System.out::println);
-                
-    * Group by - employees
-                .stream()
-                .collect(Collectors
-                .groupingBy(Employee::getDepartment, Collectors.maxBy(Comparator.comparing(Employee::getSalary))))
-
-    * Parallel Streams -    
-
-        Parallel streams splits the stream data into multiple chunks and processes them in parallel using
-        ForkJoinPool.commonPool()
-
-        Instead of one thread processing elements sequentially, multiple threads processes them in parallel
-
-        These are generally used to process large datasets and when order of processing doesn’t matter
-        example - numbers.parallelStream().map(num -> {
-                    System.out.println("Processing " + num +
-                        " in thread " + Thread.currentThread().getName());
-                    return num * num;
-               })
-
-    *  Why is a Stream in Java consumable only once ?
-
-        Java Stream is built on one-time traversal of its underlying data source. 
-        Once that traversal happens, the pipeline is considered closed and can’t be replayed.
-
-24. StringBuilder vs StringBuffer -
-
-    StringBuilder and StringBuffer are MUTABLE classes in java used for manipulating strings
-    They provide methods to modify strings WITHOUT CREATING new strings
-
-    StringBuilder - 
-
-        It is not synchronized so it is not safe in a multi-threaded environment
-        It performs faster operations comapared to StringBuffer in single threaded environments
-
-    StringBuffer -
-    
-        It is synchronized and Thread safe
-        Slower due to synchronization
-    
-    example -
-            StringBuilder sb = new StringBuilder(""); // Not Thread Safe since StringBuilder,use StringBuffer for thread safe
-            Runnable task = () -> {
-                for (int i = 1; i < 50; i++) {
-                    sb.append(i+" ");
-                }
-                System.out.println(sb);
-            };
-
-            Thread t1 = new Thread(task);
-            Thread t2 = new Thread(task);
-
-            t1.start();
-            t2.start();
-
-25. Generics - 
-
-    * Generics in Java provides a way to create Classes, Interfaces and methods with Type parameters.
-
-    * It allows you to write code with type safety
-
-    * It enhances code reusability since single classes, interfaces and methods can be used with different types
-        ensuring compile time type safety
-
-    * Basic syntax -
-        class Box<T> {
-            private T value;
-            public T getValue() { return value;}
-            public void setValue(T value) { this.value = value;}
-        }
-
-    * Generics can be used with Classes , Methods and interfaces
-
-        Method - 
-            public static <T> void printArray(T[] array) {
-                for (T element : array) {
-                    System.out.println(element);
-                }
-            }
-
-    * Bounding (Extending) a Class -
-
-        Lower Bound -
-
-            * We can restrict the type that can be used with Generics
-
-            * class Box<T extends Number> - means Type T can be Number or its sub-classes
-
-            ** extends is for upper bounds — usable in class and method declarations
-
-        Upper Bound -
-        
-            * class Box<T super Number> - means any Type T can be super class of Number
-
-            ** super is for lower bounds — only usable in wildcards (<?>)
-
-    * WildCards (?)-
-
-        WildCards are used for unknown types
-
-            public static void printList(List<?> list) {
-                for (Object obj : list) {
-                    System.out.println(obj);
-                }
-            }
-            (? extends T): Represents any type that is a subtype of T
-            (? super T): Represents any type that is a supertype of T
-
-        * ? extends T (upper bound) → read-only producer.
-
-        * ? super T (lower bound) → write-only consumer.
-
-    * Generic Interfaces -
-
-        interface Pair<K, V> {
-            K getKey();
-            V getValue();
-        }
-
-    * Generics with Collection -
-
-        List<Integers> num=new ArrayList<>();
-
-    * Wildcards (super, extends) only allowed in method parameters, not in class type parameters.
-
-    * Generics use TYPE ERASURE which means type information is removed during compile time.
-      At runtime all Box<T> objects are treated as Box<Object>, Therefore we cannot instantiate Generics
-      with primitive types
-
-    * We cannot instantiate a generic object like this
-    
-        T obj = new T();  // ❌ NO — Not allowed
-        Why not ? Because of Type Erasure in Java. During compilation, Java removes the generic type 
-        info (T) and replaces it with Object or the bound. So the JVM doesn't know what T really 
-        is at runtime.
-
-26. Date,Time & DateTime API - 
-
-    * Introduced in Java 8 in the java.time package.
-
-    * All classes inside java.time are IMMUTABLE and THREAD SAFE
-
-    * It has TimeZones support
-
-    * classes - LocalDate, LocalTime, LocalDateTime, ZonedDateTime, DateTimeFormatter
-
-    * LocalDate date = LocalDate.now();
-
-    * DateTimeFormatter formatter= DateTimeFormatter.ofPattern("MM/dd/yyyy");
-
-    * String currentDate=LocalDateTime.now().format(formatter);
-
-    * LocalDate date=LocalDate.parse(birthday,formatter);
-
-    ** UTC ( Co-ordinated Universal Time ) is global reference clock not tied to any country or 
-        time zone .It is always written with a Z i.e Zulu time 
-
-    ** ISO is just a format of writing time, it can include Date, Date+Time, Date+Time+Time zone offset 
-        or UTC 
-
-    * We generally store UTC in DB's and convert them back to ISO format with local date time when 
-        showing to user
-    
-    ** It has Time zone support and doesn't requires manual handling of offsets
-        Example -
-        Instant utc = Instant.now();
-        ZonedDateTime ist = utc.atZone(ZoneId.of("Asia/Kolkata"));
-        ZonedDateTime nyc = utc.atZone(ZoneId.of("America/New_York"));
-
-    * Example -
-
-        Instant ist= Instant.now() - Gives LocalDateTime in UTC
-        String localdatetime = LocalDateTime.ofInstant(Instant.now(),ZoneId.systemDefault()) -- Converts LocalDateTime into ISO
-        .format(DateTimeFormatter.ofPattern("dd-MMM-yyyy hh:mm a"));
-
-27. File Handling -
-
-    * Paths, Path and Files are used to work with Files and Paths in java, available in java.nio.* package
-
-    * Path — 
-        
-        Represents a file/directory path
-    
-        Path path = Paths.get("data/file.txt");  // relative path
-
-    * Paths — 
-        
-        Factory class to create Path objects
-
-        Think of it as: A helper class to get Path instances
-
-    * Files -
-        
-        Performs operations on files/directories
-        It allows you to Read, Write, Update & Delete a file in Java
-        Path path = Paths.get("file.txt");
-
-        Reading -
-
-            String content = Files.readString(path);
-            List<String> lines = Files.readAllLines(path);
-            Stream<String> stream = Files.lines(path);
-
-        Writing -
-
-            Files.writeString(path, "Hello");
-            Files.write(path, List.of("Line 1", "Line 2"));
-
-        Checking -
-
-            Files.exists(path);
-            Files.isDirectory(path);
-
-        Directory ops -
-
-            Files.list(path);
-            Files.createDirectories(path);
-
-        File ops -
-
-            Files.copy(src, dest, StandardCopyOption.REPLACE_EXISTING);
-            Files.move(oldPath, newPath);
-            Files.deleteIfExists(path);
-
-        Binary -
-
-            byte[] data = Files.readAllBytes(path);
-            Files.write(path, byteArray);
-
-    * BufferedReader & BufferedWriter -
-
-        BufferedReader -
-
-            Path path = Paths.get("data/notes.txt");
-
-            try (BufferedReader reader = Files.newBufferedReader(path)) {
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    System.out.println(line);
-                }
-            }
-
-        BufferedWriter - 
-            
-            Path path = Paths.get("data/output.txt");
-
-            try (BufferedWriter writer = Files.newBufferedWriter(path)) {
-                writer.write("Hello, world!\n");
-                writer.write("Buffered writing with Files!");
-            }
-
-    ** Every Read and Write operation directly interacts with HardDisk whereas,BufferedReader & BufferedWriter
-       classes creates a buffer of chunk of data and reduces the number of interactions with HardDisk, Thus optimizing
-       file handling process
-
-28. Serialization, De-serialization ,transient & serialVersionUID-
-
-    Serialization is the process of converting object's state into byte stream such that it can be 
-    stored in a database or a file
-
-    De-serialization is the reverse process where object is converted back into original state
-
-    For Serialization (Writing into a File) -
-
-        1. Opens file using the path -
-
-            OutputStream fileOut = Files.newOutputStream(filePath);
-
-        2. Creates Buffer - 
-
-            BufferedOutputStream bos=new BufferedOutputStream(fos);
-
-        3. Converts Java objects into byte stream -
-
-            ObjectOutputStream oos=new ObjectOutputStream(bos); 
-            OR
-            ObjectOutputStream oos=new ObjectOutputStream(fileOut); 
-
-        4. Writes the object -
-            oos.writeObject(Person)
-
-    For De-Serialization -
-
-        InputStream fileIn = Files.newInputStream(filePath);
-        BufferedInputStream bis=new BufferedInputStream(fileIn);
-
-        ObjectInputStream ois=new ObjectInputStream(bis);
-        OR 
-        ObjectInputStream ois=new ObjectInputStream(fileIn);
-        
-        ois.readObject();
-
-    * Transient keyword is used to indicate that the field should not be serialized
-
-    * SerialVersionUID - 
-
-        * It is a unique identifier used during de-serialization process to verify 
-          that the sender and receiver of serialized object have compatible classes
-
-        * It must be STATIC FINAL LONG
-          private static final long serialVersionUID=1234L;
-
-    * STATIC and TRANSIENT data members are not stored during serialization
-
-    * Constructor of Object is not called during de-serialization of the object
-
-29. Autoboxing -
-
-    Autoboxing in Java is conversion of primitive data types into the corresponding Wrapper class Objects
-    example -
-        Integer a = new Integer();
-        int num = 10;
-        a = num; // Here num is primitive which is being converted to Integer class object
-
-        * Behind the scene Java uses Integer.valueOf(num) to convert into corresponding Wrapper class object
-    
-    * Caching in Wrapper classes - 
-
-        By default Wrapper classes implements Cache in Java
-
-        So when wrapper class creates caches it doesn't create new object for same values rather it refers 
-        to the same value , but when the created object is out of range of cache it creates a new object    
-
-        for example - 
-            Integer a = 100;
-            Integer b = 100;
-             if(a == b)  // TRUE since in same range
-            Integer a = 200;
-            Integer b = 200;
-             if(a==b)  // FALSE since out of range  
-        
-        * For Double and Float - No Caching is implemented
-
-        * For Byte , Short, Integer( 0 to 127 ), Long, Character, Boolean wrapper classes cache is implemented
-
-        * Always use .equals() for comparison of two values
-
-30. 0.1 * 2  == 0.2 ✅ vs 0.1 * 3 == 0.3 ❌ -
-
-    ✅ 0.1 * 2 == 0.2
-
-        0.1 is approximated in binary (slightly off, but close)
-
-        Multiplying by 2 gives a result very close to 0.2
-
-        And 0.2 is also approximate, but they match closely enough
-
-        So: true
-
-    ❌ 0.1 * 3 == 0.3 -
-
-        0.1 * 3 = 0.30000000000000004 (in binary floating-point)
-
-        0.3 = 0.299999999999999988897 (approx)
-
-        These values are not exactly equal, hence: false
-
-    ✅ Correct Way to Compare Floating-Point Values
-    Always compare floating-point numbers with a tolerance (epsilon):
-
-    double a = 0.1 * 3;
-    double b = 0.3;
-    System.out.println(Math.abs(a - b) < 0.0000001); // ✅ true
-
-    ** Due to floating-point precision errors, some decimal values like 0.1, 0.2, 0.3 cannot be 
-        represented exactly in binary. So direct comparison with == is unreliable. It's safer to compare 
-        using a tolerance range
-
-31. Java 8 Features -
+            * Thread 1 now wants resource2, but it’s already locked by Thread 2 => so Thread 1 waits.
+            * Thread 2 now wants resource1, but it’s already locked by Thread 1 => so Thread 2 waits.
+            * Neither can proceed => Deadlock.
+
+30. Java 8 Features -
 
     1. Lambda Expressions - 
         
@@ -1694,7 +1506,7 @@
         Example:
         names.forEach(System.out::println);
 
-32. Optional Class ( Optional<T> ) -
+31. Optional Class ( Optional<T> ) -
 
     * Optional classes are used to handle null values without throwing Null Pointer Exceptions and helps
       to reduce the boiler plate code of checking for null values
@@ -1781,37 +1593,426 @@
                 .orElseGet(() -> ResponseEntity.status(404).body("User not found"));
         }   
 
-33. equals() vs == - 
+32. Stream API ->
 
-    equals() -
+    * Introduced in Java 8, it provides ways to process pipeline(series) of operations to the elements
+      of a collection or other data source in a functional and declarative programming style
+
+    * It processes series of elements one at a time
+
+    * stream() is used to create a stream and it provides various methods to be applied on the stream 
+      such as map, filter, reduce
     
-        Use .equals() when you want to check if two objects are logically equal (same data).
+    * Intermediate operations - (lazy, return a stream)
 
-    == -
+        Examples: map, filter, sorted, distinct, limit, skip, flatMap.
+
+    * Terminal operations - (consume the stream, return non-stream result)
+
+        Examples: collect, reduce, forEach, count, findFirst, findAny, toArray.
+        Once a terminal operation is called, the stream cannot be reused.
+    
+    * numbers.stream().map().toList() - Creates Im-mutable List
+
+    * numbers.stream().map().collect(Collectors.toList()) - Creates Mutable List
+
+    * Collectors.toMap(Key,Value,if duplicate then what)
+
+    * Collectors.groupingBy((e)->e.getDept(),Collectors.toList()) expects a classifier function (how to group elements)
+      and optionally a downstream collector (like Collectors.toList() or Collectors.toSet())
+
+    * numbers.stream().map() vs numbers.stream().flatMap() - 
+
+        map - Takes one element and transforms it into one value
+        flatMap - Takes each element , transforms it into stream and then flattens all those inner streams
+
+    * Comparator.comparing(Employee::getSalary) - Compares using comparator
+
+    * collect() is used to terminate the stream and convert the stream back into specific data types
+
+    * .collect(Collectors.summingInt(Employee::getSalary));
+
+    * To handle infinite streams of data we can use any of the terminations operations like findfirst(),
+        findAny(), anyMatch(), limit() etc
+
+            for example - 
+
+                numbers.stream().limit(10).forEach(System.out::println);
+                Random random=new Random();
+                Stream.generate(random::nextInt).limit(5).forEach(System.out::println);
+                
+    * Group by - employees
+                .stream()
+                .collect(Collectors
+                .groupingBy(Employee::getDepartment, Collectors.maxBy(Comparator.comparing(Employee::getSalary))))
+
+    * Parallel Streams -    
+
+        Parallel streams splits the stream data into multiple chunks and processes them in parallel using
+        ForkJoinPool.commonPool()
+
+        Instead of one thread processing elements sequentially, multiple threads processes them in parallel
+
+        These are generally used to process large datasets and when order of processing doesn’t matter
+        example - numbers.parallelStream().map(num -> {
+                    System.out.println("Processing " + num +
+                        " in thread " + Thread.currentThread().getName());
+                    return num * num;
+               })
+
+    *  Why is a Stream in Java consumable only once ?
+
+        Java Stream is built on one-time traversal of its underlying data source. 
+        Once that traversal happens, the pipeline is considered closed and can’t be replayed.
+
+33. StringBuilder vs StringBuffer -
+
+    StringBuilder and StringBuffer are MUTABLE classes in java used for manipulating strings
+    They provide methods to modify strings WITHOUT CREATING new strings
+
+    StringBuilder - 
+
+        It is not synchronized so it is not safe in a multi-threaded environment
+        It performs faster operations comapared to StringBuffer in single threaded environments
+
+    StringBuffer -
+    
+        It is synchronized and Thread safe
+        Slower due to synchronization
+    
+    example -
+            StringBuilder sb = new StringBuilder(""); // Not Thread Safe since StringBuilder,use StringBuffer for thread safe
+            Runnable task = () -> {
+                for (int i = 1; i < 50; i++) {
+                    sb.append(i+" ");
+                }
+                System.out.println(sb);
+            };
+
+            Thread t1 = new Thread(task);
+            Thread t2 = new Thread(task);
+
+            t1.start();
+            t2.start();
+
+34. Generics - 
+
+    * Generics in Java provides a way to create Classes, Interfaces and methods with Type parameters.
+
+    * It allows you to write code with type safety
+
+    * It enhances code reusability since single classes, interfaces and methods can be used with different types
+        ensuring compile time type safety
+
+    * Basic syntax -
+        class Box<T> {
+            private T value;
+            public T getValue() { return value;}
+            public void setValue(T value) { this.value = value;}
+        }
+
+    * Generics can be used with Classes , Methods and interfaces
+
+        Method - 
+            public static <T> void printArray(T[] array) {
+                for (T element : array) {
+                    System.out.println(element);
+                }
+            }
+
+    * Bounding (Extending) a Class -
+
+        Lower Bound -
+
+            * We can restrict the type that can be used with Generics
+
+            * class Box<T extends Number> - means Type T can be Number or its sub-classes
+
+            ** extends is for upper bounds — usable in class and method declarations
+
+        Upper Bound -
         
-        Use == when you want to check if two objects are the exact same instance (reference).
+            * class Box<T super Number> - means any Type T can be super class of Number
 
-    ** Always override .hashCode() when you override .equals() — it ensures correct behavior in 
-       hash-based collections like HashSet or HashMap. 
+            ** super is for lower bounds — only usable in wildcards (<?>)
 
-    ** If two objects are equal according to .equals(), they must return the same hashCode(). 
-       This ensures consistent behavior in hash-based collections like HashMap or HashSet. 
-       However, the reverse isn't true — two different objects can have the same hashCode due to collisions
+    * WildCards (?)-
 
-    examples - 
+        WildCards are used for unknown types
 
-        Student s1 = new Student(1, "Ravi");
-        Student s2 = new Student(1, "Ravi");
+            public static void printList(List<?> list) {
+                for (Object obj : list) {
+                    System.out.println(obj);
+                }
+            }
+            (? extends T): Represents any type that is a subtype of T
+            (? super T): Represents any type that is a supertype of T
 
-        s1 == s2;           // ❌ false — different memory references
-        s1.equals(s2);      // ✅ true — same content (if equals is overridden)
-        s1.equals(s2);      // ❌ false — same content (if equals is NOT overridden)
+        * ? extends T (upper bound) => read-only producer.
 
-34. Performance & Optimization
+        * ? super T (lower bound) => write-only consumer.
+
+    * Generic Interfaces -
+
+        interface Pair<K, V> {
+            K getKey();
+            V getValue();
+        }
+
+    * Generics with Collection -
+
+        List<Integers> num=new ArrayList<>();
+
+    * Wildcards (super, extends) only allowed in method parameters, not in class type parameters.
+
+    * Generics use TYPE ERASURE which means type information is removed during compile time.
+      At runtime all Box<T> objects are treated as Box<Object>, Therefore we cannot instantiate Generics
+      with primitive types
+
+    * We cannot instantiate a generic object like this
+    
+        T obj = new T();  // ❌ NO — Not allowed
+        Why not ? Because of Type Erasure in Java. During compilation, Java removes the generic type 
+        info (T) and replaces it with Object or the bound. So the JVM doesn't know what T really 
+        is at runtime.
+
+35. Date,Time & DateTime API - 
+
+    * Introduced in Java 8 in the java.time package.
+
+    * All classes inside java.time are IMMUTABLE and THREAD SAFE
+
+    * It has TimeZones support
+
+    * classes - LocalDate, LocalTime, LocalDateTime, ZonedDateTime, DateTimeFormatter
+
+    * LocalDate date = LocalDate.now();
+
+    * DateTimeFormatter formatter= DateTimeFormatter.ofPattern("MM/dd/yyyy");
+
+    * String currentDate=LocalDateTime.now().format(formatter);
+
+    * LocalDate date=LocalDate.parse(birthday,formatter);
+
+    ** UTC ( Co-ordinated Universal Time ) is global reference clock not tied to any country or 
+        time zone .It is always written with a Z i.e Zulu time 
+
+    ** ISO is just a format of writing time, it can include Date, Date+Time, Date+Time+Time zone offset 
+        or UTC 
+
+    * We generally store UTC in DB's and convert them back to ISO format with local date time when 
+        showing to user
+    
+    ** It has Time zone support and doesn't requires manual handling of offsets
+        Example -
+        Instant utc = Instant.now();
+        ZonedDateTime ist = utc.atZone(ZoneId.of("Asia/Kolkata"));
+        ZonedDateTime nyc = utc.atZone(ZoneId.of("America/New_York"));
+
+    * Example -
+
+        Instant ist= Instant.now() - Gives LocalDateTime in UTC
+        String localdatetime = LocalDateTime.ofInstant(Instant.now(),ZoneId.systemDefault()) -- Converts LocalDateTime into ISO
+        .format(DateTimeFormatter.ofPattern("dd-MMM-yyyy hh:mm a"));
+
+36. File Handling -
+
+    * Paths, Path and Files are used to work with Files and Paths in java, available in java.nio.* package
+
+    * Path — 
+        
+        Represents a file/directory path
+    
+        Path path = Paths.get("data/file.txt");  // relative path
+
+    * Paths — 
+        
+        Factory class to create Path objects
+
+        Think of it as: A helper class to get Path instances
+
+    * Files -
+        
+        Performs operations on files/directories
+        It allows you to Read, Write, Update & Delete a file in Java
+        Path path = Paths.get("file.txt");
+
+        Reading -
+
+            String content = Files.readString(path);
+            List<String> lines = Files.readAllLines(path);
+            Stream<String> stream = Files.lines(path);
+
+        Writing -
+
+            Files.writeString(path, "Hello");
+            Files.write(path, List.of("Line 1", "Line 2"));
+
+        Checking -
+
+            Files.exists(path);
+            Files.isDirectory(path);
+
+        Directory ops -
+
+            Files.list(path);
+            Files.createDirectories(path);
+
+        File ops -
+
+            Files.copy(src, dest, StandardCopyOption.REPLACE_EXISTING);
+            Files.move(oldPath, newPath);
+            Files.deleteIfExists(path);
+
+        Binary -
+
+            byte[] data = Files.readAllBytes(path);
+            Files.write(path, byteArray);
+
+    * BufferedReader & BufferedWriter -
+
+        BufferedReader -
+
+            Path path = Paths.get("data/notes.txt");
+
+            try (BufferedReader reader = Files.newBufferedReader(path)) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    System.out.println(line);
+                }
+            }
+
+        BufferedWriter - 
+            
+            Path path = Paths.get("data/output.txt");
+
+            try (BufferedWriter writer = Files.newBufferedWriter(path)) {
+                writer.write("Hello, world!\n");
+                writer.write("Buffered writing with Files!");
+            }
+
+    ** Every Read and Write operation directly interacts with HardDisk whereas,BufferedReader & BufferedWriter
+       classes creates a buffer of chunk of data and reduces the number of interactions with HardDisk, Thus optimizing
+       file handling process
+
+37. Serialization, De-serialization ,transient & serialVersionUID -
+
+    Serialization is the process of converting object's state into byte stream such that it can be 
+    stored in a database or a file
+
+    De-serialization is the reverse process where object is converted back into original state
+
+    For Serialization (Writing into a File) -
+
+        1. Opens file using the path -
+
+            OutputStream fileOut = Files.newOutputStream(filePath);
+
+        2. Creates Buffer - 
+
+            BufferedOutputStream bos=new BufferedOutputStream(fos);
+
+        3. Converts Java objects into byte stream -
+
+            ObjectOutputStream oos=new ObjectOutputStream(bos); 
+            OR
+            ObjectOutputStream oos=new ObjectOutputStream(fileOut); 
+
+        4. Writes the object -
+            oos.writeObject(Person)
+
+    For De-Serialization -
+
+        InputStream fileIn = Files.newInputStream(filePath);
+        BufferedInputStream bis=new BufferedInputStream(fileIn);
+
+        ObjectInputStream ois=new ObjectInputStream(bis);
+        OR 
+        ObjectInputStream ois=new ObjectInputStream(fileIn);
+        
+        ois.readObject();
+
+    * Transient keyword is used to indicate that the field should not be serialized
+
+    * SerialVersionUID - 
+
+        * It is a unique identifier used during de-serialization process to verify 
+          that the sender and receiver of serialized object have compatible classes
+
+        * It must be STATIC FINAL LONG
+          private static final long serialVersionUID=1234L;
+
+    * STATIC and TRANSIENT data members are not stored during serialization
+
+    * Constructor of Object is not called during de-serialization of the object
+
+38. Autoboxing -
+
+    Autoboxing in Java is conversion of primitive data types into the corresponding Wrapper class Objects
+    example -
+        Integer a = new Integer();
+        int num = 10;
+        a = num; // Here num is primitive which is being converted to Integer class object
+
+        * Behind the scene Java uses Integer.valueOf(num) to convert into corresponding Wrapper class object
+    
+    * Caching in Wrapper classes - 
+
+        By default Wrapper classes implements Cache in Java
+
+        So when wrapper class creates caches it doesn't create new object for same values rather it refers 
+        to the same value , but when the created object is out of range of cache it creates a new object    
+
+        for example - 
+            Integer a = 100;
+            Integer b = 100;
+             if(a == b)  // TRUE since in same range
+            Integer a = 200;
+            Integer b = 200;
+             if(a==b)  // FALSE since out of range  
+        
+        * For Double and Float - No Caching is implemented
+
+        * For Byte , Short, Integer( 0 to 127 ), Long, Character, Boolean wrapper classes cache is implemented
+
+        * Always use .equals() for comparison of two values
+
+39. 0.1 * 2  == 0.2 ✅ vs 0.1 * 3 == 0.3 ❌ -
+
+    ✅ 0.1 * 2 == 0.2
+
+        0.1 is approximated in binary (slightly off, but close)
+
+        Multiplying by 2 gives a result very close to 0.2
+
+        And 0.2 is also approximate, but they match closely enough
+
+        So: true
+
+    ❌ 0.1 * 3 == 0.3 -
+
+        0.1 * 3 = 0.30000000000000004 (in binary floating-point)
+
+        0.3 = 0.299999999999999988897 (approx)
+
+        These values are not exactly equal, hence: false
+
+    ✅ Correct Way to Compare Floating-Point Values
+    Always compare floating-point numbers with a tolerance (epsilon):
+
+    double a = 0.1 * 3;
+    double b = 0.3;
+    System.out.println(Math.abs(a - b) < 0.0000001); // ✅ true
+
+    ** Due to floating-point precision errors, some decimal values like 0.1, 0.2, 0.3 cannot be 
+        represented exactly in binary. So direct comparison with == is unreliable. It's safer to compare 
+        using a tolerance range
+
+40. Performance & Optimization
 
      How do you detect and fix memory leaks in Java applications?
 
-35. What’s your go-to approach for optimizing Java code for performance?
+41. What’s your go-to approach for optimizing Java code for performance?
 
     Minimize unnecessary object creation (especially in loops)
 
@@ -1823,7 +2024,7 @@
 
     Cache expensive operations (memoization, where applicable)
 
-36. Which recent Java feature has had the most impact:
+42. Which recent Java feature has had the most impact:
 
     Switch expressions improved readability and reduced boilerplate, especially in state machine or 
     command-based logic
@@ -1840,7 +2041,7 @@
     * Instead of break statements, which simply exit the switch block, YIELD explicitly specifies 
         the value that the switch expression should evaluate to for a given case
 
-37. Java Concepts & Best Practices ,What are some Java best practices you wish you had known earlier in your career?
+43. Java Concepts & Best Practices ,What are some Java best practices you wish you had known earlier in your career?
 
     Early in my career, I wish I had known the importance of:
 
@@ -1852,70 +2053,9 @@
 
         Understanding the cost of using collections (e.g., ArrayList vs LinkedList performance differences).
 
-38. How do you structure large-scale Java applications to keep them maintainable?
+44. How do you structure large-scale Java applications to keep them maintainable?
 
-39. Fail-fast vs Fail-safe iterators -
-
-    Fail-fast iterators -
-
-        * Fail-fast is found in most of the Java collection Framework like ArrayList, HashMap,HashSet.
-
-        * If we try to modify a collection while iterating through it, it throws ConcurrentModificationException
-          i.e iterators work on Original collections and they check for structural modification(i.e add/remove)
-          by comparing a modCount.
-        
-        * Fail-fast ensures that bugs like Multiple threads modifying the collection unexpectedly are
-          detected earlier.
-
-        * Example -
-
-            List<String> fruits = new ArrayList<>();
-            fruits.add("Apple");
-            fruits.add("Banana");
-            fruits.add("Orange");
-            fruits.add("Grape");
-
-            System.out.println("Original list: " + fruits);
-
-            // Attempting to modify the list while iterating using an enhanced for loop
-            for (String fruit : fruits) {
-                if (fruit.equals("Banana")) {
-                    fruits.remove(fruit); // This line will cause the exception
-                }
-            }
-
-        * Fail-fast behavior applies only when using an iterator (directly or via for-each loop)
-
-          Iterator + remove() → safe
-
-            Iterator<String> itr = fruits.iterator();
-                while (itr.hasNext()) {
-                    if (itr.next().equals("banana")) {
-                        itr.remove();  // ✅ safe, no ConcurrentModificationException
-                    }
-            }
-
-          Iterator + list.remove() → unsafe
-
-            Iterator<String> itr = fruits.iterator();
-                while (itr.hasNext()) {
-                    if (itr.next().equals("banana")) {
-                        fruits.remove("banana");  //  Unsafe,  ConcurrentModificationException
-                    }
-                }
-
-        * Adding/removing keys while iterating → Causes ConcurrentModificationException.
-
-    Fail-safe iterators -
-
-        * These are found in concurrent collections like ConcurrentHashMap
-
-        * These iterators do not throw exception if collection is being modified during iteration
-          since they iterate over a cloned snapshot of collection
-        
-        * Fail-safe is better for multi-threaded applications (safety).
-
-40. Garbage Collection and Memory Leakage -
+45. Garbage Collection and Memory Leakage -
 
     Garbage Collection -
 
@@ -1976,7 +2116,7 @@
         * To prevent memory leak we can use, try with resources which closes the resources , weak references,
           avoid unnecessary static references, some profiling tools to detect leaks.
 
-41. Refletion in Java -
+46. Refletion in Java -
  
     * Reflection in Java is a feature which allows you to inspect and manipulate classes, methods, fields 
       and constructors at runtime even if you dont know them at compile time.
@@ -2021,70 +2161,7 @@
         // 5. Verify change
         emp.work();   // Output: Ravi Kumar is working...
 
-42. Internal working of HashMap -
-
-    Imagine HashMap as a Locker Room
-
-    1. The Locker Room (Array of Buckets)
-
-        Think of a locker room with 16 lockers (default capacity).
-        Each locker = bucket.
-
-    2. The Key (hashCode)
-
-        When you store something, you give the guard your key (hashCode).
-        The guard runs it through a formula to decide which locker to put it in.
-
-    3. Collision (Two keys for same locker)
-
-        Sometimes, two people are told to use the same locker.
-
-        Before Java 8: They kept their things in a linked list inside the locker.
-
-        After Java 8: If the locker got too crowded (>8), the items were organized into a tree 
-        (Red-Black tree) so searching is faster.
-
-    4. Get (Search)
-
-        When you come back, you hand your key.
-        The guard knows which locker to open, and inside he checks equals() to find your exact item.
-
-    5. Resize (Room Expansion)
-
-        If the locker room gets 75% full, they build a bigger room (double the lockers).
-        Then they re-distribute everything into new lockers → rehashing.
-
-    6. Time Taken
-
-        Normally, the guard directly takes you to your locker → O(1).
-
-        If crowded (all in same locker):
-
-        Before Java 8: Check one by one → O(n).
-
-        After Java 8: Tree search → O(log n).
-
-    Simple Summary for Interview
-
-        HashMap stores data in the form of key–value pairs. Internally, it uses an array of buckets, 
-        where each bucket acts like a locker. The default number of buckets is 16. 
-        
-        When we call put(key, value), HashMap first computes the hash of the key and applies an index 
-        calculation (like hash & (n-1)) to decide which bucket to use.
-
-        If the bucket is empty, the entry is stored there. If the bucket already has entries, that 
-        situation is called a collision. 
-        
-        HashMap handles collision using a Linked List (and from Java 8 onwards, if the list grows beyond 
-        8 elements, it converts it to a Red-Black Tree for faster lookup).
-
-        When we call get(key), HashMap again calculates the bucket index using the hash. Then inside that 
-        bucket, it compares keys using the equals() method to find the correct entry and return the value.
-
-        So in summary: hashCode() is used to identify the correct bucket, and equals() is used to identify 
-        the correct key inside that bucket.
-
-43. How would you design a class whose objects cannot be modified after creation ?
+47. How would you design a class whose objects cannot be modified after creation ?
 
     * Make class final so that its subclass cannot modify and override it.
 
@@ -2105,7 +2182,7 @@
                     this.prices= new ArrayList<>(prices);
                 }
 
-44. *How will you make a shared counter thread-safe when accessed by multiple threads ? 
+48. *How will you make a shared counter thread-safe when accessed by multiple threads ? 
 
     * Using synchronized blocks or methods  
 
@@ -2182,7 +2259,7 @@
                 }
                 }
 
-45. How do you compare two objects for logical equality in Java ?
+49. How do you compare two objects for logical equality in Java ?
 
     * To compare two objects of logically we need to OVERRIDE the equals() method.
 
@@ -2224,7 +2301,7 @@
 
             }
 
-46. How can you ensure visibility of a shared variable between threads without using locks ?
+50. How can you ensure visibility of a shared variable between threads without using locks ?
 
     * When multiple threads access a shared variable, each thread may have its own CPU cache, so
       updates made by one thread may not be visible to the other threads.
@@ -2262,56 +2339,11 @@
             
             This ensures visibility across threads, but it does not make operations atomic.
 
-47. What precautions would you take when using objects as keys in a HashMap ?
+51. How will you implement a thread-safe Singleton class in Java?
 
-    * Using IMMUTABLE object, since MUTABLE objects can change after putting them into map which can
-      break the map
+52. How would you implement an efficient Producer-Consumer system in Java ?
 
-48. How will you implement a thread-safe Singleton class in Java?
-
-49. How would you implement an efficient Producer-Consumer system in Java ?
-
-50. List<String> list = new ArrayList<>() vs Arrays.asList vs List.of -
-
-    new ArrayList<>() → Fully mutable & resizable list. You can add, remove, update elements.
-
-    Arrays.asList() → Fixed-size list. You can update elements, but cannot add/remove.
-
-    List.of() → Immutable list. No add, remove, or update allowed.
-
-51. System.out.println() - What it does under the hood & Why use Logging Frameworks in applications -
-
-    System - 
-        
-        * java.lang package, FINAL CLASS System
-
-    System.out - 
-
-        public static final PrintStream out
-
-        * STATIC object from PrintStream class from java.io package
-        * It handles printing text to the output stream by default the console
-    
-    println() - 
-
-        * Used to write text to the PrintStream, automatically adds new line (\n)
-        * It internally calls print() or write() depending upon system OS
-
-    * System.out.println() is SYNCHRONOUS in nature and slow and cannot REDIRECT to file, so we have to
-      use Logging Frameworks such as SLF4J
-    
-    * Logging levels hierarchy -    
-
-        TRACE -> DEBUG -> INFO -> WARN -> ERROR -> FATAL -> OFF
-
-        * If logging.level.root="INFO" , then all INFO, WARN, ERROR logs are shown; 
-          DEBUG and TRACE are hidden.
-
-    * SLF4J provides API's for Logging and doesn't do the logging itself
-
-    * It is implemented by Logback, Log4J2 etc
-
-52. API status codes and their meaning -
+53. API status codes and their meaning -
 
     1XX - Informational Responses - Request is received and server is continuing the process
 
@@ -2342,7 +2374,7 @@
         503 SERVICE UNAVAILABLE - Server overloaded or under maintenance or not healthy
         504 GATEWAY TIMEOUT - Occurs when server is not able to send response within given time
 
-53. Java Memory Model ( JMM ) -
+54. Java Memory Model ( JMM ) -
 
     * The Java Memory Model (JMM) defines how threads interact through memory and how changes made by 
       one thread become visible to others.
@@ -2423,13 +2455,13 @@
 
     * String name = new String("ravi");
 
-      "ravi" → String literal → Stored in String Pool (in Method Area / PermGen/Metaspace).
+      "ravi" => String literal => Stored in String Pool (in Method Area / PermGen/Metaspace).
 
-      new String("ravi") → Creates a new String object → Stored in Heap.
+      new String("ravi") => Creates a new String object => Stored in Heap.
 
-      name → Local reference to the object → Stored in Stack of main() thread.
+      name => Local reference to the object => Stored in Stack of main() thread.
 
-54. Java 8 vs 17 vs 21 -
+55. Java 8 vs 17 vs 21 -
 
     1. Data Classes (Records and Record Patterns) -
 
@@ -2601,7 +2633,7 @@
                     executor.shutdown();
                     executor.awaitTermination(5, TimeUnit.SECONDS);
                 
-                * Only 200 tasks run simultaneously → others wait in queue
+                * Only 200 tasks run simultaneously => others wait in queue
                 * High latency under high load
 
         * Virtual Threads -
@@ -2632,8 +2664,8 @@
                 executor.awaitTermination(5, TimeUnit.SECONDS);
 
                 * All tasks start immediately
-                * Minimal memory usage → can handle 100k+ requests
-                * Threads park during I/O → CPU efficiently used
+                * Minimal memory usage => can handle 100k+ requests
+                * Threads park during I/O => CPU efficiently used
 
         * Virtual Threads in Springboot -
 
@@ -2650,7 +2682,7 @@
                 }
             }
 
-55. Design Patterns -
+56. Design Patterns -
 
     Singleton -
 
@@ -2735,11 +2767,11 @@
     Observer -
 
         * Let's say many parts of your system need updates when an event happens (like order status
-          update). If you call each one manually → tightly coupled, unmaintainable.
+          update). If you call each one manually => tightly coupled, unmaintainable.
 
         * Observer lets Subscribers auto-get notifications when Publisher triggers an event.
 
-56. GET vs POST vs PUT vs PATCH -
+57. GET vs POST vs PUT vs PATCH -
 
     * These are set of rules but totally depends upon how each method is implemented
     
@@ -2751,17 +2783,6 @@
     | **POST**  | Create new       | ✅            | ❌          | ❌    | `201 Created`                |
     | **PUT**   | Replace existing | ✅            | ✅          | ❌    | `200 OK` or `204 No Content` |
     | **PATCH** | Update partially | ✅            | ⚠️ Usually  | ❌    | `200 OK` or `204 No Content` |
-
-57. Why Sets doesn’t allows duplciates ? 
-
-    * Sets implements mathematic concept of Sets i.e collection of Unique elements
-
-    * So the main goal of set is uniqueness and not duplication
-
-    * Internal working of HashSet -
-
-        * Internally HashSet uses HashMap, elements are stored as Keys in the map so duplicates are 
-          automatically ignored
 
 58. JVM Tuning -
 
