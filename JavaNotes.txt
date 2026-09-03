@@ -796,7 +796,12 @@
 
                 An UNORDERED, NON-THREAD-SAFE map that allows one null key and multiple null values and 
                 for basic operations such as get, put, it takes O(1) time
-            
+
+                * Why HashMap allows only one null key?
+
+                    It treats null as a data and since we cannot store duplciate keys so the updated
+                    value gets replaced and allows only one Key
+
             LinkedHashMap -
 
                 An ORDERED version of HashMap that maintains insertion order of entries using a 
@@ -860,7 +865,7 @@
         It is an functional interface which is used to define the NATURAL SORTING order of objects by 
         modifying the class
 
-        It is implemented on Class level
+        It is implemented at Class level
         
         It is a part of java.lang
         
@@ -894,17 +899,17 @@
 
     equals() -
     
-        Use .equals() when you want to check if two objects are logically equal (same data).
+        Use .equals() when you want to check if two objects are logically equal (same data)
 
     == -
         
-        Use == when you want to check if two objects are the exact same instance (reference).
+        Use == when you want to check if two objects are the exact same instance (reference)
 
     ** Always override .hashCode() when you override .equals() — it ensures correct behavior in 
-       hash-based collections like HashSet or HashMap. 
+       hash-based collections like HashSet or HashMap 
 
-    ** If two objects are equal according to .equals(), they must return the same hashCode(). 
-       This ensures consistent behavior in hash-based collections like HashMap or HashSet. 
+    ** If two objects are equal according to .equals(), they must return the same hashCode()
+       This ensures consistent behavior in hash-based collections like HashMap or HashSet
        However, the reverse isn't true — two different objects can have the same hashCode due to collisions
 
     examples - 
@@ -920,14 +925,14 @@
 
     Fail-fast iterators -
 
-        * Fail-fast is found in most of the Java collection Framework like ArrayList, HashMap,HashSet.
+        * Fail-fast is found in most of the Java collection Framework like ArrayList, HashMap, HashSet
 
         * If we try to modify a collection while iterating through it, it throws ConcurrentModificationException
           i.e iterators work on Original collections and they check for structural modification(i.e add/remove)
-          by comparing a modCount.
+          by comparing a modCount
         
         * Fail-fast ensures that bugs like Multiple threads modifying the collection unexpectedly are
-          detected earlier.
+          detected earlier
 
         * Example -
 
@@ -975,7 +980,20 @@
         * These iterators do not throw exception if collection is being modified during iteration
           since they iterate over a cloned snapshot of collection
         
-        * Fail-safe is better for multi-threaded applications (safety).
+        * Fail-safe is better for multi-threaded applications (safety)
+    
+    * Fail-Fast behavior happens when we use Iterator to iterate or loops which internally uses iterator
+      for their implementations 
+      Example foreach loop uses iterator and throws ConcurrentModificationException when we try to 
+      modify while traversing
+
+      foreach => Uses Iterator and gives ConcurrentModificationException
+
+      for => Doesn't Uses Iterator, but if instead of index based iterator based is used then it will
+      give ConcurrentModificationException
+
+      while => Doesn't Uses Iterator, but if instead of index based iterator based is used then it will
+      give ConcurrentModificationException
 
 24. Internal working of HashMap -
 
