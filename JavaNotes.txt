@@ -741,6 +741,7 @@
     Collection Interface -
 
         It is an interface in Java Collections Framework
+        Iterable Interface => Collection Interface
 
         It is implemented by List, Set and Queue interfaces
 
@@ -1001,42 +1002,45 @@
 
     1. The Locker Room (Array of Buckets)
 
-        Think of a locker room with 16 lockers (default capacity).
-        Each locker = bucket.
+        Think of a locker room with 16 lockers (default capacity)
+        Each locker = bucket
 
     2. The Key (hashCode)
 
-        When you store something, you give the guard your key (hashCode).
-        The guard runs it through a formula to decide which locker to put it in.
+        When you store something, you give the guard your key (hashCode)
+        The guard runs it through a formula to decide which locker to put it in
 
     3. Collision (Two keys for same locker)
 
-        Sometimes, two people are told to use the same locker.
+        Sometimes, two people are told to use the same locker
 
-        Before Java 8: They kept their things in a linked list inside the locker.
+        * A collision in a HashMap occurs when two different keys produce the same hash value, or more 
+          precisely, are mapped to the same bucket after HashMap calculates the bucket index
+          
+        Before Java 8 - They kept their things in a linked list inside the locker
 
-        After Java 8: If the locker got too crowded (>8), the items were organized into a tree 
-        (Red-Black tree) so searching is faster.
+        After Java 8 - If the locker got too crowded (>8), the items were organized into a tree 
+        (Red-Black tree) so searching is faster
 
     4. Get (Search)
 
-        When you come back, you hand your key.
-        The guard knows which locker to open, and inside he checks equals() to find your exact item.
+        When you come back, you hand your key
+        The guard knows which locker to open, and inside he checks equals() to find your exact item
 
     5. Resize (Room Expansion)
 
-        If the locker room gets 75% full, they build a bigger room (double the lockers).
-        Then they re-distribute everything into new lockers => rehashing.
+        If the locker room gets 75% full, they build a bigger room (double the lockers)
+        Then they re-distribute everything into new lockers => rehashing
 
     6. Time Taken
 
-        Normally, the guard directly takes you to your locker => O(1).
+        Normally, the guard directly takes you to your locker => O(1)
 
-        If crowded (all in same locker):
+        If crowded (all in same locker) -
 
-        Before Java 8: Check one by one => O(n).
+        Before Java 8: Check one by one => O(n)
 
-        After Java 8: Tree search => O(log n).
+        After Java 8: Tree search => O(log n)
 
     Simple Summary for Interview
 
