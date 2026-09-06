@@ -972,7 +972,7 @@
                     }
                 }
 
-        * Adding/removing keys while iterating => Causes ConcurrentModificationException.
+        * Adding/removing keys while iterating => Causes ConcurrentModificationException
 
     Fail-safe iterators -
 
@@ -990,10 +990,10 @@
 
       foreach => Uses Iterator and gives ConcurrentModificationException
 
-      for => Doesn't Uses Iterator, but if instead of index based iterator based is used then it will
+      for => Doesn't Uses Iterator, but if instead of index based, iterator based is used then it will
       give ConcurrentModificationException
 
-      while => Doesn't Uses Iterator, but if instead of index based iterator based is used then it will
+      while => Doesn't Uses Iterator, but if instead of index based, iterator based is used then it will
       give ConcurrentModificationException
 
 24. Internal working of HashMap -
@@ -1080,11 +1080,11 @@
 
 27. List<String> list = new ArrayList<>() vs Arrays.asList vs List.of -
 
-    new ArrayList<>() => Fully mutable & resizable list. You can add, remove, update elements.
+    new ArrayList<>() => Fully mutable & resizable list, You can add, remove, update elements
 
-    Arrays.asList() => Fixed-size list. You can update elements, but cannot add/remove.
+    Arrays.asList() => Fixed-size list, You can update elements, but cannot add/remove
 
-    List.of() => Immutable list. No add, remove, or update allowed.
+    List.of() => Immutable list, No add, remove, or update allowed
 
 28. System.out.println() - What it does under the hood & Why use Logging Frameworks in applications -
 
@@ -1097,7 +1097,7 @@
         public static final PrintStream out
 
         * STATIC object from PrintStream class from java.io package
-        * It handles printing text to the output stream by default the console
+        * It handles printing text to the output stream, by default the console
     
     println() - 
 
@@ -1112,7 +1112,7 @@
         TRACE -> DEBUG -> INFO -> WARN -> ERROR -> FATAL -> OFF
 
         * If logging.level.root="INFO" , then all INFO, WARN, ERROR logs are shown; 
-          DEBUG and TRACE are hidden.
+          DEBUG and TRACE are hidden
 
     * SLF4J provides API's for Logging and doesn't do the logging itself
 
