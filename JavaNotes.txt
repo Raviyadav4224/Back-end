@@ -1120,6 +1120,13 @@
 
 29. Threads, Runnable vs Callable, Deadlock ->
 
+    Process -
+
+        * A process is an independent execution environment with its own MEMORY
+          While a Thread is a lightweight execution unit within a process that shares the process's
+          memory
+          i.e Process = House, Threads = People inside the house sharing the same resources
+
     Threads -
 
         * Threading is the ability of CPU to run different tasks parallelly on different CPU cores
@@ -1140,7 +1147,7 @@
         * join() -
         
             When you call t1.join() on a thread t1, the current thread (e.g., main thread) pauses and 
-            waits for t1 to complete before continuing further.
+            waits for t1 to complete before continuing further
 
         * Thread.sleep() -  
 
@@ -1150,34 +1157,35 @@
         * wait(), notify(), notifyAll()  -
 
             * These methods are used for inter-thread communication and they belong to the Object class, 
-            not Thread.
+              not Thread Class
             
-            * Used inside a synchronized block.
+            * Used inside a synchronized block
 
             * wait() - Releases the lock on the object and makes the thread wait until some other thread 
-            calls notify() or notifyAll() on the same object.
+              calls notify() or notifyAll() on the same object
 
             * notify() - Wakes up one waiting thread (chosen arbitrarily by JVM) that is waiting on the 
-            same object’s monitor.
+              same object’s monitor
 
-            * notifyAll() - Wakes up all waiting threads on the same object.
+            * notifyAll() - Wakes up all waiting threads on the same object
 
-            * wait() releases the lock, sleep() does not.
+            * wait() releases the lock, sleep() does not
 
-            * wait() requires synchronization, sleep() doesn’t.
+            * wait() requires synchronization, sleep() doesn’t
 
         * What happens when you call wait()?
 
             The current thread must hold the monitor lock (i.e., must be inside a synchronized block
-            or method).
+            or method)
 
-            The thread enters the WAITING state.
+            The thread enters the WAITING state
 
-            The thread releases the lock (so others can proceed).
+            The thread releases the lock (so others can proceed)
 
-            The thread stays paused until it is Woken up using notify() or notifyAll() from another thread.
+            The thread stays paused until it is Woken up using notify() or notifyAll() from another 
+            thread
 
-            When resumed, it reacquires the lock before continuing.
+            When resumed, it reacquires the lock before continuing
         
         * Example of Runnable with wait() and notify() -
 
@@ -1234,7 +1242,7 @@
 
         * But here we have to create a Thread object to have start() method
         
-            Thread t1=new Thread(obj1);
+            Thread t1 = new Thread(obj1);
             using Lambda expression -> 
                 Runnable obj1 = ()->{
                     for (int i = 0; i < 10; i++) {
@@ -1250,7 +1258,7 @@
         * Thread safe means only one method can work with Thread at one time
 
         * using SYNCHRONIZED both threads does not goes to the same block/method at the same time, 
-            and prevents Race Condition
+          and prevents Race Condition
 
             public synchronized void increment() {
                 this.count++;
@@ -1289,7 +1297,7 @@
             executor.shutdown();
 
         * Example of using callable - Fetching user data from multiple services (DB, API, Cache) 
-        in parallel, and then combining results.
+          in parallel, and then combining results
 
     Thread Life cycle -
 
@@ -1328,23 +1336,23 @@
 
             | Pool                   | When to use             |
             | ---------------------- | ----------------------- |
-            | `FixedThreadPool`      | CPU / limited tasks     |
-            | `CachedThreadPool`     | Short-lived async tasks |
-            | `SingleThreadExecutor` | Ordered execution       |
-            | `ScheduledThreadPool`  | Delayed / periodic jobs |
+            |  FixedThreadPool       | CPU / limited tasks     |
+            |  CachedThreadPool      | Short-lived async tasks |
+            |  SingleThreadExecutor  | Ordered execution       |
+            |  ScheduledThreadPool   | Delayed / periodic jobs |
 
     Future (Async Result Holder) -
 
-        * It represents the result of Asynchronous computation that may not have computated yet.
+        * It represents the result of Asynchronous computation that may not have computated yet
 
-        * Task runs asynchronously, but result retrieval is blocking via get().
+        * Task runs asynchronously, but result retrieval is blocking via get()
 
-        * It can check if a Task is done, get Result or Cancel it.
+        * It can check if a Task is done, get Result or Cancel it
 
-        * It cannot chain tasks or combine tasks.
+        * It cannot chain tasks or combine tasks
 
         * We need to submit the task to ExecutorService which controls execution and Future is used to
-          handle the Result.
+          handle the Result
 
         * Example -
 
@@ -1366,17 +1374,19 @@
     CompletableFuture -
 
         * Task runs asynchronously and the next action is triggered automatically when it completes —
-          no waiting thread.
+          no waiting thread
         
-        * It uses Event-loop model , Thread is not blocked, callback is registered and executed when task
-          is completed.
+        * It is NON-BLOCKING in nature and uses Event-loop model, Thread is not blocked, callback is 
+          registered and executed when task is completed
         
-        * It is NON-BLOCKING in nature.
+        * It CAN chain tasks or combine tasks
+          Example 
 
-        * We do not submit the task to ExecutorService , CompletableFuture starts the execution internally
-          and submits the task to a Thread pool
+        * We do not submit the task to ExecutorService, CompletableFuture starts the execution internally
+          and by deafult uses the ForkJoinPool as executor to submits the task to a Thread pool
+          We can use custom executor as well
 
-        * We have to provide ExecutorService to a Future but CompletableFuture handles the execution itslef, 
+        * We have to provide ExecutorService to a Future but CompletableFuture handles the execution itself, 
           optionally it uses the ExecutorService provided else it uses ForkJoinPool.commonPool()
           
         * Common mehtods of CompletableFuture -
@@ -1492,7 +1502,126 @@
             * Thread 2 now wants resource1, but it’s already locked by Thread 1 => so Thread 2 waits.
             * Neither can proceed => Deadlock.
 
-30. Java 8 Features -
+30. *How will you make a shared counter thread-safe when accessed by multiple threads ? 
+
+    * Using synchronized blocks or methods  
+
+        Example -
+
+            public class UserAccount {
+            private int balance;
+            -----SYNCHRONIZED BLCOKS-----------------
+            public void increment() {
+                synchronized (this) {
+                    this.balance += 1;
+                }
+            }
+            public int getBalance() {
+                synchronized (this) {
+                    return this.balance;
+                }
+            }
+            ---------- synchronized methods
+            public synchronized void increment() {
+                this.balance += 1;
+            }
+
+            public synchronized int getBalance() {
+                return this.balance;
+            }
+         }
+
+    * Using ReentrantLock which provides more control 
+
+        Example -
+
+            public class UserAccount {
+
+            private int balance;
+
+            private final ReentrantLock lock = new ReentrantLock();
+
+            public void increment() {
+                lock.lock();
+
+                try {
+                    this.balance += 1;
+                } finally {
+                    lock.unlock();
+                }
+            }
+
+            public int getBalance() {
+                lock.lock();
+
+                try {
+                    return this.balance;
+                } finally {
+                    lock.unlock();
+                }
+            }
+            }
+
+    * Using AtomicInteger for tasks like SharedCounter, User account balance, Item quantity changes
+
+        Example -
+
+            public class UserAccount {
+
+                private final AtomicInteger balance= new AtomicInteger(0);
+
+                public void increment() {
+                    balance.incrementAndGet();
+                }
+
+                public int getBalance() {
+                    return balance.get();
+                }
+                }
+
+31. How can you ensure visibility of a shared variable between threads without using locks ?
+
+    * When multiple threads access a shared variable, each thread may have its own CPU cache, so
+      updates made by one thread may not be visible to the other threads.
+
+    * Using synchronized solves this but it uses locks to achieve this. Updates made are reflected
+      immediately to the other threads .
+
+    * volatile keyword is used to ensure that all threads sees the latest value w/o using locks.
+
+        Example - 
+
+            class SharedData {
+                private volatile int counter = 0;
+
+                public void update() {
+                    counter = 5; // any thread reading counter sees 5 immediately
+                }
+            }
+
+    * Volatile -
+        
+        * In Java, each thread has its own working memory (CPU cache) where it stores copies of variables 
+          from main memory.
+
+        * Normally, changes made by one thread may not be visible immediately to other threads, because 
+          they are reading from their local cache.
+
+        * When you declare a variable volatile:
+            
+            It tells the JVM: “Always read this variable from main memory (RAM), not from thread-local 
+            cache.”
+
+            Every write to a volatile variable is immediately flushed to main memory, and every read 
+            comes from main memory.
+            
+            This ensures visibility across threads, but it does not make operations atomic.
+
+32. How will you implement a thread-safe Singleton class in Java?
+
+33. How would you implement an efficient Producer-Consumer system in Java ?
+
+34. Java 8 Features -
 
     1. Lambda Expressions - 
         
@@ -1528,7 +1657,7 @@
         Example:
         names.forEach(System.out::println);
 
-31. Optional Class ( Optional<T> ) -
+35. Optional Class ( Optional<T> ) -
 
     * Optional classes are used to handle null values without throwing Null Pointer Exceptions and helps
       to reduce the boiler plate code of checking for null values
@@ -1615,7 +1744,7 @@
                 .orElseGet(() -> ResponseEntity.status(404).body("User not found"));
         }   
 
-32. Stream API ->
+36. Stream API ->
 
     * Introduced in Java 8, it provides ways to process pipeline(series) of operations to the elements
       of a collection or other data source in a functional and declarative programming style
@@ -1687,14 +1816,14 @@
         Java Stream is built on one-time traversal of its underlying data source. 
         Once that traversal happens, the pipeline is considered closed and can’t be replayed.
 
-33. StringBuilder vs StringBuffer -
+37. StringBuilder vs StringBuffer -
 
     StringBuilder and StringBuffer are MUTABLE classes in java used for manipulating strings
     They provide methods to modify strings WITHOUT CREATING new strings
 
     StringBuilder - 
 
-        It is not synchronized so it is not safe in a multi-threaded environment
+        It is NOT synchronized so it is NOT safe in a multi-threaded environment
         It performs faster operations comapared to StringBuffer in single threaded environments
 
     StringBuffer -
@@ -1717,7 +1846,7 @@
             t1.start();
             t2.start();
 
-34. Generics - 
+38. Generics - 
 
     * Generics in Java provides a way to create Classes, Interfaces and methods with Type parameters.
 
@@ -1798,7 +1927,7 @@
         info (T) and replaces it with Object or the bound. So the JVM doesn't know what T really 
         is at runtime.
 
-35. Date,Time & DateTime API - 
+39. Date,Time & DateTime API - 
 
     * Introduced in Java 8 in the java.time package.
 
@@ -1837,7 +1966,7 @@
         String localdatetime = LocalDateTime.ofInstant(Instant.now(),ZoneId.systemDefault()) -- Converts LocalDateTime into ISO
         .format(DateTimeFormatter.ofPattern("dd-MMM-yyyy hh:mm a"));
 
-36. File Handling -
+40. File Handling -
 
     * Paths, Path and Files are used to work with Files and Paths in java, available in java.nio.* package
 
@@ -1917,7 +2046,7 @@
        classes creates a buffer of chunk of data and reduces the number of interactions with HardDisk, Thus optimizing
        file handling process
 
-37. Serialization, De-serialization ,transient & serialVersionUID -
+41. Serialization, De-serialization ,transient & serialVersionUID -
 
     Serialization is the process of converting object's state into byte stream such that it can be 
     stored in a database or a file
@@ -1968,7 +2097,7 @@
 
     * Constructor of Object is not called during de-serialization of the object
 
-38. Autoboxing -
+42. Autoboxing -
 
     Autoboxing in Java is conversion of primitive data types into the corresponding Wrapper class Objects
     example -
@@ -1999,7 +2128,7 @@
 
         * Always use .equals() for comparison of two values
 
-39. 0.1 * 2  == 0.2 ✅ vs 0.1 * 3 == 0.3 ❌ -
+43. 0.1 * 2  == 0.2 ✅ vs 0.1 * 3 == 0.3 ❌ -
 
     ✅ 0.1 * 2 == 0.2
 
@@ -2030,11 +2159,11 @@
         represented exactly in binary. So direct comparison with == is unreliable. It's safer to compare 
         using a tolerance range
 
-40. Performance & Optimization
+44. Performance & Optimization
 
      How do you detect and fix memory leaks in Java applications?
 
-41. What’s your go-to approach for optimizing Java code for performance?
+45. What’s your go-to approach for optimizing Java code for performance?
 
     Minimize unnecessary object creation (especially in loops)
 
@@ -2046,7 +2175,7 @@
 
     Cache expensive operations (memoization, where applicable)
 
-42. Which recent Java feature has had the most impact:
+46. Which recent Java feature has had the most impact:
 
     Switch expressions improved readability and reduced boilerplate, especially in state machine or 
     command-based logic
@@ -2063,7 +2192,7 @@
     * Instead of break statements, which simply exit the switch block, YIELD explicitly specifies 
         the value that the switch expression should evaluate to for a given case
 
-43. Java Concepts & Best Practices ,What are some Java best practices you wish you had known earlier in your career?
+47. Java Concepts & Best Practices ,What are some Java best practices you wish you had known earlier in your career?
 
     Early in my career, I wish I had known the importance of:
 
@@ -2075,9 +2204,9 @@
 
         Understanding the cost of using collections (e.g., ArrayList vs LinkedList performance differences).
 
-44. How do you structure large-scale Java applications to keep them maintainable?
+48. How do you structure large-scale Java applications to keep them maintainable?
 
-45. Garbage Collection and Memory Leakage -
+49. Garbage Collection and Memory Leakage -
 
     Garbage Collection -
 
@@ -2138,7 +2267,7 @@
         * To prevent memory leak we can use, try with resources which closes the resources , weak references,
           avoid unnecessary static references, some profiling tools to detect leaks.
 
-46. Refletion in Java -
+50. Refletion in Java -
  
     * Reflection in Java is a feature which allows you to inspect and manipulate classes, methods, fields 
       and constructors at runtime even if you dont know them at compile time.
@@ -2183,7 +2312,7 @@
         // 5. Verify change
         emp.work();   // Output: Ravi Kumar is working...
 
-47. How would you design a class whose objects cannot be modified after creation ?
+51. How would you design a class whose objects cannot be modified after creation ?
 
     * Make class final so that its subclass cannot modify and override it.
 
@@ -2204,84 +2333,7 @@
                     this.prices= new ArrayList<>(prices);
                 }
 
-48. *How will you make a shared counter thread-safe when accessed by multiple threads ? 
-
-    * Using synchronized blocks or methods  
-
-        Example -
-
-            public class UserAccount {
-            private int balance;
-            -----SYNCHRONIZED BLCOKS-----------------
-            public void increment() {
-                synchronized (this) {
-                    this.balance += 1;
-                }
-            }
-            public int getBalance() {
-                synchronized (this) {
-                    return this.balance;
-                }
-            }
-            ---------- synchronized methods
-            public synchronized void increment() {
-                this.balance += 1;
-            }
-
-            public synchronized int getBalance() {
-                return this.balance;
-            }
-         }
-
-    * Using ReentrantLock which provides more control 
-
-        Example -
-
-            public class UserAccount {
-
-            private int balance;
-
-            private final ReentrantLock lock = new ReentrantLock();
-
-            public void increment() {
-                lock.lock();
-
-                try {
-                    this.balance += 1;
-                } finally {
-                    lock.unlock();
-                }
-            }
-
-            public int getBalance() {
-                lock.lock();
-
-                try {
-                    return this.balance;
-                } finally {
-                    lock.unlock();
-                }
-            }
-            }
-
-    * Using AtomicInteger for tasks like SharedCounter, User account balance, Item quantity changes
-
-        Example -
-
-            public class UserAccount {
-
-                private final AtomicInteger balance= new AtomicInteger(0);
-
-                public void increment() {
-                    balance.incrementAndGet();
-                }
-
-                public int getBalance() {
-                    return balance.get();
-                }
-                }
-
-49. How do you compare two objects for logical equality in Java ?
+52. How do you compare two objects for logical equality in Java ?
 
     * To compare two objects of logically we need to OVERRIDE the equals() method.
 
@@ -2322,48 +2374,6 @@
             }
 
             }
-
-50. How can you ensure visibility of a shared variable between threads without using locks ?
-
-    * When multiple threads access a shared variable, each thread may have its own CPU cache, so
-      updates made by one thread may not be visible to the other threads.
-
-    * Using synchronized solves this but it uses locks to achieve this. Updates made are reflected
-      immediately to the other threads .
-
-    * volatile keyword is used to ensure that all threads sees the latest value w/o using locks.
-
-        Example - 
-
-            class SharedData {
-                private volatile int counter = 0;
-
-                public void update() {
-                    counter = 5; // any thread reading counter sees 5 immediately
-                }
-            }
-
-    * Volatile -
-        
-        * In Java, each thread has its own working memory (CPU cache) where it stores copies of variables 
-          from main memory.
-
-        * Normally, changes made by one thread may not be visible immediately to other threads, because 
-          they are reading from their local cache.
-
-        * When you declare a variable volatile:
-            
-            It tells the JVM: “Always read this variable from main memory (RAM), not from thread-local 
-            cache.”
-
-            Every write to a volatile variable is immediately flushed to main memory, and every read 
-            comes from main memory.
-            
-            This ensures visibility across threads, but it does not make operations atomic.
-
-51. How will you implement a thread-safe Singleton class in Java?
-
-52. How would you implement an efficient Producer-Consumer system in Java ?
 
 53. API status codes and their meaning -
 
