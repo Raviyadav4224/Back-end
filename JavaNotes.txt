@@ -1122,7 +1122,7 @@
 
     Process -
 
-        * A process is an independent execution environment with its own MEMORY
+        * A process is an independent Execution Environment with its own MEMORY
           While a Thread is a lightweight execution unit within a process that shares the process's
           memory
           i.e Process = House, Threads = People inside the house sharing the same resources
@@ -1321,9 +1321,10 @@
 
         ExecutorService - 
 
-            * It is a high level abstraction for creating and managing Asynchronous tasks without the need
-              of manually creating Threads and managing them. Instead of creating/managing Threads you 
-              submit the tasks to the ExecutorService and it handles everything
+            * It is an INTERFACE with high level abstraction for creating and managing Asynchronous 
+              tasks without the need of manually creating Threads and managing them.
+              Instead of creating/managing Threads you submit the tasks to the ExecutorService and it
+              handles everything
             
             * submit()     // returns Future
               execute()    // fire-and-forget
@@ -1408,17 +1409,21 @@
             | `get()`           | Block & get result                | `T`                         | Legacy / last resort          | Avoid in async                   |
             | `join()`          | Block & get result                | `T`                         | Cleaner than get              | Unchecked exception              |
 
+        * Use Future when you want to run a Asynchronous task and get the result Later
+          Use CompletableFuture when you want to run a workflow like getUserById then getUserDetails
+          based on that id, then get orders etc
+          
     ForkJoinPool -
 
         * Fork - split a big task into smaller sub tasks and execute them asynchronously
           Join - wait for sub-tasks to finish and combine their results
 
-        * It is a specialized implementation of ExecutorService designed to efficiently execute 
-          recursive, CPU bound, divide and conquer tasks using work-stealing algorithm.
+        * It is a specialized implementation of ExecutorService interface designed to efficiently 
+          execute recursive, CPU bound, divide and conquer tasks using work-stealing algorithm
         
         * Each worker thread has its own deque (double-ended queue)
           Thread pushes and pops tasks from its own deque
-          If a thread becomes idle:
+          If a thread becomes idle -
           It steals tasks from the tail of another thread’s deque
         
         * ForkJoinPool - 
