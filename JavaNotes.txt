@@ -1412,7 +1412,11 @@
         * Use Future when you want to run a Asynchronous task and get the result Later
           Use CompletableFuture when you want to run a workflow like getUserById then getUserDetails
           based on that id, then get orders etc
-          
+        
+        * Future gives me asynchronous computation + blocking retrieval
+          CompletableFuture gives me asynchronous computation + non-blocking composition/callbacks 
+          while still allowing blocking with get()/join() methods
+
     ForkJoinPool -
 
         * Fork - split a big task into smaller sub tasks and execute them asynchronously
@@ -1465,7 +1469,7 @@
 
     * Deadlock -
 
-        * Deadlock occurs when two or more threads wait forever for resources locked by each other.
+        * Deadlock occurs when two or more threads wait forever for resources locked by each other
 
         * Example -
 
@@ -1501,11 +1505,11 @@
             t1.start();
             t2.start();
 
-            * Thread 1 locks resource1.
-            * Thread 2 locks resource2.
-            * Thread 1 now wants resource2, but it’s already locked by Thread 2 => so Thread 1 waits.
-            * Thread 2 now wants resource1, but it’s already locked by Thread 1 => so Thread 2 waits.
-            * Neither can proceed => Deadlock.
+            * Thread 1 locks resource1
+            * Thread 2 locks resource2
+            * Thread 1 now wants resource2, but it’s already locked by Thread 2 => so Thread 1 waits
+            * Thread 2 now wants resource1, but it’s already locked by Thread 1 => so Thread 2 waits
+            * Neither can proceed => Deadlock
 
 30. *How will you make a shared counter thread-safe when accessed by multiple threads ? 
 
@@ -1587,12 +1591,12 @@
 31. How can you ensure visibility of a shared variable between threads without using locks ?
 
     * When multiple threads access a shared variable, each thread may have its own CPU cache, so
-      updates made by one thread may not be visible to the other threads.
+      updates made by one thread may not be visible to the other threads
 
     * Using synchronized solves this but it uses locks to achieve this. Updates made are reflected
-      immediately to the other threads .
+      immediately to the other threads 
 
-    * volatile keyword is used to ensure that all threads sees the latest value w/o using locks.
+    * volatile keyword is used to ensure that all threads sees the latest value w/o using locks
 
         Example - 
 
@@ -1607,20 +1611,20 @@
     * Volatile -
         
         * In Java, each thread has its own working memory (CPU cache) where it stores copies of variables 
-          from main memory.
+          from main memory
 
         * Normally, changes made by one thread may not be visible immediately to other threads, because 
-          they are reading from their local cache.
+          they are reading from their local cache
 
-        * When you declare a variable volatile:
+        * When you declare a variable volatile -
             
-            It tells the JVM: “Always read this variable from main memory (RAM), not from thread-local 
-            cache.”
+            It tells the JVM - Always read this variable from main memory (RAM), not from thread-local 
+            cache
 
             Every write to a volatile variable is immediately flushed to main memory, and every read 
-            comes from main memory.
+            comes from main memory
             
-            This ensures visibility across threads, but it does not make operations atomic.
+            This ensures visibility across threads, but it does not make operations atomic
 
 32. How will you implement a thread-safe Singleton class in Java?
 
