@@ -47,7 +47,7 @@
         System.out.println("Enter something");
         String input = reader.readLine();
 
-        *BufferedReader class reads input in string format and requires further parsing
+        * BufferedReader class reads input in string format and requires further parsing
 
 3. JDK vs JRE vs JIT vs JVM -
 
@@ -113,14 +113,14 @@
     Implicit type casting - 
 
         Occurs automatically when converting a smaller value to a larger value 
-        int a=10;
-        double b=a;
+        int a = 10;
+        double b = a;
 
     Explicit type casting -
 
         Occurs when converting LARGER values to SMALLER values
-        double b=100.0;
-        int a=int(b);
+        double b = 100.0;
+        int a = int(b);
     
     Upcasting - 
 
@@ -149,7 +149,7 @@
     Downcasting - 
 
         Occurs when casting a superclass reference back to subclass 
-            Dog dog=(Dog) animal;
+            Dog dog = (Dog) animal;
 
     * Animal class has sound() method
       Dog which is subtype of Animal class has sound() and special() method 
@@ -491,7 +491,7 @@
         * Here the sole purpose of class Tata is to implement the abstract method
 
         * Same can be done using Lambda expression for Functional interface
-          Car car=()-> System.out.println("Tata is driving the Car");
+          Car car = () -> System.out.println("Tata is driving the Car");
           This is known as Anonymous inner class i.e class without name
 
 15. Abstract class -
@@ -534,8 +534,8 @@
                 }
             }
 
-            BaseService = abstract class => provides shared logic (logger setup).
-            UserService = extends it => gets logger automatically.
+            BaseService = abstract class => provides shared logic (logger setup)
+            UserService = extends it => gets logger automatically
 
 16. Interface -
 
@@ -574,7 +574,7 @@
             also used to avoid Anonymous inner class to create object
 
             * Functional interface has only one abstract method because it represents a single unit 
-              of behavior — a single action or operation.
+              of behavior — a single action or operation
               
         Marker Interface -> 
 
@@ -636,7 +636,7 @@
 
         Unchecked exception - (RUNTIME)
 
-            These are exceptions that occur during the RUNTIME of a program, for example -Arithmetic Exception,
+            These are exceptions that occur during the RUNTIME of a program, for example - Arithmetic Exception,
             NullPointerException etc 
     
     * finally block always gets executed but there are situations where it may not get executed -
@@ -691,7 +691,7 @@
 
     * Enums are FINAL and STATIC implicitly
 
-    * Enums are more than constants; they can include fields, constructors, and methods.
+    * Enums are more than constants; they can include fields, constructors, and methods
         for example -
             enum Day{
                 MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY;
@@ -800,7 +800,7 @@
 
                 * Why HashMap allows only one null key?
 
-                    It treats null as a data and since we cannot store duplciate keys so the updated
+                    It treats null as a data and since we cannot store duplicate keys so the updated
                     value gets replaced and allows only one Key
 
             LinkedHashMap -
@@ -922,7 +922,7 @@
         s1.equals(s2);      // ✅ true — same content (if equals is overridden)
         s1.equals(s2);      // ❌ false — same content (if equals is NOT overridden)
 
-23. Fail-fast vs Fail-safe iterators -
+23. Fail-Fast vs Fail-Safe iterators -
 
     Fail-fast iterators -
 
