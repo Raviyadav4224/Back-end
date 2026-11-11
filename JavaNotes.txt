@@ -924,15 +924,15 @@
 
 23. Fail-Fast vs Fail-Safe iterators -
 
-    Fail-fast iterators -
+    Fail-Fast iterators -
 
-        * Fail-fast is found in most of the Java collection Framework like ArrayList, HashMap, HashSet
+        * Fail-Fast is found in most of the Java collection Framework like ArrayList, HashMap, HashSet
 
         * If we try to modify a collection while iterating through it, it throws ConcurrentModificationException
           i.e iterators work on Original collections and they check for structural modification(i.e add/remove)
           by comparing a modCount
         
-        * Fail-fast ensures that bugs like Multiple threads modifying the collection unexpectedly are
+        * Fail-Fast ensures that bugs like Multiple threads modifying the collection unexpectedly are
           detected earlier
 
         * Example -
@@ -952,7 +952,7 @@
                 }
             }
 
-        * Fail-fast behavior applies only when using an iterator (directly or via for-each loop)
+        * Fail-Fast behavior applies only when using an iterator (directly or via for-each loop)
 
           Iterator + remove() => safe
 
@@ -974,14 +974,14 @@
 
         * Adding/removing keys while iterating => Causes ConcurrentModificationException
 
-    Fail-safe iterators -
+    Fail-Safe iterators -
 
         * These are found in concurrent collections like ConcurrentHashMap
 
         * These iterators do not throw exception if collection is being modified during iteration
           since they iterate over a cloned snapshot of collection
         
-        * Fail-safe is better for multi-threaded applications (safety)
+        * Fail-Safe is better for multi-threaded applications (safety)
     
     * Fail-Fast behavior happens when we use Iterator to iterate or loops which internally uses iterator
       for their implementations 
@@ -1045,16 +1045,16 @@
     Simple Summary for Interview
 
         HashMap stores data in the form of key–value pairs. Internally, it uses an array of buckets, 
-        where each bucket acts like a locker. The default number of buckets is 16. 
+        where each bucket acts like a locker. The default number of buckets is 16
         
         When we call put(key, value), HashMap first computes the hash of the key and applies an index 
-        calculation (like hash & (n-1)) to decide which bucket to use.
+        calculation (like hash & (n-1)) to decide which bucket to use
 
         If the bucket is empty, the entry is stored there. If the bucket already has entries, that 
-        situation is called a collision. 
+        situation is called a collision
         
         HashMap handles collision using a Linked List (and from Java 8 onwards, if the list grows beyond 
-        8 elements, it converts it to a Red-Black Tree for faster lookup).
+        8 elements, it converts it to a Red-Black Tree for faster lookup)
 
         When we call get(key), HashMap again calculates the bucket index using the hash. Then inside that 
         bucket, it compares keys using the equals() method to find the correct entry and return the value.
@@ -1067,7 +1067,7 @@
     * Using IMMUTABLE object, since MUTABLE objects can change after putting them into map which can
       break the map
 
-26. Why Sets doesn’t allows duplciates ? 
+26. Why Sets doesn’t allows duplicates ? 
 
     * Sets implements mathematic concept of Sets i.e collection of Unique elements
 
@@ -1111,7 +1111,7 @@
 
         TRACE -> DEBUG -> INFO -> WARN -> ERROR -> FATAL -> OFF
 
-        * If logging.level.root="INFO" , then all INFO, WARN, ERROR logs are shown; 
+        * If logging.level.root = "INFO" , then all INFO, WARN, ERROR logs are shown; 
           DEBUG and TRACE are hidden
 
     * SLF4J provides API's for Logging and doesn't do the logging itself
@@ -1640,12 +1640,13 @@
 
     2. Functional Interfaces -
 
-        Interfaces with only one abstract method, used primarily with lambda expressions.
-        Common examples: Runnable, Comparator, and custom @FunctionalInterface.
+        Interfaces with only one abstract method, used primarily with lambda expressions
+        Common examples: Runnable, Comparator, and custom @FunctionalInterface
 
     3. Stream API -
     
-        Introduced to process collections in a declarative and functional way (like filtering, mapping, reducing).
+        Introduced to process collections in a declarative and functional way (like filtering, mapping,
+        reducing)
     
     4. Default and Static Methods in Interfaces -
 
@@ -1658,11 +1659,11 @@
 
     5. Optional Class -
 
-        Helps avoid NullPointerException by wrapping a value that may or may not be present.
+        Helps avoid NullPointerException by wrapping a value that may or may not be present
 
     6. Method References -
 
-        Shorthand for calling methods using ClassName::methodName.
+        Shorthand for calling methods using ClassName::methodName
         Example:
         names.forEach(System.out::println);
 
