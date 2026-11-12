@@ -1322,7 +1322,7 @@
         ExecutorService - 
 
             * It is an INTERFACE with high level abstraction for creating and managing Asynchronous 
-              tasks without the need of manually creating Threads and managing them.
+              tasks without the need of manually creating Threads and managing them
               Instead of creating/managing Threads you submit the tasks to the ExecutorService and it
               handles everything
             
@@ -1350,7 +1350,7 @@
 
         * It can check if a Task is done, get Result or Cancel it
 
-        * It cannot chain tasks or combine tasks
+        * It CANNOT chain tasks or combine tasks
 
         * We need to submit the task to ExecutorService which controls execution and Future is used to
           handle the Result
