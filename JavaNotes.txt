@@ -1381,10 +1381,9 @@
           registered and executed when task is completed
         
         * It CAN chain tasks or combine tasks
-          Example 
 
         * We do not submit the task to ExecutorService, CompletableFuture starts the execution internally
-          and by deafult uses the ForkJoinPool as executor to submits the task to a Thread pool
+          and by deafult uses the ForkJoinPool as executor to submit the task to a Thread pool
           We can use custom executor as well
 
         * We have to provide ExecutorService to a Future but CompletableFuture handles the execution itself, 
@@ -1422,8 +1421,8 @@
         * Fork - split a big task into smaller sub tasks and execute them asynchronously
           Join - wait for sub-tasks to finish and combine their results
 
-        * It is a specialized implementation of ExecutorService interface designed to efficiently 
-          execute recursive, CPU bound, divide and conquer tasks using work-stealing algorithm
+        * It is a specialized implementation of ExecutorService INTERFACE designed to efficiently 
+          execute recursive, CPU bound, divide and conquer tasks using WORK-STEALING algorithm
         
         * Each worker thread has its own deque (double-ended queue)
           Thread pushes and pops tasks from its own deque
@@ -1458,10 +1457,11 @@
             
         * Fork one task, compute the other, then join.
 
-        * ForkJoinPool.commonPool() is Used by default by: CompletableFuture.supplyAsync(),parallelStream()
+        * ForkJoinPool.commonPool() is Used by default by: CompletableFuture.supplyAsync(), parallelStream()
 
     * obj.getPriority() gives the priority of Thread , we can also set the priority of the Thread using
-        obj.setPriority(10)
+      obj.setPriority(10)
+      But it is subject to JVM whether it will follow it or not
         
         0 --> Least priority
         5 --> Normal priority
@@ -1577,7 +1577,7 @@
 
             public class UserAccount {
 
-                private final AtomicInteger balance= new AtomicInteger(0);
+                private final AtomicInteger balance = new AtomicInteger(0);
 
                 public void increment() {
                     balance.incrementAndGet();
@@ -1593,7 +1593,7 @@
     * When multiple threads access a shared variable, each thread may have its own CPU cache, so
       updates made by one thread may not be visible to the other threads
 
-    * Using synchronized solves this but it uses locks to achieve this. Updates made are reflected
+    * Using synchronized solves this but it uses locks to achieve this, Updates made are reflected
       immediately to the other threads 
 
     * volatile keyword is used to ensure that all threads sees the latest value w/o using locks
@@ -1650,7 +1650,7 @@
     
     4. Default and Static Methods in Interfaces -
 
-        Interfaces can now have default implementations using the default keyword and also static methods.
+        Interfaces can now have default implementations using the default keyword and also static methods
         example:
         interface MyInterface {
             default void show() { System.out.println("Default Method"); }
@@ -1672,9 +1672,9 @@
     * Optional classes are used to handle null values without throwing Null Pointer Exceptions and helps
       to reduce the boiler plate code of checking for null values
     
-    * Optional<T> is a container object introduced in Java 8.
+    * Optional<T> is a container object introduced in Java 8
 
-    * It may or may not contain a non-null value.
+    * It may or may not contain a non-null value
 
       Example -
 
@@ -1697,7 +1697,7 @@
     of() - 
 
         Create Optional with non-null value 
-        It is used when we know that the value cannot be NULL and throws NullPointerException
+        It is used when we know that the value CANNOT be NULL and throws NullPointerException
 
     ofNullable() - 
 
@@ -1766,18 +1766,18 @@
     
     * Intermediate operations - (lazy, return a stream)
 
-        Examples: map, filter, sorted, distinct, limit, skip, flatMap.
+        Examples: map, filter, sorted, distinct, limit, skip, flatMap
 
     * Terminal operations - (consume the stream, return non-stream result)
 
-        Examples: collect, reduce, forEach, count, findFirst, findAny, toArray.
-        Once a terminal operation is called, the stream cannot be reused.
+        Examples: collect, reduce, forEach, count, findFirst, findAny, toArray
+        Once a terminal operation is called, the stream cannot be reused
     
     * numbers.stream().map().toList() - Creates Im-mutable List
 
     * numbers.stream().map().collect(Collectors.toList()) - Creates Mutable List
 
-    * Collectors.toMap(Key,Value,if duplicate then what)
+    * Collectors.toMap(Key , Value, if duplicate then what)
 
     * Collectors.groupingBy((e)->e.getDept(),Collectors.toList()) expects a classifier function (how to group elements)
       and optionally a downstream collector (like Collectors.toList() or Collectors.toSet())
@@ -1794,13 +1794,13 @@
     * .collect(Collectors.summingInt(Employee::getSalary));
 
     * To handle infinite streams of data we can use any of the terminations operations like findfirst(),
-        findAny(), anyMatch(), limit() etc
+      findAny(), anyMatch(), limit() etc
 
-            for example - 
+        for example - 
 
-                numbers.stream().limit(10).forEach(System.out::println);
-                Random random=new Random();
-                Stream.generate(random::nextInt).limit(5).forEach(System.out::println);
+            numbers.stream().limit(10).forEach(System.out::println);
+            Random random=new Random();
+            Stream.generate(random::nextInt).limit(5).forEach(System.out::println);
                 
     * Group by - employees
                 .stream()
@@ -1823,8 +1823,8 @@
 
     *  Why is a Stream in Java consumable only once ?
 
-        Java Stream is built on one-time traversal of its underlying data source. 
-        Once that traversal happens, the pipeline is considered closed and can’t be replayed.
+        Java Stream is built on one-time traversal of its underlying data source
+        Once that traversal happens, the pipeline is considered closed and can’t be replayed
 
 37. StringBuilder vs StringBuffer -
 
