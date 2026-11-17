@@ -2052,11 +2052,11 @@
                 writer.write("Buffered writing with Files!");
             }
 
-    ** Every Read and Write operation directly interacts with HardDisk whereas,BufferedReader & BufferedWriter
-       classes creates a buffer of chunk of data and reduces the number of interactions with HardDisk, Thus optimizing
-       file handling process
+    ** Every Read and Write operation directly interacts with HardDisk whereas, BufferedReader & 
+       BufferedWriter classes creates a buffer of chunk of data and reduces the number of interactions
+       with HardDisk, Thus optimizing file handling process
 
-41. Serialization, De-serialization ,transient & serialVersionUID -
+41. Serialization, De-serialization, transient & serialVersionUID -
 
     Serialization is the process of converting object's state into byte stream such that it can be 
     stored in a database or a file
@@ -2071,13 +2071,13 @@
 
         2. Creates Buffer - 
 
-            BufferedOutputStream bos=new BufferedOutputStream(fos);
+            BufferedOutputStream bos = new BufferedOutputStream(fos);
 
         3. Converts Java objects into byte stream -
 
-            ObjectOutputStream oos=new ObjectOutputStream(bos); 
+            ObjectOutputStream oos = new ObjectOutputStream(bos); 
             OR
-            ObjectOutputStream oos=new ObjectOutputStream(fileOut); 
+            ObjectOutputStream oos = new ObjectOutputStream(fileOut); 
 
         4. Writes the object -
             oos.writeObject(Person)
@@ -2085,11 +2085,11 @@
     For De-Serialization -
 
         InputStream fileIn = Files.newInputStream(filePath);
-        BufferedInputStream bis=new BufferedInputStream(fileIn);
+        BufferedInputStream bis = new BufferedInputStream(fileIn);
 
-        ObjectInputStream ois=new ObjectInputStream(bis);
+        ObjectInputStream ois = new ObjectInputStream(bis);
         OR 
-        ObjectInputStream ois=new ObjectInputStream(fileIn);
+        ObjectInputStream ois = new ObjectInputStream(fileIn);
         
         ois.readObject();
 
@@ -2101,7 +2101,7 @@
           that the sender and receiver of serialized object have compatible classes
 
         * It must be STATIC FINAL LONG
-          private static final long serialVersionUID=1234L;
+          private static final long serialVersionUID = 1234L;
 
     * STATIC and TRANSIENT data members are not stored during serialization
 
@@ -2166,8 +2166,8 @@
     System.out.println(Math.abs(a - b) < 0.0000001); // ✅ true
 
     ** Due to floating-point precision errors, some decimal values like 0.1, 0.2, 0.3 cannot be 
-        represented exactly in binary. So direct comparison with == is unreliable. It's safer to compare 
-        using a tolerance range
+       represented exactly in binary. So direct comparison with == is unreliable. It's safer to compare 
+       using a tolerance range
 
 44. Performance & Optimization
 
