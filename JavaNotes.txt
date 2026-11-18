@@ -2122,7 +2122,7 @@
         By default Wrapper classes implements Cache in Java
 
         So when wrapper class creates caches it doesn't create new object for same values rather it refers 
-        to the same value , but when the created object is out of range of cache it creates a new object    
+        to the same value, but when the created object is out of range of cache it creates a new object    
 
         for example - 
             Integer a = 100;
@@ -2138,146 +2138,7 @@
 
         * Always use .equals() for comparison of two values
 
-43. 0.1 * 2  == 0.2 ✅ vs 0.1 * 3 == 0.3 ❌ -
-
-    ✅ 0.1 * 2 == 0.2
-
-        0.1 is approximated in binary (slightly off, but close)
-
-        Multiplying by 2 gives a result very close to 0.2
-
-        And 0.2 is also approximate, but they match closely enough
-
-        So: true
-
-    ❌ 0.1 * 3 == 0.3 -
-
-        0.1 * 3 = 0.30000000000000004 (in binary floating-point)
-
-        0.3 = 0.299999999999999988897 (approx)
-
-        These values are not exactly equal, hence: false
-
-    ✅ Correct Way to Compare Floating-Point Values
-    Always compare floating-point numbers with a tolerance (epsilon):
-
-    double a = 0.1 * 3;
-    double b = 0.3;
-    System.out.println(Math.abs(a - b) < 0.0000001); // ✅ true
-
-    ** Due to floating-point precision errors, some decimal values like 0.1, 0.2, 0.3 cannot be 
-       represented exactly in binary. So direct comparison with == is unreliable. It's safer to compare 
-       using a tolerance range
-
-44. Performance & Optimization
-
-     How do you detect and fix memory leaks in Java applications?
-
-45. What’s your go-to approach for optimizing Java code for performance?
-
-    Minimize unnecessary object creation (especially in loops)
-
-    Prefer StringBuilder for string concatenation inside loops
-
-    Use appropriate data structures (HashMap vs TreeMap)
-
-    Leverage Java 8+ Streams carefully to avoid performance pitfalls
-
-    Cache expensive operations (memoization, where applicable)
-
-46. Which recent Java feature has had the most impact:
-
-    Switch expressions improved readability and reduced boilerplate, especially in state machine or 
-    command-based logic
-
-        String result = switch (status) {
-        case "ACTIVE" -> "User is active";
-        case "BLOCKED" -> "User is blocked";
-        case "Active": {
-			yield "User is active";
-		}
-        default        -> "Unknown status";
-        };
-
-    * Instead of break statements, which simply exit the switch block, YIELD explicitly specifies 
-        the value that the switch expression should evaluate to for a given case
-
-47. Java Concepts & Best Practices ,What are some Java best practices you wish you had known earlier in your career?
-
-    Early in my career, I wish I had known the importance of:
-
-        Immutable objects: They're thread-safe by design and easier to reason about.
-
-        Using Optional wisely instead of nulls to avoid NPEs.
-
-        Writing unit tests first (TDD) — saves a lot of debugging time.
-
-        Understanding the cost of using collections (e.g., ArrayList vs LinkedList performance differences).
-
-48. How do you structure large-scale Java applications to keep them maintainable?
-
-49. Garbage Collection and Memory Leakage -
-
-    Garbage Collection -
-
-        * Java uses automatic garbage collection to free memory occupied by objects which are no longer
-          reachable in the program.
-
-        * Garbage collection is not deterministic i.e we cannot force garbage collection but only suggest
-          using System.gc(), but JVM decides when to run it.
-        
-        * Java uses a heap memory divided into Young Generation, Old Generation, and sometimes Metaspace.
-
-          Objects start in the Young Generation; if they survive multiple GC cycles, they move to the 
-          Old Generation.
-
-          The GC identifies unreachable objects using algorithms like Mark-and-Sweep, Copying, or Compact.
-
-        * Types of Garbage Collectors:
-
-            Serial GC – Simple, single-threaded, best for small apps.
-
-            Parallel GC – Multi-threaded, optimized for throughput.
-
-            G1 GC – Balances latency and throughput for large heaps.
-
-            ZGC & Shenandoah – Ultra-low pause collectors for modern systems.
-
-            Why It’s Important: Efficient GC tuning can reduce latency, improve performance, and 
-            prevent memory leaks.
-
-        * It works in three phases i.e Mark - Sweep - Compact 
-
-          Mark - mark objects which are still reachable
-          Sweep - Delete objects which are no longer reachable and reclaims memory
-          Compact - Reorganize the memory
-
-        * G1GC - 
-
-          Garbage First Garbage Collector, is the default GC in modern JVMs.
-          It divides the heap into small regions and collects those with the most garbage first.
-          It’s designed to give low, predictable pause times, making it ideal for large memory applications.
-
-    Memory Leakages -
-
-        * Memory leakage occurs when objects which are no longer needed but are still referenced and 
-          Garbage collector cannot reclaim the memory. Over time this causes OutOfMemoryError.
-        
-        * Static fields holding objects -
-
-            class MemoryLeak {
-                private static List<String> cache = new ArrayList<>();
-                public void addData(String data) {
-                    cache.add(data); // static list keeps growing, never released
-                }
-            }
-
-        * Unclosed resources 
-        
-        * To prevent memory leak we can use, try with resources which closes the resources , weak references,
-          avoid unnecessary static references, some profiling tools to detect leaks.
-
-50. Refletion in Java -
+43. Refletion in Java -
  
     * Reflection in Java is a feature which allows you to inspect and manipulate classes, methods, fields 
       and constructors at runtime even if you dont know them at compile time.
@@ -2322,7 +2183,230 @@
         // 5. Verify change
         emp.work();   // Output: Ravi Kumar is working...
 
-51. How would you design a class whose objects cannot be modified after creation ?
+44. Java Memory Model ( JMM ) -
+
+    * The Java Memory Model (JMM) defines how threads interact through memory and how changes made by 
+      one thread become visible to others
+
+    * Key concepts -
+
+        * Main Memory (RAM)
+
+            Shared memory accessible by all threads
+            All variables ultimately reside here
+
+        * Working Memory (Thread-local cache)
+
+            Each thread can have a local copy of variables in CPU cache or registers, Threads may not 
+            immediately see updates made by other threads
+
+        * Volatile and Synchronization
+
+            Volatile ensures that reads/writes bypass thread-local caches and go directly to main memory
+            synchronized ensures mutual exclusion and memory visibility
+            Entering a synchronized block flushes working memory to main memory
+            Exiting flushes updates from main memory to working memory
+
+    * Java Memory Areas -
+
+        * Heap Memory
+
+            Stores all objects and instance variables including primitives
+            Instance variables - non static variables defined outside of a class, method or block
+            Shared across all threads
+            Managed by Garbage Collector (GC)
+
+        * Stack Memory
+
+            Stores METHOD CALLS , local primitives, and object references
+            Each thread has its own stack
+            LIFO: memory freed automatically when method exits
+
+        * Method Area (PermGen / Metaspace)
+
+            Stores class metadata, METHODS as bytecode, STATIC variables, and Constants
+            It is shared across threads
+
+        * PC Register (Program Counter)
+
+            Each thread has its own PC register, tracks next instruction
+
+        * Native Method Stack
+
+            For executing native (non-Java) code
+            It is generally used for Low Level Operations
+
+    * Visibility & Atomicity -
+
+        Visibility problem -
+        Changes made by Thread A might not be visible to Thread B because B could read cached value
+
+        Atomicity problem -
+        Operations like count++ are not atomic (read + increment + write)
+
+        How JMM helps -
+        volatile ensures visibility across threads
+        synchronized ensures atomicity + visibility
+    
+    * JMM also defines ‘happens-before’ relationships to guarantee consistent thread behavior
+
+    * Interview ready answer -
+
+        The Java Memory Model defines how threads interact through memory, especially how updates to 
+        shared variables are propagated. Each thread may have a local cache, so changes by one thread 
+        may not be immediately visible to others. Using volatile ensures visibility, synchronized ensures
+        visibility and atomicity, and the JVM manages memory through Heap, Stack, and Method Area. 
+        JMM also defines ‘happens-before’ relationships to guarantee consistent thread behavior
+
+    * Emp emp1 = new Emp("ravi");
+      public int static final count = 0;
+
+        emp1 -> Stack, Object reference
+        new Emp("ravi") - Heap since Object
+        count -> Method Area
+
+    * String name = new String("ravi");
+
+      "ravi" => String literal => Stored in String Pool (in Method Area / PermGen/Metaspace)
+
+      new String("ravi") => Creates a new String object => Stored in Heap
+
+      name => Local reference to the object => Stored in Stack of main() thread
+
+45. Garbage Collection and Memory Leakage -
+
+    Garbage Collection -
+
+        * Java uses automatic garbage collection to free memory occupied by objects which are no longer
+          reachable in the program
+
+        * Garbage collection is not deterministic i.e we cannot force garbage collection but only suggest
+          using System.gc(), but JVM decides when to run it
+        
+        * Java uses a heap memory divided into Young Generation, Old Generation, and sometimes Metaspace
+
+          Objects start in the Young Generation; if they survive multiple GC cycles, they move to the 
+          Old Generation
+
+          The GC identifies unreachable objects using algorithms like Mark-and-Sweep, Copying, or Compact
+
+        * Types of Garbage Collectors -
+
+            Serial GC – Simple, single-threaded, best for small apps
+
+            Parallel GC – Multi-threaded, optimized for throughput
+
+            G1 GC – Balances latency and throughput for large heaps
+
+            ZGC & Shenandoah – Ultra-low pause collectors for modern systems
+
+            Why It’s Important: Efficient GC tuning can reduce latency, improve performance, and 
+            prevent memory leaks
+
+        * It works in three phases i.e Mark - Sweep - Compact 
+
+          Mark - mark objects which are still reachable
+          Sweep - Delete objects which are no longer reachable and reclaims memory
+          Compact - Reorganize the memory
+
+        * G1GC - 
+
+          Garbage First Garbage Collector, is the default GC in modern JVM's
+          It divides the heap into small regions and collects those with the most garbage first
+          It’s designed to give low, predictable pause times, making it ideal for large memory applications
+
+    Memory Leakages -
+
+        * Memory leakage occurs when objects which are no longer needed but are still referenced and 
+          Garbage collector cannot reclaim the memory, Over time this causes OutOfMemoryError
+        
+        * Static fields holding objects -
+
+            class MemoryLeak {
+                private static List<String> cache = new ArrayList<>();
+                public void addData(String data) {
+                    cache.add(data); // static list keeps growing, never released
+                }
+            }
+
+        * Unclosed resources 
+        
+        * To prevent memory leak we can use, try with resources which closes the resources, weak references,
+          avoid unnecessary static references, some profiling tools to detect leaks
+
+46. JVM Tuning -
+
+    * We tune three things in JVM - 
+
+        1. Heap ( Where the Objects live )       
+        2. Garbage Collector - Who cleans the heap
+        3. Threading - How the app schedules work
+
+    * Heap -    
+
+        JVM resizes the heap dynamically, this causes CPU spikes, so for stable performance use 
+        Fixed size
+        For starting with microservices allot 2-4 GB of storage
+
+    * GC -  
+
+        Choosing the right garbage collector is important
+        G1GC - Default GC
+        ZGC - For low latency, favourable for Trading apps
+
+    * Threads -
+
+        Springboot uses Tomcat, AsyncExecutorPool and Scheduler
+        Default threads in Tomcat = 200
+
+47. Performance & Optimization
+
+     How do you detect and fix memory leaks in Java applications?
+
+48. What’s your go-to approach for optimizing Java code for performance?
+
+    Minimize unnecessary object creation (especially in loops)
+
+    Prefer StringBuilder for string concatenation inside loops
+
+    Use appropriate data structures (HashMap vs TreeMap)
+
+    Leverage Java 8+ Streams carefully to avoid performance pitfalls
+
+    Cache expensive operations (memoization, where applicable)
+
+49. Which recent Java feature has had the most impact:
+
+    Switch expressions improved readability and reduced boilerplate, especially in state machine or 
+    command-based logic
+
+        String result = switch (status) {
+        case "ACTIVE" -> "User is active";
+        case "BLOCKED" -> "User is blocked";
+        case "Active": {
+			yield "User is active";
+		}
+        default        -> "Unknown status";
+        };
+
+    * Instead of break statements, which simply exit the switch block, YIELD explicitly specifies 
+        the value that the switch expression should evaluate to for a given case
+
+50. Java Concepts & Best Practices ,What are some Java best practices you wish you had known earlier in your career?
+
+    Early in my career, I wish I had known the importance of:
+
+        Immutable objects: They're thread-safe by design and easier to reason about.
+
+        Using Optional wisely instead of nulls to avoid NPEs.
+
+        Writing unit tests first (TDD) — saves a lot of debugging time.
+
+        Understanding the cost of using collections (e.g., ArrayList vs LinkedList performance differences).
+
+51. How do you structure large-scale Java applications to keep them maintainable?
+
+52. How would you design a class whose objects cannot be modified after creation ?
 
     * Make class final so that its subclass cannot modify and override it.
 
@@ -2343,7 +2427,7 @@
                     this.prices= new ArrayList<>(prices);
                 }
 
-52. How do you compare two objects for logical equality in Java ?
+53. How do you compare two objects for logical equality in Java ?
 
     * To compare two objects of logically we need to OVERRIDE the equals() method.
 
@@ -2385,7 +2469,38 @@
 
             }
 
-53. API status codes and their meaning -
+54. 0.1 * 2  == 0.2 ✅ vs 0.1 * 3 == 0.3 ❌ -
+
+    ✅ 0.1 * 2 == 0.2
+
+        0.1 is approximated in binary (slightly off, but close)
+
+        Multiplying by 2 gives a result very close to 0.2
+
+        And 0.2 is also approximate, but they match closely enough
+
+        So: true
+
+    ❌ 0.1 * 3 == 0.3 -
+
+        0.1 * 3 = 0.30000000000000004 (in binary floating-point)
+
+        0.3 = 0.299999999999999988897 (approx)
+
+        These values are not exactly equal, hence: false
+
+    ✅ Correct Way to Compare Floating-Point Values
+    Always compare floating-point numbers with a tolerance (epsilon):
+
+    double a = 0.1 * 3;
+    double b = 0.3;
+    System.out.println(Math.abs(a - b) < 0.0000001); // ✅ true
+
+    ** Due to floating-point precision errors, some decimal values like 0.1, 0.2, 0.3 cannot be 
+       represented exactly in binary. So direct comparison with == is unreliable. It's safer to compare 
+       using a tolerance range
+
+55. API status codes and their meaning -
 
     1XX - Informational Responses - Request is received and server is continuing the process
 
@@ -2394,20 +2509,20 @@
         200 OK - Request processed - Successful GET or PUT
         201 CREATED - Resource created
         202 ACCEPTED - Request accepted but not completed yet, like async jobs
-        204 NO CONTENT - Success but no response body - DELETE or PUT success with no data.
+        204 NO CONTENT - Success but no response body - DELETE or PUT success with no data
 
     3XX - Redirectional responses - Client must take additional steps to complete the request (like following a  new url)
 
-        301 Moved Permanently - Resource moved permanently to a new URL.
+        301 Moved Permanently - Resource moved permanently to a new URL
 
     4XX - Client Error Responses - Error made by client like wrong request, unauthorized etc
 
-        400 BAD REQUEST - Invalid syntax or bad input - Missing fields, invalid JSON, etc.
+        400 BAD REQUEST - Invalid syntax or bad input - Missing fields, invalid JSON, etc
         401 UNAUTHORZED - invalid/missing authentication like jwt or token
         403 FORBIDDEN - Authenticated but not allowed to access
         404 NOT FOUND - Resource doesn't exists, Invalid URL or misisng ID
-        405 METHOD NOT ALLOWED - HTTP method not supported for the resource - Using POST instead of GET.
-        429 TOO MANY REQUEST - Client exceeded rate limit - Throttling / API rate limits.
+        405 METHOD NOT ALLOWED - HTTP method not supported for the resource - Using POST instead of GET
+        429 TOO MANY REQUEST - Client exceeded rate limit - Throttling / API rate limits
 
     5XX - Server Error responses - Problem on the server side
         
@@ -2416,94 +2531,7 @@
         503 SERVICE UNAVAILABLE - Server overloaded or under maintenance or not healthy
         504 GATEWAY TIMEOUT - Occurs when server is not able to send response within given time
 
-54. Java Memory Model ( JMM ) -
-
-    * The Java Memory Model (JMM) defines how threads interact through memory and how changes made by 
-      one thread become visible to others.
-
-    * Key concepts -
-
-        * Main Memory (RAM)
-
-            Shared memory accessible by all threads. All variables ultimately reside here.
-
-        * Working Memory (Thread-local cache)
-
-            Each thread can have a local copy of variables in CPU cache or registers.Threads may not 
-            immediately see updates made by other threads.
-
-        * Volatile and Synchronization
-
-            volatile ensures that reads/writes bypass thread-local caches and go directly to main memory.
-            synchronized ensures mutual exclusion and memory visibility.
-            Entering a synchronized block flushes working memory to main memory.
-            Exiting flushes updates from main memory to working memory.
-
-    * Java Memory Areas -
-
-        * Heap Memory
-
-            Stores all objects and instance variables.
-            Shared across all threads.
-            Managed by Garbage Collector (GC).
-
-        * Stack Memory
-
-            Stores METHOD CALLS , local primitives, and object references.
-            Each thread has its own stack.
-            LIFO: memory freed automatically when method exits.
-
-        * Method Area (PermGen / Metaspace)
-
-            Stores class metadata, METHODS as bytecode, STATIC variables, and constants.
-            Shared across threads.
-
-        * PC Register (Program Counter)
-
-            Each thread has its own PC register, tracks next instruction.
-
-        * Native Method Stack
-
-            For executing native (non-Java) code.
-
-    * Visibility & Atomicity -
-
-        Visibility problem:
-        Changes made by Thread A might not be visible to Thread B because B could read cached value.
-
-        Atomicity problem:
-        Operations like count++ are not atomic (read + increment + write).
-
-        How JMM helps:
-        volatile ensures visibility across threads.
-        synchronized ensures atomicity + visibility.
-    
-    * JMM also defines ‘happens-before’ relationships to guarantee consistent thread behavior.
-
-    * Interview ready answer -
-
-        The Java Memory Model defines how threads interact through memory, especially how updates to 
-        shared variables are propagated. Each thread may have a local cache, so changes by one thread 
-        may not be immediately visible to others. Using volatile ensures visibility, synchronized ensures
-        visibility and atomicity, and the JVM manages memory through Heap, Stack, and Method Area. 
-        JMM also defines ‘happens-before’ relationships to guarantee consistent thread behavior
-
-    * Emp emp1 = new Emp("ravi")
-      public int static final count=0;
-
-        emp1 -> Stack , object reference
-        new Emp("ravi") - Heap since Object
-        count -> Method Area
-
-    * String name = new String("ravi");
-
-      "ravi" => String literal => Stored in String Pool (in Method Area / PermGen/Metaspace).
-
-      new String("ravi") => Creates a new String object => Stored in Heap.
-
-      name => Local reference to the object => Stored in Stack of main() thread.
-
-55. Java 8 vs 17 vs 21 -
+56. Java 8 vs 17 vs 21 -
 
     1. Data Classes (Records and Record Patterns) -
 
@@ -2724,7 +2752,7 @@
                 }
             }
 
-56. Design Patterns -
+57. Design Patterns -
 
     Singleton -
 
@@ -2813,7 +2841,7 @@
 
         * Observer lets Subscribers auto-get notifications when Publisher triggers an event.
 
-57. GET vs POST vs PUT vs PATCH -
+58. GET vs POST vs PUT vs PATCH -
 
     * These are set of rules but totally depends upon how each method is implemented
     
@@ -2826,34 +2854,7 @@
     | **PUT**   | Replace existing | ✅            | ✅          | ❌    | `200 OK` or `204 No Content` |
     | **PATCH** | Update partially | ✅            | ⚠️ Usually  | ❌    | `200 OK` or `204 No Content` |
 
-58. JVM Tuning -
-
-    * We tune three things in JVM - 
-
-        1. Heap ( Where the objects live )       
-        2. Garbage Collector - Who cleans the heap
-        3. Threading - How the app schedules work
-
-    * Heap -    
-
-        JVM resizes the heap dynamically, this causes CPU spikes. so for stable performance use 
-        Fixed size
-
-        For starting with microservices allot 2-4GB of storage
-
-    * GC -  
-
-        Choosing the right garbage collector is important
-        G1GC - Default GC
-        ZGC - For low latency, favourable for Trading apps
-
-    * Threds -
-
-        Springboot uses Tomcat, AsyncExecutorPool and Scheduler
-
-        Default threads in Tomcat = 200
-
-59. ClassNotFoundException vs NoClassDefFoundError -
+60. ClassNotFoundException vs NoClassDefFoundError -
 
     ClassNotFoundException -
 
@@ -2867,3 +2868,4 @@
         Occurs when JVM tries to load a class and the class was present at compile-time but was missing 
         or unavailable in the runtime classpath (e.g., deleted after compilation, missing JAR file, 
         version mismatch).
+
