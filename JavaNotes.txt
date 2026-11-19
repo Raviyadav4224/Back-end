@@ -2141,7 +2141,7 @@
 43. Refletion in Java -
  
     * Reflection in Java is a feature which allows you to inspect and manipulate classes, methods, fields 
-      and constructors at runtime even if you dont know them at compile time.
+      and constructors at runtime even if you dont know them at compile time
 
     * Normal Objects -  We use them when we know the Class Structure
       Reflection Objects - we use them when we dont know the Class Structure
@@ -2153,7 +2153,7 @@
         
         * How Spring Boot Uses It -
 
-            At startup, Spring scans classes and builds beans.
+            At startup, Spring scans classes and builds beans
 
             For @Autowired private UserService userService;, Spring uses reflection:
 
@@ -2386,37 +2386,37 @@
         case "Active": {
 			yield "User is active";
 		}
-        default        -> "Unknown status";
+        default -> "Unknown status";
         };
 
     * Instead of break statements, which simply exit the switch block, YIELD explicitly specifies 
-        the value that the switch expression should evaluate to for a given case
+      the value that the switch expression should evaluate to for a given case
 
-50. Java Concepts & Best Practices ,What are some Java best practices you wish you had known earlier in your career?
+50. Java Concepts & Best Practices, What are some Java best practices you wish you had known earlier in your career?
 
     Early in my career, I wish I had known the importance of:
 
-        Immutable objects: They're thread-safe by design and easier to reason about.
+        Immutable objects: They're thread-safe by design and easier to reason about
 
-        Using Optional wisely instead of nulls to avoid NPEs.
+        Using Optional wisely instead of nulls to avoid NPEs
 
-        Writing unit tests first (TDD) — saves a lot of debugging time.
+        Writing unit tests first (TDD) — saves a lot of debugging time
 
-        Understanding the cost of using collections (e.g., ArrayList vs LinkedList performance differences).
+        Understanding the cost of using collections (e.g., ArrayList vs LinkedList performance differences)
 
 51. How do you structure large-scale Java applications to keep them maintainable?
 
 52. How would you design a class whose objects cannot be modified after creation ?
 
-    * Make class final so that its subclass cannot modify and override it.
+    * Make class final so that its subclass cannot modify and override it
 
-    * Declare all fields as private and final.
+    * Declare all fields as private and final
 
-    * Initialize fields using Constructors and do not provide setters functions.
+    * Initialize fields using Constructors and do not provide setters functions
 
     ** For mutable fields (like Date(java.util.Date), List, Map) whose reference can be changed, 
-       always return a defensive copy in getters instead of the actual reference.
-       Also, store a copy in the constructor instead of the original reference.
+       always return a defensive copy in getters instead of the actual reference
+       Also, store a copy in the constructor instead of the original reference
 
         Example  -
 
@@ -2424,7 +2424,7 @@
                     this.name = name;
                     // defensive copy to protect internal state
                     this.dob = new Date(dob.getTime());
-                    this.prices= new ArrayList<>(prices);
+                    this.prices = new ArrayList<>(prices);
                 }
 
 53. How do you compare two objects for logical equality in Java ?
@@ -2511,7 +2511,7 @@
         202 ACCEPTED - Request accepted but not completed yet, like async jobs
         204 NO CONTENT - Success but no response body - DELETE or PUT success with no data
 
-    3XX - Redirectional responses - Client must take additional steps to complete the request (like following a  new url)
+    3XX - Redirectional Responses - Client must take additional steps to complete the request (like following a  new url)
 
         301 Moved Permanently - Resource moved permanently to a new URL
 
@@ -2524,7 +2524,7 @@
         405 METHOD NOT ALLOWED - HTTP method not supported for the resource - Using POST instead of GET
         429 TOO MANY REQUEST - Client exceeded rate limit - Throttling / API rate limits
 
-    5XX - Server Error responses - Problem on the server side
+    5XX - Server Error Responses - Problem on the server side
         
         500 INTERNAL SERVER ERROR - Generic server failure - NullPointerException, unhandled exception
         502 BAD GATEWAY : A server acting as a gateway/proxy received an invalid response from an upstream server
@@ -2756,7 +2756,7 @@
 
     Singleton -
 
-        * Only one instance of that Class exist and is accessible Globally
+        * Only one instance of that Class exists and is accessible Globally
 
         * Example - 
         
@@ -2784,7 +2784,7 @@
 
     Factory -
 
-        * Factory centralizes object creation.
+        * Factory centralizes object creation
 
         * If you are creating objects like:
 
@@ -2809,7 +2809,7 @@
 
     Strategy -
 
-        * Strategy allows switching algorithms at runtime without modifying main logic.
+        * Strategy allows switching algorithms at runtime without modifying main logic
 
         * Example -
 
@@ -2831,15 +2831,20 @@
                 public void checkout(int amount) { strategy.pay(amount); }
             }
 
+            If user prefers UPI then -
             PaymentContext context = new PaymentContext(new UpiPayment());
+
+            If user prefers Card -
+            PaymentContext context = new PaymentContext(new CardPayment());
+
             context.checkout(500);
 
     Observer -
 
         * Let's say many parts of your system need updates when an event happens (like order status
-          update). If you call each one manually => tightly coupled, unmaintainable.
+          update), If you call each one manually => tightly coupled, unmaintainable
 
-        * Observer lets Subscribers auto-get notifications when Publisher triggers an event.
+        * Observer lets Subscribers auto-get notifications when Publisher triggers an event
 
 58. GET vs POST vs PUT vs PATCH -
 
@@ -2849,10 +2854,10 @@
 
     | Method    | Purpose          | Request Body | Idempotent    | Safe   | Typical Response             |
     | --------- | ---------------- | ------------ | ----------    | ----   | ---------------------------- |
-    | **GET**   | Read data        | ❌            | ✅          | ✅    | `200 OK`                     |
-    | **POST**  | Create new       | ✅            | ❌          | ❌    | `201 Created`                |
-    | **PUT**   | Replace existing | ✅            | ✅          | ❌    | `200 OK` or `204 No Content` |
-    | **PATCH** | Update partially | ✅            | ⚠️ Usually  | ❌    | `200 OK` or `204 No Content` |
+    |   GET     | Read data        | ❌            | ✅          | ✅    |  200 OK                      |
+    |   POST    | Create new       | ✅            | ❌          | ❌    |  201 Created                 |
+    |   PUT     | Replace existing | ✅            | ✅          | ❌    |  200 OK  or  204 No Content  |
+    |   PATCH   | Update partially | ✅            | ⚠️ Usually  | ❌    |  200 OK  or  204 No Content  |
 
 60. ClassNotFoundException vs NoClassDefFoundError -
 
